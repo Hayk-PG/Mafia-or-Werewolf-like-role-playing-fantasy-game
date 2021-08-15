@@ -16,9 +16,11 @@ public class Options : MonoBehaviourPun
         [Header("CANVAS GROUP")]
         [SerializeField] CanvasGroup optionsTab;
         [SerializeField] CanvasGroup optionsButtonTab;
+        [SerializeField] CanvasGroup exitTab;
 
         public CanvasGroup OptionsTab => optionsTab;
         public CanvasGroup OptionsButtonTab => optionsButtonTab;
+        public CanvasGroup ExitTab => exitTab;
     }
     #endregion
 
@@ -46,5 +48,21 @@ public class Options : MonoBehaviourPun
     {
         MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsTab, false);
         MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsButtonTab, true);        
+    }
+
+    public void OnPressedExitButton(bool isTabOpened)
+    {
+        if (isTabOpened)
+        {
+            MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsTab, false);
+            MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsButtonTab, false);
+            MyCanvasGroups.CanvasGroupActivity(_OptionsUI.ExitTab, true);
+        }
+        else
+        {
+            MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsButtonTab, false);
+            MyCanvasGroups.CanvasGroupActivity(_OptionsUI.ExitTab, false);
+            MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsTab, true);            
+        }
     }
 }
