@@ -673,6 +673,7 @@ GameObject:
   - component: {fileID: 1534753633}
   - component: {fileID: 1534753632}
   - component: {fileID: 1534753631}
+  - component: {fileID: 1334356346144010681}
   m_Layer: 5
   m_Name: LogTabButton
   m_TagString: Untagged
@@ -780,6 +781,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1334356346144010681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1534753629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d8b7954378008499683d57a016c507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  images:
+  - {fileID: 1452691178}
+  - {fileID: 507020266}
 --- !u!1 &1634695833
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,6 +1258,7 @@ GameObject:
   - component: {fileID: 8491721566868138068}
   - component: {fileID: 5477603823968690347}
   - component: {fileID: 3688396991155171324}
+  - component: {fileID: 483039177760093829}
   m_Layer: 5
   m_Name: PlayerVotesTabButton
   m_TagString: Untagged
@@ -1349,6 +1366,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &483039177760093829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929604979594752707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d8b7954378008499683d57a016c507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  images:
+  - {fileID: 204667879924082515}
+  - {fileID: 2588515177725147751}
 --- !u!1 &1246194811011081379
 GameObject:
   m_ObjectHideFlags: 0
@@ -1836,6 +1868,7 @@ GameObject:
   - component: {fileID: 1901288672839120212}
   - component: {fileID: 8738172108865847037}
   - component: {fileID: 8691523498098934464}
+  - component: {fileID: 5290987752696480354}
   m_Layer: 5
   m_Name: FriendsTabButton
   m_TagString: Untagged
@@ -1943,6 +1976,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5290987752696480354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4239871560653144544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d8b7954378008499683d57a016c507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  images:
+  - {fileID: 5861425881586580784}
+  - {fileID: 6694299668470959629}
 --- !u!1 &4270477669455834432
 GameObject:
   m_ObjectHideFlags: 0
@@ -6105,6 +6153,7 @@ GameObject:
   - component: {fileID: 6519451473887683418}
   - component: {fileID: 6519451473887683419}
   - component: {fileID: 6519451473887683416}
+  - component: {fileID: 8442486962064125696}
   m_Layer: 5
   m_Name: PlayedAsTabButton
   m_TagString: Untagged
@@ -6212,6 +6261,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8442486962064125696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6519451473887683414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d8b7954378008499683d57a016c507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  images:
+  - {fileID: 6519451472306674452}
+  - {fileID: 6519451472768031597}
 --- !u!1 &6519451473928598626
 GameObject:
   m_ObjectHideFlags: 0
@@ -7443,6 +7507,7 @@ GameObject:
   - component: {fileID: 933997080087485873}
   - component: {fileID: 7885441968561318941}
   - component: {fileID: 3750866581958205997}
+  - component: {fileID: 3488055569118679490}
   m_Layer: 5
   m_Name: NotificationButton
   m_TagString: Untagged
@@ -7550,6 +7615,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3488055569118679490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8241187577650895179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d8b7954378008499683d57a016c507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  images:
+  - {fileID: 6653669126917507935}
+  - {fileID: 7319694831258102004}
 --- !u!1 &8404169521585175427
 GameObject:
   m_ObjectHideFlags: 0

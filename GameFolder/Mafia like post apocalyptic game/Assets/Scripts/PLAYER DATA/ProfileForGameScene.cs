@@ -30,11 +30,6 @@ public class ProfileForGameScene : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        PlayerBaseConditions.PlayerProfile.OnClickButton(PlayerBaseConditions.PlayerProfile.PlayerVotesTabButton);
-    }
- 
     #region _MyGameManager_OnNightVote
     void _MyGameManager_OnNightVote()
     {
@@ -69,6 +64,8 @@ public class ProfileForGameScene : MonoBehaviour
     void GameScene()
     {
         PlayerBaseConditions.PlayerProfile.SetDefaultPage();
+        PlayerBaseConditions.PlayerProfile.TabButtons[3].gameObject.SetActive(false);
+        PlayerBaseConditions.PlayerProfile.TabButtons[2].gameObject.SetActive(false);
     }
     #endregion
 

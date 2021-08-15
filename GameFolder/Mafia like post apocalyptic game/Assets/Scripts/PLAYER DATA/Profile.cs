@@ -207,30 +207,15 @@ public class Profile : MonoBehaviour
         get => _FirstTab.rankSlider.value;
         set => _FirstTab.rankSlider.value = value;
     }
+
+    /// <summary>
+    /// 0:PlayedAsTabButton 1:PlayerVotesTabButton 2:LogTabButton 3:FriendsTabButton 4:NotificationTabButton
+    /// </summary>
+    public Button[] TabButtons { get; set; }
     public Button CloseButton
     {
         get => _Global.closeButton;
-    }
-    public Button PlayedAsTabButton
-    {
-        get => _ThirdTab.playedAsTabButton;
-    }
-    public Button PlayerVotesTabButton
-    {
-        get => _ThirdTab.playerVotesTabButton;
-    }
-    public Button LogTabButton
-    {
-        get => _LogTab.logTabButton;
-    }
-    public Button FriendsTabButton
-    {
-        get => _FriendsTab.friendsTabButton;
-    }
-    public Button NotificationTabButton
-    {
-        get => _NotificationTab.notificationTabButton;
-    }
+    }    
     public Button LoginToAnotherAccButton
     {
         get => _LogTab.loginToAnotherAccButton;
@@ -247,8 +232,7 @@ public class Profile : MonoBehaviour
     /// <summary>
     /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab
     /// </summary>
-    public CanvasGroup[] CanvasGroups;
-    
+    public CanvasGroup[] CanvasGroups;    
     public Transform PlayerVotesTabContainer
     {
         get => _PlayerVotesTab.playerVotesTabContainer;
@@ -275,25 +259,38 @@ public class Profile : MonoBehaviour
         get => _NotificationTab.friendRequestMessagePrefab;
     }
 
-    
+    Color32 releasedTabButtonColor => new Color32(155, 126, 80, 255);
+    Color32 clickedTabButtonColor => new Color32(6, 255, 0, 255);
+
+
     void Awake()
     {
         if(instance == null)
         {
             instance = this;
         }
+
+        TabButtons = new Button[5] 
+        {
+         _ThirdTab.playedAsTabButton,
+         _ThirdTab.playerVotesTabButton,
+         _LogTab.logTabButton,
+         _FriendsTab.friendsTabButton,
+         _NotificationTab.notificationTabButton
+        };
     }
 
     void Update()
     {
-        OnClickButton(CloseButton);
-        OnClickButton(PlayedAsTabButton);
-        OnClickButton(PlayerVotesTabButton);
-        OnClickButton(LogTabButton);
-        OnClickButton(FriendsTabButton);
-        OnClickButton(NotificationTabButton);
+        OnClickButton(CloseButton);      
         OnClickButton(LogOutButton);
-        OnClickButton(LoginToAnotherAccButton);       
+        OnClickButton(LoginToAnotherAccButton);
+
+        OnClickTabButtons(TabButtons[0]);
+        OnClickTabButtons(TabButtons[1]);
+        OnClickTabButtons(TabButtons[2]);
+        OnClickTabButtons(TabButtons[3]);
+        OnClickTabButtons(TabButtons[4]);
     }
 
     #region OnClickButton
@@ -305,37 +302,7 @@ public class Profile : MonoBehaviour
             if (button == CloseButton)
             {
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[0], false);
-            }
-            if (button == PlayedAsTabButton)
-            {                             
-                DisableCanvasGroups();
-                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[1], true);
-                BgImage = GamePadIcon;
-            }
-            if (button == PlayerVotesTabButton)
-            {                
-                DisableCanvasGroups();
-                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[2], true);
-                BgImage = MegaphoneIcon;
-            }
-            if(button == LogTabButton)
-            {                
-                DisableCanvasGroups();
-                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[3], true);
-                BgImage = DoorIcon;
-            }
-            if (button == FriendsTabButton)
-            {
-                DisableCanvasGroups();
-                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[4], true);
-                BgImage = FriendsIcon;
-            }
-            if (button == NotificationTabButton)
-            {
-                DisableCanvasGroups();
-                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[5], true);
-                BgImage = BellIcon;
-            }
+            }                     
             if (button == LogOutButton)
             {
                 PlayerBaseConditions.PlayfabManager.PlayfabLogOut.LogOut(() => PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoggedOut());                              
@@ -345,6 +312,65 @@ public class Profile : MonoBehaviour
                 PlayerBaseConditions.PlayfabManager.PlayfabLogOut.LogOut(() => PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoginToAnotherAccount());
             }
         });
+    }
+    #endregion
+
+    #region OnClickTabButtons
+    void OnClickTabButtons(Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => 
+        {
+            TabButtonsColor(button);
+
+            if (button == TabButtons[0])
+            {
+                DisableCanvasGroups();
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[1], true);
+                BgImage = GamePadIcon;
+            }
+            if (button == TabButtons[1])
+            {
+                DisableCanvasGroups();
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[2], true);
+                BgImage = MegaphoneIcon;
+            }
+            if (button == TabButtons[2])
+            {
+                DisableCanvasGroups();
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[3], true);
+                BgImage = DoorIcon;
+            }
+            if (button == TabButtons[3])
+            {
+                DisableCanvasGroups();
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[4], true);
+                BgImage = FriendsIcon;
+            }
+            if (button == TabButtons[4])
+            {
+                DisableCanvasGroups();
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[5], true);
+                BgImage = BellIcon;
+            }
+        });       
+    }
+    #endregion
+
+    #region TabButtonsColor
+    void TabButtonsColor(Button pressedTabButton)
+    {
+        foreach (var tabButton in TabButtons)
+        {
+            if(tabButton != pressedTabButton)
+            {
+                tabButton?.GetComponent<TabButtons>().ImagesColor(releasedTabButtonColor);
+            }
+            else
+            {
+                tabButton?.GetComponent<TabButtons>().ImagesColor(clickedTabButtonColor);
+            }
+        }
     }
     #endregion
 
@@ -364,6 +390,7 @@ public class Profile : MonoBehaviour
     {
         DisableCanvasGroups();
         MyCanvasGroups.CanvasGroupActivity(CanvasGroups[1], true);
+        this.TabButtons[0]?.GetComponent<TabButtons>().ImagesColor(clickedTabButtonColor);
         BgImage = GamePadIcon;
     }
     #endregion
