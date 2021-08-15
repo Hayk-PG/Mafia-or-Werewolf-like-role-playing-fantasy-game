@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   friendNameText: {fileID: 7518564128325226105}
+  friendProfileButton: {fileID: 4895519296496758568}
   deleteFriendButton: {fileID: 3661131211137433170}
   statusImage: {fileID: 586780129713489023}
 --- !u!1 &2264851724834886964

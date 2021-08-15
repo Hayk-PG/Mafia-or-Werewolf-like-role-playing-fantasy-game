@@ -46,7 +46,7 @@ public class PlayfabLogin : MonoBehaviour
                 #endregion
 
                 #region Get player stats and store in player custom properties
-                PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(
+                PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(result.PlayFabId,
                     get =>
                     {
                         PlayerBaseConditions.PlayerCustomPropertiesController.SetPhotonPlayerStats(new List<int>

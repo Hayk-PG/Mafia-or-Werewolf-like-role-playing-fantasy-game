@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class ProfileForMenuScene : MonoBehaviour
 {
@@ -107,7 +108,5 @@ public class ProfileForMenuScene : MonoBehaviour
                 PlayerBaseConditions.PlayfabManager.PlayfabFriends.PhotonNetworkFriends(friendsArray);
             });
     }
-    #endregion
-
-    
+    #endregion    
 }

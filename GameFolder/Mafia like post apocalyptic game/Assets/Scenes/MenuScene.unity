@@ -2575,6 +2575,11 @@ PrefabInstance:
       propertyPath: m_BlocksRaycasts
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1010916316445145675, guid: 9836dfb6149357f4c99612956b22a2de,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2394099881899014547, guid: 9836dfb6149357f4c99612956b22a2de,
         type: 3}
       propertyPath: m_AnchorMax.x

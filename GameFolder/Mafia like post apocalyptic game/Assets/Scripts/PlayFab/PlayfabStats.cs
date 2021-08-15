@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
-using PlayFab.ClientModels;
+using PlayFab.ServerModels;
 using System;
 
 public class PlayfabStats : MonoBehaviour
@@ -26,14 +25,15 @@ public class PlayfabStats : MonoBehaviour
     }
 
     #region UpdatePlayerStats
-    public void UpdatePlayerStats(Action<UpdatePlayerStatisticsRequest> UpdatePlayerStats)
+    public void UpdatePlayerStats(string playfabId, Action<UpdatePlayerStatisticsRequest> UpdatePlayerStats)
     {
         UpdatePlayerStatisticsRequest requestUpdatePlayerStats = new UpdatePlayerStatisticsRequest();
+        requestUpdatePlayerStats.PlayFabId = playfabId;
         requestUpdatePlayerStats.Statistics = new List<StatisticUpdate>();
 
         UpdatePlayerStats(requestUpdatePlayerStats);
 
-        PlayFabClientAPI.UpdatePlayerStatistics(requestUpdatePlayerStats,
+        PlayFabServerAPI.UpdatePlayerStatistics(requestUpdatePlayerStats,
             result =>
             {
                 
@@ -46,11 +46,12 @@ public class PlayfabStats : MonoBehaviour
     #endregion
 
     #region GetPlayerStats
-    public void GetPlayerStats(Action<StatsValue> GetPlayerStats)
+    public void GetPlayerStats(string playfabId, Action<StatsValue> GetPlayerStats)
     {
         GetPlayerStatisticsRequest getPlayerStats = new GetPlayerStatisticsRequest();
+        getPlayerStats.PlayFabId = playfabId;
 
-        PlayFabClientAPI.GetPlayerStatistics(getPlayerStats,
+        PlayFabServerAPI.GetPlayerStatistics(getPlayerStats,
 
             result =>
             {

@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ServerModels;
-using PlayFab.DataModels;
 using System;
 using Photon.Pun;
-using Photon.Realtime;
 
 public class PlayfabFriends : MonoBehaviourPunCallbacks
 { 

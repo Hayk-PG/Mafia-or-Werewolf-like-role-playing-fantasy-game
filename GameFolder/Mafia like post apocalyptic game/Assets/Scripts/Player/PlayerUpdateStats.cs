@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using PlayFab.ClientModels;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -26,9 +25,7 @@ public class PlayerUpdateStats : MonoBehaviour
     #region GetPlayerStats
     void GetPlayerStats()
     {
-        print(PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.UserID].ToString());
-
-        PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(getPlayerStats =>
+        PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.UserID].ToString(), getPlayerStats =>
         {
             _StatsValue.rank = getPlayerStats.rank;
             _StatsValue.totalTimePlayed = getPlayerStats.totalTimePlayed;
@@ -44,10 +41,10 @@ public class PlayerUpdateStats : MonoBehaviour
     #region UpdatePlayerStats
     void UpdatePlayerStats()
     {
-        PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(updatePlayerStats =>
+        PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.UserID].ToString(), updatePlayerStats =>
         {
-            updatePlayerStats.Statistics.Add(new StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Rank, Value = _StatsValue.rank });
-            updatePlayerStats.Statistics.Add(new StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.TotalTimePlayed, Value = _StatsValue.totalTimePlayed + 1 });           
+            updatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Rank, Value = _StatsValue.rank });
+            updatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.TotalTimePlayed, Value = _StatsValue.totalTimePlayed + 1 });           
         });
     }
     #endregion

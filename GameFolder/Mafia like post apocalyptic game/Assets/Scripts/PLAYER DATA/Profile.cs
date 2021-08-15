@@ -18,6 +18,7 @@ public class Profile : MonoBehaviour
     [SerializeField] LogTab _LogTab;
     [SerializeField] FriendsTab _FriendsTab;
     [SerializeField] NotificationTab _NotificationTab;
+    [SerializeField] FriendProfileTab _FriendProfileTab;
     [SerializeField] Icons _Icons;
    
     [Serializable] class Global
@@ -85,6 +86,15 @@ public class Profile : MonoBehaviour
         [SerializeField] internal Transform notificationsContainer;
         [SerializeField] internal CanvasGroup notificationCanvasGroup;
     }
+    [Serializable] class FriendProfileTab
+    {
+        [SerializeField] internal CanvasGroup friendProfileCanvasGroup;
+        [SerializeField] internal Image friendProfilePic;
+        [SerializeField] internal Image friendRankImage;
+        [SerializeField] internal Button friendMessageButton;
+        [SerializeField] internal Text friendNameText;
+        [SerializeField] internal Text friendRankNumberText;
+    }
     [Serializable] class Icons
     {
         [SerializeField] internal Sprite diagramIcon;
@@ -114,6 +124,11 @@ public class Profile : MonoBehaviour
         get => _FirstTab.profileImage.sprite;
         set => _FirstTab.profileImage.sprite = value;
     }
+    public Sprite FriendProfileImage
+    {
+        get => _FriendProfileTab.friendProfilePic.sprite;
+        set => _FriendProfileTab.friendProfilePic.sprite = value;
+    }
     public Sprite LoadingProfilePic
     {
         get => _FirstTab.loadingProfilePic;
@@ -122,6 +137,11 @@ public class Profile : MonoBehaviour
     {
         get => _FirstTab.rankImage.sprite;
         set => _FirstTab.rankImage.sprite = value;
+    }
+    public Sprite FriendRankImage
+    {
+        get => _FriendProfileTab.friendRankImage.sprite;
+        set => _FriendProfileTab.friendRankImage.sprite = value;
     }
     public Sprite DiagramIcon
     {
@@ -151,6 +171,11 @@ public class Profile : MonoBehaviour
     {
         get => _FirstTab.nameText.text;
         set => _FirstTab.nameText.text = value;
+    }
+    public string FriendProfileFriendName
+    {
+        get => _FriendProfileTab.friendNameText.text;
+        set => _FriendProfileTab.friendNameText.text = value;
     }
     public string TimePlayed
     {
@@ -197,6 +222,16 @@ public class Profile : MonoBehaviour
         get => _FirstTab.rankNumberText.text;
         set => _FirstTab.rankNumberText.text = value;
     }
+    public string FriendProfileRankNumber
+    {
+        get => _FriendProfileTab.friendRankNumberText.text;
+        set => _FriendProfileTab.friendRankNumberText.text = value;
+    }
+    public string FriendProfileFriendRankNumber
+    {
+        get => _FriendProfileTab.friendRankNumberText.text;
+        set => _FriendProfileTab.friendRankNumberText.text = value;
+    }
     public string RankSliderNumber
     {
         get => _FirstTab.rankSliderNumberText.text;
@@ -228,9 +263,13 @@ public class Profile : MonoBehaviour
     {
         get => _FirstTab.sendFriendRequestButton;
     }
+    public Button FriendProfileFriendMessageButton
+    {
+        get => _FriendProfileTab.friendMessageButton;
+    }
 
     /// <summary>
-    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab
+    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab
     /// </summary>
     public CanvasGroup[] CanvasGroups;    
     public Transform PlayerVotesTabContainer
@@ -389,13 +428,18 @@ public class Profile : MonoBehaviour
     public void SetDefaultPage()
     {
         DisableCanvasGroups();
+        TabButtonsColor(this.TabButtons[0]);
         MyCanvasGroups.CanvasGroupActivity(CanvasGroups[1], true);
-        this.TabButtons[0]?.GetComponent<TabButtons>().ImagesColor(clickedTabButtonColor);
-        BgImage = GamePadIcon;
+        BgImage = GamePadIcon;     
     }
     #endregion
 
     #region ShowPlayerAvatar
+    /// <summary>
+    /// Get profile pic by player's actor number
+    /// </summary>
+    /// <param name="isInMenuScene"></param>
+    /// <param name="actorNumber"></param>
     public void ShowPlayerProfilePic(bool isInMenuScene, int actorNumber)
     {
         Photon.Realtime.Player Player = isInMenuScene ? PlayerBaseConditions.LocalPlayer : PlayerBaseConditions.Player(actorNumber);
@@ -405,12 +449,29 @@ public class Profile : MonoBehaviour
             PlayerBaseConditions.PlayfabManager.PlayfabFile.GetPlayfabFile(Player.CustomProperties[PlayerKeys.EntityId].ToString(), Player.CustomProperties[PlayerKeys.EntityType].ToString(),
             ProfilePictureURL =>
             {
-                StartCoroutine(ShowPlayerProfilePicCoroutine(ProfilePictureURL));
+            StartCoroutine(ShowPlayerProfilePicCoroutine(ProfilePictureURL, ProfilePic => { ProfileImage = ProfilePic; }));
             });
         }        
     }
 
-    IEnumerator ShowPlayerProfilePicCoroutine(string url)
+    /// <summary>
+    /// Get profile pic by player's playfabId
+    /// </summary>
+    /// <param name="playfabId"></param>
+    public void ShowPlayerProfilePic(string playfabId)
+    {
+        PlayerBaseConditions.PlayfabManager.PlayfabUserAccountInfo.GetUserAccountInfo(playfabId, 
+            GetAccountInfo => 
+            {
+                PlayerBaseConditions.PlayfabManager.PlayfabFile.GetPlayfabFile(GetAccountInfo.EntityId, GetAccountInfo.EntityType, 
+                    ProfilePictureURL => 
+                    {
+                        StartCoroutine(ShowPlayerProfilePicCoroutine(ProfilePictureURL, FriendProfilePic => { FriendProfileImage = FriendProfilePic; }));
+                    });
+            });
+    }
+
+    IEnumerator ShowPlayerProfilePicCoroutine(string url, Action<Sprite>ProfilePic)
     {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
 
@@ -419,7 +480,7 @@ public class Profile : MonoBehaviour
         if (!request.isNetworkError && !request.isHttpError)
         {
             Texture2D downloadedAvatar = ((DownloadHandlerTexture)request.downloadHandler).texture;
-            PlayerBaseConditions.PlayerProfile.ProfileImage = Sprite.Create(downloadedAvatar, new Rect(0, 0, downloadedAvatar.width, downloadedAvatar.height), new Vector2(0.5f, 0.5f), 100);
+            ProfilePic(Sprite.Create(downloadedAvatar, new Rect(0, 0, downloadedAvatar.width, downloadedAvatar.height), new Vector2(0.5f, 0.5f), 100));
         }
     }
     #endregion

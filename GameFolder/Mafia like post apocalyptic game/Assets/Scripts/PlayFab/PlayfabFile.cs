@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
-using PlayFab.AuthenticationModels;
 using PlayFab.DataModels;
 using PlayFab.Internal;
 using PlayFab.ClientModels;
@@ -189,11 +188,6 @@ public class PlayfabFile : MonoBehaviour
             {
                 print(error.ErrorMessage);
                 print(error.Error);
-
-                foreach (var item in error.ErrorDetails)
-                {
-                    print(item.Key + "/" + item.Value);
-                }
             });
     }
     #endregion

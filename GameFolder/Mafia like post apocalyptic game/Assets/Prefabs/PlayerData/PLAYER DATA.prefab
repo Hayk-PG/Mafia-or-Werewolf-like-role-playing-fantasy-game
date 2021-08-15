@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 3109150279112739081}
   - component: {fileID: 3109150279112739083}
   - component: {fileID: 2140707462}
+  - component: {fileID: 1663480700}
   m_Layer: 0
   m_Name: PLAYER DATA
   m_TagString: Untagged
@@ -199,11 +200,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 346729b254724164cb980f31dd9f2860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityId: 
-  entityType: 
-  spriteImage: {fileID: 21300000, guid: 061008d6c7998f94682a1d7c99ca883e, type: 3}
+  spriteImage: {fileID: 21300000, guid: a0a3f831c3b7814469aa8e96de6d8d41, type: 3}
   delete: 0
-  geEntityInfo: 0
   upload: 0
   finish: 0
   abort: 0
@@ -211,3 +209,15 @@ MonoBehaviour:
   url: 
   sp: {fileID: 0}
   aaa: {fileID: 0}
+--- !u!114 &1663480700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3109150279112739076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d445032fa6013b64e9bf61aa2f969c39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

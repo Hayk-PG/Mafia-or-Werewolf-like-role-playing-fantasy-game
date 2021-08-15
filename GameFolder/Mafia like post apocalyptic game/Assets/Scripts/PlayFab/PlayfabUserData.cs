@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
-using System.Collections.Generic;
 using System;
 
 public class PlayfabUserData : MonoBehaviour

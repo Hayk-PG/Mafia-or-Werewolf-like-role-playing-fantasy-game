@@ -59,11 +59,11 @@ public class PlayfabRegister : MonoBehaviour
                 #endregion
 
                 #region Update player stats and store in player custom properties
-                PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(
+                PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(result.PlayFabId, 
                     update =>
                     {
-                        update.Statistics.Add(new StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Rank, Value = 0 });
-                        update.Statistics.Add(new StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.TotalTimePlayed, Value = 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Rank, Value = 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.TotalTimePlayed, Value = 0 });
 
                         PlayerBaseConditions.PlayerCustomPropertiesController.SetPhotonPlayerStats(new List<int> { 0, 0 });
                     });
