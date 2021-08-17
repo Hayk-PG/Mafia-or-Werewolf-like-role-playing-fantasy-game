@@ -39,6 +39,7 @@ public class FriendButtonScript : MonoBehaviour
     {
         PlayerBaseConditions.PlayerProfile.FriendProfileFriendName = friend.FriendName;
         PlayerBaseConditions.PlayerProfile.ShowPlayerProfilePic(friend.Name);
+        PlayerBaseConditions.PlayerProfile.FriendProfileFriendMessageButton.name = Name;
         PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(friend.Name,
             GetFriendStats => 
             {

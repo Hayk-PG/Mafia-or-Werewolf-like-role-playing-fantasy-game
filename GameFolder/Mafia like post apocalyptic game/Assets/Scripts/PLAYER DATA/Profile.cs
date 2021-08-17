@@ -94,6 +94,16 @@ public class Profile : MonoBehaviour
         [SerializeField] internal Button friendMessageButton;
         [SerializeField] internal Text friendNameText;
         [SerializeField] internal Text friendRankNumberText;
+        [SerializeField] internal FriendMessageTab _FriendMessageTab;
+
+        [Serializable]
+        internal class FriendMessageTab
+        {
+            [SerializeField] internal CanvasGroup friendMessageCanvasGroup;
+            [SerializeField] internal InputField friendMessageInputField;
+            [SerializeField] internal Button sendMessageButton;
+            [SerializeField] internal Button closeMessageButton;
+        }
     }
     [Serializable] class Icons
     {
@@ -176,6 +186,11 @@ public class Profile : MonoBehaviour
     {
         get => _FriendProfileTab.friendNameText.text;
         set => _FriendProfileTab.friendNameText.text = value;
+    }
+    public string FriendMessageText
+    {
+        get => _FriendProfileTab._FriendMessageTab.friendMessageInputField.text;
+        set => _FriendProfileTab._FriendMessageTab.friendMessageInputField.text = value;
     }
     public string TimePlayed
     {
@@ -267,9 +282,17 @@ public class Profile : MonoBehaviour
     {
         get => _FriendProfileTab.friendMessageButton;
     }
+    public Button SendFriendMessageButton
+    {
+        get => _FriendProfileTab._FriendMessageTab.sendMessageButton;
+    }
+    public Button CloseFriendMessageButton
+    {
+        get => _FriendProfileTab._FriendMessageTab.closeMessageButton;
+    }
 
     /// <summary>
-    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab
+    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab 7:FriendMessageTab
     /// </summary>
     public CanvasGroup[] CanvasGroups;    
     public Transform PlayerVotesTabContainer
@@ -301,6 +324,8 @@ public class Profile : MonoBehaviour
     Color32 releasedTabButtonColor => new Color32(155, 126, 80, 255);
     Color32 clickedTabButtonColor => new Color32(6, 255, 0, 255);
 
+    ProfilePicContainer ProfilePicContainer { get; set; }
+
 
     void Awake()
     {
@@ -317,6 +342,8 @@ public class Profile : MonoBehaviour
          _FriendsTab.friendsTabButton,
          _NotificationTab.notificationTabButton
         };
+
+        ProfilePicContainer = GetComponent<ProfilePicContainer>();
     }
 
     void Update()
@@ -330,6 +357,10 @@ public class Profile : MonoBehaviour
         OnClickTabButtons(TabButtons[2]);
         OnClickTabButtons(TabButtons[3]);
         OnClickTabButtons(TabButtons[4]);
+
+        OnClickFriendProfileButtons(FriendProfileFriendMessageButton);
+        OnClickFriendProfileButtons(SendFriendMessageButton);
+        OnClickFriendProfileButtons(CloseFriendMessageButton);
     }
 
     #region OnClickButton
@@ -396,6 +427,29 @@ public class Profile : MonoBehaviour
     }
     #endregion
 
+    #region OnClickFriendMessageButton
+    void OnClickFriendProfileButtons(Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => 
+        {
+            if(button == FriendProfileFriendMessageButton)
+            {
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[7], true);
+                SendFriendMessageButton.name = button.name;
+            }
+            if(button == SendFriendMessageButton)
+            {
+
+            }
+            if(button == CloseFriendMessageButton)
+            {
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[7], false);
+            }
+        });
+    }
+    #endregion
+
     #region TabButtonsColor
     void TabButtonsColor(Button pressedTabButton)
     {
@@ -449,7 +503,19 @@ public class Profile : MonoBehaviour
             PlayerBaseConditions.PlayfabManager.PlayfabFile.GetPlayfabFile(Player.CustomProperties[PlayerKeys.EntityId].ToString(), Player.CustomProperties[PlayerKeys.EntityType].ToString(),
             ProfilePictureURL =>
             {
-            StartCoroutine(ShowPlayerProfilePicCoroutine(ProfilePictureURL, ProfilePic => { ProfileImage = ProfilePic; }));
+                if (ProfilePicContainer.CachedProfilePics.ContainsKey(Player.CustomProperties[PlayerKeys.UserID].ToString()))
+                {
+                    ProfileImage = ProfilePicContainer.CachedProfilePics[Player.CustomProperties[PlayerKeys.UserID].ToString()];
+                }
+                else
+                {
+                    StartCoroutine(ShowPlayerProfilePicCoroutine(ProfilePictureURL, 
+                        ProfilePic => 
+                        {
+                            ProfileImage = ProfilePic;
+                            ProfilePicContainer.CacheProfilePics(Player.CustomProperties[PlayerKeys.UserID].ToString(), ProfilePic);
+                        }));
+                }
             });
         }        
     }
@@ -466,7 +532,19 @@ public class Profile : MonoBehaviour
                 PlayerBaseConditions.PlayfabManager.PlayfabFile.GetPlayfabFile(GetAccountInfo.EntityId, GetAccountInfo.EntityType, 
                     ProfilePictureURL => 
                     {
-                        StartCoroutine(ShowPlayerProfilePicCoroutine(ProfilePictureURL, FriendProfilePic => { FriendProfileImage = FriendProfilePic; }));
+                        if (ProfilePicContainer.CachedProfilePics.ContainsKey(playfabId))
+                        {
+                            FriendProfileImage = ProfilePicContainer.CachedProfilePics[playfabId];
+                        }
+                        else
+                        {
+                            StartCoroutine(ShowPlayerProfilePicCoroutine(ProfilePictureURL,
+                                FriendProfilePic =>
+                                {
+                                    FriendProfileImage = FriendProfilePic;
+                                    ProfilePicContainer.CacheProfilePics(playfabId, FriendProfilePic);
+                                }));
+                        }                      
                     });
             });
     }
