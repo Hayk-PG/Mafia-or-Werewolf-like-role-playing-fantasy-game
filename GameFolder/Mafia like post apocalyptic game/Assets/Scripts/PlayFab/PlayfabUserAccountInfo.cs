@@ -4,27 +4,8 @@ using PlayFab.ServerModels;
 using System;
 
 public class PlayfabUserAccountInfo : MonoBehaviour
-{
-    public AccountInfo _AccountInfo;
-
-    public class AccountInfo
-    {
-        public string EntityId { get; set; }
-        public string EntityType { get; set; }
-
-        public AccountInfo()
-        {
-
-        }
-
-        public AccountInfo(string entityId, string entityType)
-        {
-            EntityId = entityId;
-            EntityType = entityType;
-        }
-    }
-
-    public void GetUserAccountInfo(string playfabId, Action<AccountInfo> GetAccountInfo)
+{   
+    public void GetUserAccountInfo(string playfabId, Action<UserAccountInfo> GetAccountInfo)
     {
         GetUserAccountInfoRequest getUserAccountInfo = new GetUserAccountInfoRequest();
         getUserAccountInfo.PlayFabId = playfabId;
@@ -32,7 +13,7 @@ public class PlayfabUserAccountInfo : MonoBehaviour
         PlayFabServerAPI.GetUserAccountInfo(getUserAccountInfo, 
             get => 
             {
-                GetAccountInfo(new AccountInfo(get.UserInfo.TitleInfo.TitlePlayerAccount.Id, get.UserInfo.TitleInfo.TitlePlayerAccount.Type));
+                GetAccountInfo(get.UserInfo);
             }, 
             error => 
             {

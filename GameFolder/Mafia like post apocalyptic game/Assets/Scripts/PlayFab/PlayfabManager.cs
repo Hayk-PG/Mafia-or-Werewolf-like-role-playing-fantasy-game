@@ -15,6 +15,7 @@ public class PlayfabManager : MonoBehaviour
     public PlayfabEntity PlayfabEntity { get; set; }
     public PlayfabFile PlayfabFile { get; set; }
     public PlayfabUserAccountInfo PlayfabUserAccountInfo { get; set; }
+    public PlayfabInternalData PlayfabInternalData { get; set; }
 
 
     void Awake()
@@ -43,6 +44,7 @@ public class PlayfabManager : MonoBehaviour
         PlayfabEntity = GetComponent<PlayfabEntity>();
         PlayfabFile = GetComponent<PlayfabFile>();
         PlayfabUserAccountInfo = GetComponent<PlayfabUserAccountInfo>();
+        PlayfabInternalData = GetComponent<PlayfabInternalData>();
     }
 
 

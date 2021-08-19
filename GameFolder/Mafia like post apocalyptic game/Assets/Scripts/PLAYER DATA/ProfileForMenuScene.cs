@@ -66,21 +66,49 @@ public class ProfileForMenuScene : MonoBehaviour
     #region UpdateNotificationTab
     void UpdateNotificationTab()
     {
-        PlayerBaseConditions.PlayfabManager.PlayfabFriends.ReceiveFriendRequest(PlayerBaseConditions.OwnPlayfabId,
-            message =>
+        for (int i = 0; i < PlayerBaseConditions.PlayerProfile.NotificationsContainer.childCount; i++)
+        {
+            Destroy(PlayerBaseConditions.PlayerProfile.NotificationsContainer.GetChild(i).gameObject);
+        }
+
+        PlayerBaseConditions.PlayfabManager.PlayfabInternalData.GetPlayerUserInternalData(PlayerBaseConditions.OwnPlayfabId,
+            InternalDataDict =>
             {
-                foreach (var item in message)
+                foreach (var data in InternalDataDict)
                 {
-                    if (PlayerBaseConditions.PlayerProfile.NotificationsContainer.transform.Find(item.Key) == null)
-                    {
-                        FriendRequestMessageScript friendRequestMessage = Instantiate(PlayerBaseConditions.PlayerProfile.FriendRequestMessagePrefab, PlayerBaseConditions.PlayerProfile.NotificationsContainer);
-                        friendRequestMessage.Name = item.Key;
-                        friendRequestMessage.Addressee = ConvertStrings.SubtractPlayfabIdFromFriendRequestKey(item.Key);
-                        friendRequestMessage.Message = item.Value;
-                    }
+                    FriendRequestNotification(data.Key, data.Value.Value, ConvertStrings.SubtractFriendRequestKey(data.Key) == PlayerKeys.FriendRequest.FR);
+                    MessageNotification(data.Key, data.Value.Value, ConvertStrings.SubtractMessageDataFromPlayerInternalData(data.Key, true) == PlayerKeys.InternalData.MessageKey);
+                    
                 }
             });
     }
+
+    #region FriendRequestNotification
+    void FriendRequestNotification(string key, string value, bool isFriendRequest)
+    {
+        if (isFriendRequest)
+        {
+            FriendRequestMessageScript friendRequestMessage = Instantiate(PlayerBaseConditions.PlayerProfile.FriendRequestMessagePrefab, PlayerBaseConditions.PlayerProfile.NotificationsContainer);
+            friendRequestMessage.Name = key;
+            friendRequestMessage.Addressee = ConvertStrings.SubtractPlayfabIdFromFriendRequestKey(key);
+            friendRequestMessage.Message = value;
+        }
+    }
+    #endregion
+
+    #region MessageNotification
+    void MessageNotification(string key, string value, bool isMessage)
+    {
+        if (isMessage)
+        {
+            MessageScript message = Instantiate(PlayerBaseConditions.PlayerProfile.MessagePrefab, PlayerBaseConditions.PlayerProfile.NotificationsContainer);
+            message.InternalDataKey = key;
+
+            message.MessageSentFrom = "Message from " + ConvertStrings.SubtractMessageDataFromPlayerInternalData(key, false) + ".";
+            message.InternalDataValue = value;           
+        }
+    }
+    #endregion
     #endregion
 
     #region UpdateFriendsList

@@ -63,4 +63,12 @@ public static class PlayerKeys
     #region ProfilePicture
     public static string ProfilePicture = "spriteImage";
     #endregion
+
+    #region InternalData
+    public struct InternalData
+    {
+        public static string MessageKey = "Message";
+        public static string MessageEndPoint = "*_*_*_";
+    }
+    #endregion
 }

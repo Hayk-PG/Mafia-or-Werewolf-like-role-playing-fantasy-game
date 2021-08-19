@@ -85,6 +85,16 @@ public class Profile : MonoBehaviour
         [SerializeField] internal Button notificationTabButton;
         [SerializeField] internal Transform notificationsContainer;
         [SerializeField] internal CanvasGroup notificationCanvasGroup;
+        [SerializeField] internal NotificationMessageTab _NotificationMessageTab;
+
+        [Serializable]
+        [SerializeField] internal class NotificationMessageTab
+        {
+            [SerializeField] internal CanvasGroup MessageTab;
+            [SerializeField] internal Text messageText;
+            [SerializeField] internal MessageScript messagePrefab;
+            [SerializeField] internal Button closeMessageTabButton;
+        }
     }
     [Serializable] class FriendProfileTab
     {
@@ -192,6 +202,11 @@ public class Profile : MonoBehaviour
         get => _FriendProfileTab._FriendMessageTab.friendMessageInputField.text;
         set => _FriendProfileTab._FriendMessageTab.friendMessageInputField.text = value;
     }
+    public string NotificationMessageText
+    {
+        get => _NotificationTab._NotificationMessageTab.messageText.text;
+        set => _NotificationTab._NotificationMessageTab.messageText.text = value;
+    }
     public string TimePlayed
     {
         get => _SecondTab.timePlayedCountText.text;
@@ -290,9 +305,13 @@ public class Profile : MonoBehaviour
     {
         get => _FriendProfileTab._FriendMessageTab.closeMessageButton;
     }
+    public Button CloseNotificationMessageButton
+    {
+        get => _NotificationTab._NotificationMessageTab.closeMessageTabButton;
+    }
 
     /// <summary>
-    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab 7:FriendMessageTab
+    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab 7:FriendMessageTab 8: NoticiationMessageTab
     /// </summary>
     public CanvasGroup[] CanvasGroups;    
     public Transform PlayerVotesTabContainer
@@ -308,6 +327,7 @@ public class Profile : MonoBehaviour
         get => _NotificationTab.notificationsContainer;
     }
 
+
     public PlayerDisplayedVoteObj PlayerVotesPrefab
     {
         get => _PlayerVotesTab.playerVotesPrefab;
@@ -320,6 +340,11 @@ public class Profile : MonoBehaviour
     {
         get => _NotificationTab.friendRequestMessagePrefab;
     }
+    public MessageScript MessagePrefab
+    {
+        get => _NotificationTab._NotificationMessageTab.messagePrefab;
+    }
+
 
     Color32 releasedTabButtonColor => new Color32(155, 126, 80, 255);
     Color32 clickedTabButtonColor => new Color32(6, 255, 0, 255);
@@ -361,6 +386,8 @@ public class Profile : MonoBehaviour
         OnClickFriendProfileButtons(FriendProfileFriendMessageButton);
         OnClickFriendProfileButtons(SendFriendMessageButton);
         OnClickFriendProfileButtons(CloseFriendMessageButton);
+
+        OnNotificationButtons(CloseNotificationMessageButton);
     }
 
     #region OnClickButton
@@ -440,11 +467,31 @@ public class Profile : MonoBehaviour
             }
             if(button == SendFriendMessageButton)
             {
+                if (!String.IsNullOrEmpty(FriendMessageText))
+                {
+                    PlayerBaseConditions.PlayfabManager.PlayfabInternalData.UpdatePlayerInternalData(button.name,
+                        PlayerKeys.InternalData.MessageKey + PlayerBaseConditions.LocalPlayer.NickName, _FriendProfileTab._FriendMessageTab.friendMessageInputField.text);
 
+                    FriendMessageText = null;
+                }                
             }
             if(button == CloseFriendMessageButton)
             {
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[7], false);
+            }
+        });
+    }
+    #endregion
+
+    #region OnNotificationButtons
+    void OnNotificationButtons(Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => 
+        {
+            if(button == CloseNotificationMessageButton)
+            {
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[8], false);
             }
         });
     }
@@ -529,7 +576,7 @@ public class Profile : MonoBehaviour
         PlayerBaseConditions.PlayfabManager.PlayfabUserAccountInfo.GetUserAccountInfo(playfabId, 
             GetAccountInfo => 
             {
-                PlayerBaseConditions.PlayfabManager.PlayfabFile.GetPlayfabFile(GetAccountInfo.EntityId, GetAccountInfo.EntityType, 
+                PlayerBaseConditions.PlayfabManager.PlayfabFile.GetPlayfabFile(GetAccountInfo.TitleInfo.TitlePlayerAccount.Id, GetAccountInfo.TitleInfo.TitlePlayerAccount.Type, 
                     ProfilePictureURL => 
                     {
                         if (ProfilePicContainer.CachedProfilePics.ContainsKey(playfabId))
