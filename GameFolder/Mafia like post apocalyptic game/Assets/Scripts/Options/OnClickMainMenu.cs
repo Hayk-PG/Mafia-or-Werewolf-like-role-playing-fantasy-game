@@ -26,14 +26,6 @@ public class OnClickMainMenu : MonoBehaviour
         {
             _MySceneManager.ChangeToMenuScene();
             Options.instance.OnPressedOptionsButtons();
-            StartCoroutine(ReopenCreateOrFindTab(()=> PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnBackToMainMenu()));
         }
-    }
-
-    IEnumerator ReopenCreateOrFindTab(Action OpenTab)
-    {
-        yield return new WaitUntil(() => _MySceneManager.IsDesiredScene(SceneNames.MenuScene) && PlayerBaseConditions.IsNetworkManagerComponentsNotNull);
-        yield return new WaitForSeconds(1);
-        OpenTab();
     }
 }

@@ -7,17 +7,13 @@ public class NetworkManagerUIButtons : MonoBehaviour
     #region EVENTS
     public event Action OnClickBadgeButton;
     public event Action<bool> OnClickSignUpInButton;
-    public event Action<string, string> OnPlayerNickName;
-    public event Action OnClickCreateButton;
-    public event Action OnClickFindButton;
+    public event Action OnClickCreateRoomButton;
     public event Action<IRoomButton> OnClickRoomButton;
     #endregion
 
     [Header("BUTTONS")]   
     [SerializeField] Button badgeButton;
     [SerializeField] Button[] singUpInButtons;
-    [SerializeField] Button createButton;
-    [SerializeField] Button findButton;
     [SerializeField] Button createRoomButton;
 
     /// <summary>
@@ -40,22 +36,15 @@ public class NetworkManagerUIButtons : MonoBehaviour
     public Button BadgeButton => badgeButton;
 
 
-
     void Update()
     {
         OnBadgeButton();
         OnSignUpInUpButton();
         OnCreateButton();
-        OnFindButton();
         OnRoomButtons();
     }
 
-    void OnBadgeButton()
-    {
-        badgeButton.onClick.RemoveAllListeners();
-        badgeButton.onClick.AddListener(() => { OnClickBadgeButton?.Invoke(); });
-    }
-
+    #region OnSignUpInUpButton
     void OnSignUpInUpButton()
     {
         for (int i = 0; i < singUpInButtons.Length; i++)
@@ -63,22 +52,28 @@ public class NetworkManagerUIButtons : MonoBehaviour
             int index = i;
 
             singUpInButtons[index].onClick.RemoveAllListeners();
-            singUpInButtons[index].onClick.AddListener(() => { OnClickSignUpInButton?.Invoke(index == 0 ? true:false); });
+            singUpInButtons[index].onClick.AddListener(() => { OnClickSignUpInButton?.Invoke(index == 0 ? true : false); });
         }
     }
+    #endregion
 
+    #region OnCreateButton
     void OnCreateButton()
     {
-        createButton.onClick.RemoveAllListeners();
-        createButton.onClick.AddListener(() => { OnClickCreateButton?.Invoke(); });
+        createRoomButton.onClick.RemoveAllListeners();
+        createRoomButton.onClick.AddListener(() => { OnClickCreateRoomButton?.Invoke();});
     }
+    #endregion
 
-    void OnFindButton()
+    #region OnBadgeButton
+    void OnBadgeButton()
     {
-        findButton.onClick.RemoveAllListeners();
-        findButton.onClick.AddListener(() => { OnClickFindButton?.Invoke(); });
+        badgeButton.onClick.RemoveAllListeners();
+        badgeButton.onClick.AddListener(() => { OnClickBadgeButton?.Invoke(); });
     }
+    #endregion
 
+    #region OnRoomButtons
     void OnRoomButtons()
     {
         if(RoomButtons != null)
@@ -90,7 +85,7 @@ public class NetworkManagerUIButtons : MonoBehaviour
             }
         }
     }
-
+    #endregion
 
 
 

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class NetworkManagerUI : MonoBehaviour
@@ -11,9 +8,9 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] CanvasGroup signUpInTab_CG;
     [SerializeField] CanvasGroup signUpTab_CG;
     [SerializeField] CanvasGroup signInTab_CG;
-    [SerializeField] CanvasGroup createOrFind_CG;
-    [SerializeField] CanvasGroup createRoomTab_CG;
+    [SerializeField] CanvasGroup createRoomButton_CG;
     [SerializeField] CanvasGroup lobbyTab_CG;
+    [SerializeField] CanvasGroup createRoomTab_CG;
 
     [Header("BACKGROUND")]
     [SerializeField] Image backgroundImage;
@@ -39,38 +36,57 @@ public class NetworkManagerUI : MonoBehaviour
     public CanvasGroup SignUpInTab => signUpInTab_CG;
     public CanvasGroup SignUpTab => signUpTab_CG;
     public CanvasGroup SignInTab => signInTab_CG;
-    public CanvasGroup CreateOrFindTab => createOrFind_CG;
-    public CanvasGroup CreateRoomTab_CG => createRoomTab_CG;
+    public CanvasGroup CreateRoomButtonTab => createRoomButton_CG;
     public CanvasGroup LobbyTab_CG => lobbyTab_CG;
-
+    public CanvasGroup CreateRoomTab_CG => createRoomTab_CG;
+    
     public PlayerBadgeButton PlayerBadgeButton => playerBadgeButton;
+    NetworkManagerUIButtons NetworkManagerUIButtons { get; set; }
+    NetworkManager NetworkManager { get; set; }
 
+
+    void Awake()
+    {
+        NetworkManagerUIButtons = GetComponent<NetworkManagerComponents>().NetworkUIButtons;
+        NetworkManager = GetComponent<NetworkManagerComponents>().NetworkManager;
+    }
 
     void OnEnable()
     {
-        GetComponent<NetworkManagerComponents>().NetworkManager.OnRoomCreated += NetworkManager_OnRoomCreated;
-        GetComponent<NetworkManagerComponents>().NetworkManager.OnRoomJoined += NetworkManager_OnRoomJoined;
-
-        GetComponent<NetworkManagerComponents>().NetworkUIButtons.OnClickSignUpInButton += NetworkUIButtons_OnClickSignUpInButton;
-        GetComponent<NetworkManagerComponents>().NetworkUIButtons.OnClickCreateButton += NetworkUIButtons_OnClickCreateButton;
-        GetComponent<NetworkManagerComponents>().NetworkUIButtons.OnClickFindButton += NetworkUIButtons_OnClickFindButton;       
+        NetworkManagerUIButtons.OnClickSignUpInButton += NetworkUIButtons_OnClickSignUpInButton;
+        NetworkManagerUIButtons.OnClickCreateRoomButton += NetworkManagerUIButtons_OnClickCreateRoomButton;
+        NetworkManager.OnLobbyJoined += NetworkManager_OnLobbyJoined;
+        NetworkManager.OnRoomCreated += NetworkManager_OnRoomCreated;          
     }
     
     void OnDisable()
     {
-        GetComponent<NetworkManagerComponents>().NetworkUIButtons.OnClickSignUpInButton -= NetworkUIButtons_OnClickSignUpInButton;
-        GetComponent<NetworkManagerComponents>().NetworkManager.OnRoomCreated -= NetworkManager_OnRoomCreated;
-        GetComponent<NetworkManagerComponents>().NetworkManager.OnRoomJoined -= NetworkManager_OnRoomJoined;
-
-        GetComponent<NetworkManagerComponents>().NetworkUIButtons.OnClickCreateButton -= NetworkUIButtons_OnClickCreateButton;
-        GetComponent<NetworkManagerComponents>().NetworkUIButtons.OnClickFindButton -= NetworkUIButtons_OnClickFindButton;
+        NetworkManagerUIButtons.OnClickSignUpInButton -= NetworkUIButtons_OnClickSignUpInButton;
+        NetworkManagerUIButtons.OnClickCreateRoomButton -= NetworkManagerUIButtons_OnClickCreateRoomButton;
+        NetworkManager.OnLobbyJoined -= NetworkManager_OnLobbyJoined;
+        NetworkManager.OnRoomCreated -= NetworkManager_OnRoomCreated;
     }
+
+    #region NetworkUIButtons_OnClickSignUpInButton
+    void NetworkUIButtons_OnClickSignUpInButton(bool isSignUpButtonPressed)
+    {
+        MyCanvasGroups.CanvasGroupActivity(SignUpInTab, false);
+
+        if (isSignUpButtonPressed)
+        {
+            MyCanvasGroups.CanvasGroupActivity(SignUpTab, true);
+        }
+        else
+        {
+            MyCanvasGroups.CanvasGroupActivity(SignInTab, true);
+        }
+    }
+    #endregion
 
     #region OnLoggedIn
     public void OnLoggedIn()
     {
         MyCanvasGroups.CanvasGroupActivity(PlayfabTab, false);
-        MyCanvasGroups.CanvasGroupActivity(CreateOrFindTab, true);
 
         BackgroundImage.sprite = bluredBackground;
     }
@@ -96,41 +112,24 @@ public class NetworkManagerUI : MonoBehaviour
     }
     #endregion
 
-    #region OnBackToMainMenu
-    public void OnBackToMainMenu()
+    #region NetworkManager_OnLobbyJoined
+    void NetworkManager_OnLobbyJoined()
     {
-        if (PlayerBaseConditions.PlayfabManager.PlayfabIsLoggedIn.IsPlayfabLoggedIn())
-        {
-            MyCanvasGroups.CanvasGroupActivity(CreateOrFindTab, true);
-        }
-        else
-        {
-            OnLoggedOut();          
-        }
+        MyCanvasGroups.CanvasGroupActivity(LobbyTab_CG, true);
+        MyCanvasGroups.CanvasGroupActivity(CreateRoomButtonTab, true);
+
+        BackgroundImage.sprite = bluredBackground;
     }
     #endregion
 
-    #region NetworkUIButtons_OnClickSignUpInButton
-    void NetworkUIButtons_OnClickSignUpInButton(bool isSignUpButtonPressed)
+    #region NetworkManagerUIButtons_OnClickCreateRoomButton
+    void NetworkManagerUIButtons_OnClickCreateRoomButton()
     {
-        MyCanvasGroups.CanvasGroupActivity(SignUpInTab, false);
-
-        if (isSignUpButtonPressed)
-        {
-            MyCanvasGroups.CanvasGroupActivity(SignUpTab, true);
-        }
-        else
-        {
-            MyCanvasGroups.CanvasGroupActivity(SignInTab, true);
-        }
-    }
-    #endregion
-
-    #region NetworkUIButtons_OnClickCreateButton
-    void NetworkUIButtons_OnClickCreateButton()
-    {
-        MyCanvasGroups.CanvasGroupActivity(CreateOrFindTab, false);
+        MyCanvasGroups.CanvasGroupActivity(LobbyTab_CG, false);
+        MyCanvasGroups.CanvasGroupActivity(CreateRoomButtonTab, false);
         MyCanvasGroups.CanvasGroupActivity(CreateRoomTab_CG, true);
+
+        BackgroundImage.sprite = bluredBackground;
     }
     #endregion
 
@@ -140,30 +139,4 @@ public class NetworkManagerUI : MonoBehaviour
         MyCanvasGroups.CanvasGroupActivity(CreateRoomTab_CG, false);
     }
     #endregion
-
-    #region NetworkUIButtons_OnClickFindButton
-    void NetworkUIButtons_OnClickFindButton()
-    {
-        MyCanvasGroups.CanvasGroupActivity(CreateOrFindTab, false);
-        MyCanvasGroups.CanvasGroupActivity(CreateRoomTab_CG, false);
-        MyCanvasGroups.CanvasGroupActivity(LobbyTab_CG, true);
-    }
-    #endregion
-
-    #region NetworkManager_OnRoomJoined
-    void NetworkManager_OnRoomJoined()
-    {
-        MyCanvasGroups.CanvasGroupActivity(CreateOrFindTab, false);
-        MyCanvasGroups.CanvasGroupActivity(CreateRoomTab_CG, false);
-        MyCanvasGroups.CanvasGroupActivity(LobbyTab_CG, false);
-    }
-    #endregion 
-    
-
-
-
-
-
-
-
 }
