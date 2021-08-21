@@ -52,7 +52,10 @@ public class NetworkManagerUIButtons : MonoBehaviour
             int index = i;
 
             singUpInButtons[index].onClick.RemoveAllListeners();
-            singUpInButtons[index].onClick.AddListener(() => { OnClickSignUpInButton?.Invoke(index == 0 ? true : false); });
+            singUpInButtons[index].onClick.AddListener(() => 
+            {
+                OnClickSignUpInButton?.Invoke(index == 0 ? true : false);
+            });
         }
     }
     #endregion

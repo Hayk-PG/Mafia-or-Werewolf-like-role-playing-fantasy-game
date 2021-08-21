@@ -346,7 +346,7 @@ public class Profile : MonoBehaviour
     }
 
 
-    Color32 releasedTabButtonColor => new Color32(155, 126, 80, 255);
+    Color32 releasedTabButtonColor => new Color32(255, 255, 255, 255);
     Color32 clickedTabButtonColor => new Color32(6, 255, 0, 255);
 
     ProfilePicContainer ProfilePicContainer { get; set; }

@@ -18,12 +18,19 @@ public class SignUpTab : MonoBehaviour
     [SerializeField] protected CanvasGroup signInButtonCanvasGroup;
     [SerializeField] protected CanvasGroup saveCanvasGroup;
     [SerializeField] protected CanvasGroup errorCanvasGroup;
+    [SerializeField] protected CanvasGroup backButtonCanvasGroup;
+
+    public CanvasGroup BackButtonCanvasGroup
+    {
+        get => backButtonCanvasGroup;
+    }
 
     [Header("BUTTONS")]
     [SerializeField] protected Button[] genderButtons;
     [SerializeField] protected Button signUpButton;
     [SerializeField] protected Button signInButton;
     [SerializeField] protected Button saveButton;
+    [SerializeField] protected Button backButton;
 
     [Header("TEXTS")]
     [SerializeField] protected Text errorText;
@@ -40,6 +47,7 @@ public class SignUpTab : MonoBehaviour
         OnClickGenderButtons();
         OnClickSaveButton();
         OnClickSignUpButton();
+        OnClickBackButton();
     }
 
     #region SignUpButtonCanvasGroupActivity
@@ -131,6 +139,17 @@ public class SignUpTab : MonoBehaviour
 
             if (hasSaved) PlayerBaseConditions.PlayerSavedData.SaveUsernameAndPassword(usernameInputField.text, passwordInputField.text);
             else PlayerBaseConditions.PlayerSavedData.DeleteUsernameAndPassword();
+        });
+    }
+    #endregion
+
+    #region OnClickBackButton
+    protected void OnClickBackButton()
+    {
+        backButton.onClick.RemoveAllListeners();
+        backButton.onClick.AddListener(() => 
+        { MyCanvasGroups.CanvasGroupActivity(GetComponent<CanvasGroup>(), false);
+          MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.NetworkManagerComponents.NetworkUI.SignUpInTab, true);
         });
     }
     #endregion

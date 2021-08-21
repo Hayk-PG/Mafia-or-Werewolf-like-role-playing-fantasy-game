@@ -13,6 +13,7 @@ public class SignInTab : SignUpTab
         OnClickInputFields();
         OnClickSaveButton();
         OnClickSignInButton();
+        OnClickBackButton();
     }
 
     #region OnPlayfabRegisterError

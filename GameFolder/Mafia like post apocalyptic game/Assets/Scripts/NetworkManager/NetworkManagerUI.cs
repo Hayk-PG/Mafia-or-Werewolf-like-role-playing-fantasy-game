@@ -75,10 +75,12 @@ public class NetworkManagerUI : MonoBehaviour
         if (isSignUpButtonPressed)
         {
             MyCanvasGroups.CanvasGroupActivity(SignUpTab, true);
+            MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.NetworkManagerComponents.SignUpTab.BackButtonCanvasGroup, true);
         }
         else
         {
             MyCanvasGroups.CanvasGroupActivity(SignInTab, true);
+            MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.NetworkManagerComponents.SignInTab.BackButtonCanvasGroup, true);
         }
     }
     #endregion
@@ -106,7 +108,9 @@ public class NetworkManagerUI : MonoBehaviour
     public void OnLoginToAnotherAccount()
     {
         MyCanvasGroups.CanvasGroupActivity(PlayfabTab, true);
+        MyCanvasGroups.CanvasGroupActivity(SignUpInTab, false);
         MyCanvasGroups.CanvasGroupActivity(SignInTab, true);
+        MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.NetworkManagerComponents.SignInTab.BackButtonCanvasGroup, true);
 
         BackgroundImage.sprite = bluredBackground;
     }
