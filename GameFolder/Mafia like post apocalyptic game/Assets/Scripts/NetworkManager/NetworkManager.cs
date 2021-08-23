@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    public event Action<string> OnDisconnectedFromMasterServer;
     public event Action OnLobbyJoined;
     public event Action OnRoomCreated;    
     public event Action OnRoomJoined;
@@ -59,13 +58,29 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             PhotonNetwork.AuthValues = new AuthenticationValues();
             PhotonNetwork.AuthValues.UserId = playfabId;
         }
+
+        #region ConnectionCheck
+        ConnectionUI.instance.ConnectionCheck(ConnectionUI.Connected.IsConnected, null, ()=> 
+        {
+            PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.AuthValues = new AuthenticationValues();
+            PhotonNetwork.AuthValues.UserId = playfabId;
+        });
+        #endregion
     }
     #endregion
-    
+
     #region OnConnectedToMaster
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.JoinLobby();
+        if (PlayerBaseConditions.PlayfabManager.PlayfabIsLoggedIn.IsPlayfabLoggedIn())
+        {
+            PhotonNetwork.JoinLobby();
+        }
+        else
+        {
+            PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoggedOut();
+        }
     }
     #endregion
 
@@ -73,13 +88,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         OnLobbyJoined?.Invoke();
-    }
-    #endregion
-
-    #region OnDisconnected
-    public override void OnDisconnected(DisconnectCause cause)
-    {
-        OnDisconnectedFromMasterServer?.Invoke(cause.ToString());
     }
     #endregion
 
@@ -97,6 +105,51 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable(3) { { RoomCustomProperties.IsPasswordSet, isPasswordSet }, { RoomCustomProperties.PinNumber, pinNumber }, { RoomCustomProperties.MinRequiredCount, minRequiredCount } };
 
         PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
+
+        #region ConnectionCheck
+        ConnectionUI.instance.ConnectionCheck(ConnectionUI.Connected.IsConnectedAndReady, 
+            () => 
+            {
+                if (PlayerBaseConditions.PlayfabManager.PlayfabIsLoggedIn.IsPlayfabLoggedIn())
+                {
+                    if (PhotonNetwork.InLobby)
+                    {
+                        options.CleanupCacheOnLeave = true;
+                        options.IsOpen = true;
+                        options.IsVisible = true;
+                        options.MaxPlayers = 20;
+
+                        options.CustomRoomPropertiesForLobby = new string[3] { RoomCustomProperties.IsPasswordSet, RoomCustomProperties.PinNumber, RoomCustomProperties.MinRequiredCount };
+                        options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable(3) { { RoomCustomProperties.IsPasswordSet, isPasswordSet }, { RoomCustomProperties.PinNumber, pinNumber }, { RoomCustomProperties.MinRequiredCount, minRequiredCount } };
+
+                        PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
+                    }
+                    else
+                    {
+                        PhotonNetwork.JoinLobby();
+                    }
+                }
+                else
+                {
+                    if (PhotonNetwork.InLobby) PhotonNetwork.LeaveLobby();
+                    MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.NetworkManagerComponents.NetworkUI.LobbyTab_CG, false);
+                    PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoggedOut();
+                }                
+            }, 
+            () => 
+            {
+                PhotonNetwork.ConnectUsingSettings();
+                PhotonNetwork.JoinLobby();
+            });
+
+
+
+        //ConnectionUI.instance.ConnectionCheck(ConnectionUI.Connected.IsConnectedAndReady, () => 
+        //{
+        //    PhotonNetwork.ConnectUsingSettings();
+        //    if(!PhotonNetwork.InLobby) PhotonNetwork.JoinLobby();
+        //});
+        #endregion
     }
     #endregion
 

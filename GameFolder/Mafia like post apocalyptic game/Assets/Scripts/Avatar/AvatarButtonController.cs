@@ -3,8 +3,9 @@ using UnityEngine.UI;
 
 public class AvatarButtonController : MonoBehaviour
 {
-    [Header("SPRITES")]
+    [Header("UI")]
     [SerializeField] Sprite hiddenAvatarSprite;
+    [SerializeField] Image borderImage;
     [SerializeField] Text playerVoteCountText;   
 
     [Header("BOOL")]
@@ -81,6 +82,11 @@ public class AvatarButtonController : MonoBehaviour
         {
             hiddenAvatarSprite = value;
         }
+    }
+
+    public Image BorderImage
+    {
+        get => borderImage;
     }
 
     public string PlayerVoteCountText
@@ -204,7 +210,7 @@ public class AvatarButtonController : MonoBehaviour
     public void AvatarColor(Color color)
     {
         transform.Find("NameBar").GetComponentInChildren<Text>().color = color;
-        AvatarButton.image.color = color;
+        BorderImage.color = color;
     }
     #endregion
 
