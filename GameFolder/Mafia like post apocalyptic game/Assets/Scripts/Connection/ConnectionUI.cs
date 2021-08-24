@@ -13,7 +13,6 @@ public class ConnectionUI : MonoBehaviourPun
 
 
     [SerializeField] GameObject connectionScreen;
-    [SerializeField] float checkTime;
 
 
     void Awake()
@@ -36,14 +35,14 @@ public class ConnectionUI : MonoBehaviourPun
     }
     #endregion
     
-    public void ConnectionCheck(Connected C, Action Connected, Action Reconnect)
+    public void ConnectionCheck(float waitForSeconds, Connected C, Action Connected, Action Reconnect)
     {
-        StartCoroutine(CheckConnectionCoroutine(Connected, Reconnect));
+        StartCoroutine(CheckConnectionCoroutine(waitForSeconds, Connected, Reconnect));
     }
 
-    IEnumerator CheckConnectionCoroutine(Action Connected, Action Reconnect)
+    IEnumerator CheckConnectionCoroutine(float waitForSeconds, Action Connected, Action Reconnect)
     {
-        yield return new WaitForSeconds(checkTime);
+        yield return new WaitForSeconds(waitForSeconds);
 
         if (IsConnected())
         {
@@ -54,7 +53,7 @@ public class ConnectionUI : MonoBehaviourPun
         {
             connectionScreen.SetActive(true);
             Reconnect?.Invoke();
-            yield return StartCoroutine(CheckConnectionCoroutine(Connected, Reconnect));
+            yield return StartCoroutine(CheckConnectionCoroutine(waitForSeconds, Connected, Reconnect));
         }
     }
 

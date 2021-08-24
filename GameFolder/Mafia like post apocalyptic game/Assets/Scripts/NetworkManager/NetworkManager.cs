@@ -3,12 +3,14 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using UnityEngine;
+using System.Collections;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public event Action OnLobbyJoined;
     public event Action OnRoomCreated;    
     public event Action OnRoomJoined;
+    public event Action<string> OnCreateRoomError;
 
     List<RoomInfo> roomInfo = new List<RoomInfo>();
 
@@ -60,7 +62,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
 
         #region ConnectionCheck
-        ConnectionUI.instance.ConnectionCheck(ConnectionUI.Connected.IsConnected, null, ()=> 
+        ConnectionUI.instance.ConnectionCheck(5, ConnectionUI.Connected.IsConnected, null, ()=> 
         {
             PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.AuthValues = new AuthenticationValues();
@@ -96,60 +98,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         RoomOptions options = new RoomOptions();
 
-        options.CleanupCacheOnLeave = true;
+        options.CleanupCacheOnLeave = false;
         options.IsOpen = true;
         options.IsVisible = true;
         options.MaxPlayers = 20;
+        options.EmptyRoomTtl = 60000;
+        options.PlayerTtl = 60000;
 
         options.CustomRoomPropertiesForLobby = new string[3] { RoomCustomProperties.IsPasswordSet, RoomCustomProperties.PinNumber, RoomCustomProperties.MinRequiredCount };
         options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable(3) { { RoomCustomProperties.IsPasswordSet, isPasswordSet }, { RoomCustomProperties.PinNumber, pinNumber }, { RoomCustomProperties.MinRequiredCount, minRequiredCount } };
 
         PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
-
-        #region ConnectionCheck
-        ConnectionUI.instance.ConnectionCheck(ConnectionUI.Connected.IsConnectedAndReady, 
-            () => 
-            {
-                if (PlayerBaseConditions.PlayfabManager.PlayfabIsLoggedIn.IsPlayfabLoggedIn())
-                {
-                    if (PhotonNetwork.InLobby)
-                    {
-                        options.CleanupCacheOnLeave = true;
-                        options.IsOpen = true;
-                        options.IsVisible = true;
-                        options.MaxPlayers = 20;
-
-                        options.CustomRoomPropertiesForLobby = new string[3] { RoomCustomProperties.IsPasswordSet, RoomCustomProperties.PinNumber, RoomCustomProperties.MinRequiredCount };
-                        options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable(3) { { RoomCustomProperties.IsPasswordSet, isPasswordSet }, { RoomCustomProperties.PinNumber, pinNumber }, { RoomCustomProperties.MinRequiredCount, minRequiredCount } };
-
-                        PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
-                    }
-                    else
-                    {
-                        PhotonNetwork.JoinLobby();
-                    }
-                }
-                else
-                {
-                    if (PhotonNetwork.InLobby) PhotonNetwork.LeaveLobby();
-                    MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.NetworkManagerComponents.NetworkUI.LobbyTab_CG, false);
-                    PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoggedOut();
-                }                
-            }, 
-            () => 
-            {
-                PhotonNetwork.ConnectUsingSettings();
-                PhotonNetwork.JoinLobby();
-            });
-
-
-
-        //ConnectionUI.instance.ConnectionCheck(ConnectionUI.Connected.IsConnectedAndReady, () => 
-        //{
-        //    PhotonNetwork.ConnectUsingSettings();
-        //    if(!PhotonNetwork.InLobby) PhotonNetwork.JoinLobby();
-        //});
-        #endregion
     }
     #endregion
 
@@ -174,13 +133,27 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region OnCreateRoomFailed
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        OnCreateRoomError?.Invoke(message);
+    }
+    #endregion
+
     #region OnJoinedRoom
     public override void OnJoinedRoom()
     {
         OnRoomJoined?.Invoke();
     }
     #endregion
-   
+
+    #region OnJoinRoomFailed
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        print(returnCode + "/" + message);
+    }
+    #endregion
+
     #region OnRoomListUpdate
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
@@ -192,26 +165,39 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
             if (!isRoomAlreadyCreated)
             {
-                if(room.CustomProperties[RoomCustomProperties.IsPasswordSet] != null && room.CustomProperties[RoomCustomProperties.PinNumber] != null)
-                {
-                    IRoomButton button = Instantiate(NetworkManagerComponents.Instance.NetworkObjectsHolder.RoomButtonPrefab, NetworkManagerComponents.Instance.NetworkObjectsHolder.roomsContainer);
-                    button.UpdateRoomButton(room.Name, room.PlayerCount, room.MaxPlayers, room.IsOpen, (bool)room.CustomProperties[RoomCustomProperties.IsPasswordSet], (string)room.CustomProperties[RoomCustomProperties.PinNumber]);
-                }
+                CreateRoom(room);
             }
             else
             {
-                if (isRoomAlreadyCreated)
-                {
-                    IRoomButton button = NetworkManagerComponents.Instance.NetworkObjectsHolder.roomsContainer.transform.Find(room.Name).GetComponent<IRoomButton>();
-                    button.UpdateRoomButton(room.PlayerCount, room.MaxPlayers, room.IsOpen);
-                }
+                UpdateRoom(room);
             }
-            if (room.PlayerCount < 1)
+
+            DestroyRoomButton(room);
+        }       
+    }
+
+    void CreateRoom(RoomInfo room)
+    {
+        if (room.CustomProperties[RoomCustomProperties.IsPasswordSet] != null && room.CustomProperties[RoomCustomProperties.PinNumber] != null)
+        {
+            IRoomButton button = Instantiate(NetworkManagerComponents.Instance.NetworkObjectsHolder.RoomButtonPrefab, NetworkManagerComponents.Instance.NetworkObjectsHolder.roomsContainer);
+            button.UpdateRoomButton(room.Name, room.PlayerCount, room.MaxPlayers, room.IsOpen, (bool)room.CustomProperties[RoomCustomProperties.IsPasswordSet], (string)room.CustomProperties[RoomCustomProperties.PinNumber]);
+        }
+    }
+
+    void UpdateRoom(RoomInfo room)
+    {
+        IRoomButton button = NetworkManagerComponents.Instance.NetworkObjectsHolder.roomsContainer.transform.Find(room.Name).GetComponent<IRoomButton>();
+        button.UpdateRoomButton(room.PlayerCount, room.MaxPlayers, room.IsOpen);
+    }
+
+    void DestroyRoomButton(RoomInfo room)
+    {
+        if (room.RemovedFromList)
+        {
+            if (NetworkManagerComponents.Instance.NetworkObjectsHolder.roomsContainer.Find(room.Name) != null)
             {
-                if(NetworkManagerComponents.Instance.NetworkObjectsHolder.roomsContainer.transform.Find(room.Name) != null)
-                {
-                    Destroy(NetworkManagerComponents.Instance.NetworkObjectsHolder.roomsContainer.transform.Find(room.Name).gameObject);
-                }               
+                Destroy(NetworkManagerComponents.Instance.NetworkObjectsHolder.roomsContainer.Find(room.Name).gameObject);                
             }
         }
     }

@@ -29,6 +29,33 @@ public class Options : MonoBehaviourPun
     [Serializable] [SerializeField] class ButtonsInteractability
     {
         [SerializeField] internal Button[] Buttons;
+
+
+        #region OnButtonsInteractability
+        internal void OnButtonsInteractability()
+        {
+            if (_MySceneManager.CurrentScene().name == SceneNames.MenuScene)
+            {
+                if (Buttons[0].interactable)
+                {
+                    foreach (var button in Buttons)
+                    {
+                        button.interactable = false;
+                    }
+                }
+            }
+            else
+            {
+                if (!Buttons[0].interactable)
+                {
+                    foreach (var button in Buttons)
+                    {
+                        button.interactable = true;
+                    }
+                }
+            }
+        }
+        #endregion
     }
     #endregion
 
@@ -47,7 +74,7 @@ public class Options : MonoBehaviourPun
 
     void Update()
     {
-        OnButtonsInteractability();
+        _ButtonsInteractability.OnButtonsInteractability();
     }
 
     #region OnPressedOptionButton
@@ -82,31 +109,5 @@ public class Options : MonoBehaviourPun
             MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsTab, true);            
         }
     }
-    #endregion
-
-    #region OnButtonsInteractability
-    void OnButtonsInteractability()
-    {
-        if(_MySceneManager.CurrentScene().name == SceneNames.MenuScene)
-        {
-            if (_ButtonsInteractability.Buttons[0].interactable)
-            {
-                foreach (var button in _ButtonsInteractability.Buttons)
-                {
-                    button.interactable = false;
-                }
-            }
-        }
-        else
-        {
-            if (!_ButtonsInteractability.Buttons[0].interactable)
-            {
-                foreach (var button in _ButtonsInteractability.Buttons)
-                {
-                    button.interactable = true;
-                }
-            }
-        }
-    }
-    #endregion
+    #endregion   
 }
