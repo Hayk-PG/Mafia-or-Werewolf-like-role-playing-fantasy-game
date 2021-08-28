@@ -43,6 +43,24 @@ public class NetworkCallbacks : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         print("Joined");
+
+        SubToEvents.SubscribeToEvents(PlayerBaseConditions.LocalPlayer != null, 
+            () => 
+            {
+                GameObject MyTagObject = PlayerBaseConditions._LocalPlayerTagObject;
+
+                if (PlayerBaseConditions.LocalPlayer.CustomProperties.ContainsKey(PlayerKeys.SetPlayersRoleKeys.RoomName))
+                {
+                    if(PhotonNetwork.CurrentRoom.Name == PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoomName].ToString())
+                    {
+                        MyTagObject.GetComponent<ISetPlayerRoleProps>().AvatarButtonIndex = (int)PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.AvatarButtonIndex];
+                        MyTagObject.GetComponent<ISetPlayerRoleProps>().RoleNumber = (int)PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoleNumber];
+                        MyTagObject.GetComponent<ISetPlayerRoleProps>().TakeAvatarButtonOwnership = (bool)PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.TakeAvatarButtonOwnership];
+                        MyTagObject.GetComponent<ISetPlayerRoleProps>().RoleName = (string)PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoleName];
+                        MyTagObject.GetComponent<ISetPlayerRoleProps>().SetOwnedAvatarButtonSprite = (bool)PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.SetOwnedAvatarButtonSprite];
+                    }
+                }               
+            });
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)

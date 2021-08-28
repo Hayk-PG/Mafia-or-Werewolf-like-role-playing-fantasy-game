@@ -30,7 +30,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6740486338131692448}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -341,7 +341,7 @@ GameObject:
   - component: {fileID: 6740486338131692454}
   - component: {fileID: 6740486338131692449}
   - component: {fileID: 6740486338131692455}
-  - component: {fileID: 6740486338131692452}
+  - component: {fileID: 8344072711321309560}
   m_Layer: 5
   m_Name: AvatarButton
   m_TagString: Untagged
@@ -363,8 +363,8 @@ RectTransform:
   - {fileID: 6740486337951315787}
   - {fileID: 6740486339553402786}
   - {fileID: 6740486338432001231}
-  - {fileID: 6740486339131443022}
   - {fileID: 6740486337519810757}
+  - {fileID: 6740486339131443022}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -452,7 +452,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6740486338131692452
+--- !u!114 &8344072711321309560
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -461,13 +461,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 6740486338131692451}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18b903aa92598844da8cd27bd319605c, type: 3}
+  m_Script: {fileID: 11500000, guid: dcc2e75da176bbb4cb0cc8a167259426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hiddenAvatarSprite: {fileID: 0}
-  borderImage: {fileID: 6740486337519810762}
-  playerVoteCountText: {fileID: 6740486339553402785}
-  isPlayerAllowedToSee: 0
+  _OwnerInfo:
+    ownerName: 
+    ownerUserId: 
+    ownerActorNumber: 0
+  _UI:
+    name: {fileID: 6740486338685022771}
+    votesCount: {fileID: 6740486339553402785}
+    voteName: {fileID: 6740486337808296053}
+    roleImage: {fileID: 6740486337951315784}
 --- !u!1 &6740486338432001230
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,7 +659,7 @@ RectTransform:
   m_Children:
   - {fileID: 6740486337808296055}
   m_Father: {fileID: 6740486338131692448}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.38256744, y: 0}
   m_AnchorMax: {x: 1, y: 1}

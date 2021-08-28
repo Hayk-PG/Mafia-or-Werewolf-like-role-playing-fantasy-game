@@ -203,6 +203,14 @@ public class SetPlayersRoleAsMasterClient : MonoBehaviourPun
         playerObj.GetComponent<ISetPlayerRoleProps>().RoleNumber = RoleIndex;
         playerObj.GetComponent<ISetPlayerRoleProps>().TakeAvatarButtonOwnership = true;
         playerObj.GetComponent<ISetPlayerRoleProps>().RoleName = GameControllerComponents.instance.InstantiatePlayers.PlayersRolesNames[RoleIndex];
+       
+        PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.AvatarButtonIndex] = PlayerIndex;
+        PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoleNumber] = RoleIndex;
+        PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.TakeAvatarButtonOwnership] = true;
+        PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoleName] = GameControllerComponents.instance.InstantiatePlayers.PlayersRolesNames[RoleIndex];
+        PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoomName] = PhotonNetwork.CurrentRoom.Name;
+
+
     }
 
     [PunRPC]
@@ -210,6 +218,8 @@ public class SetPlayersRoleAsMasterClient : MonoBehaviourPun
     {
         GameObject playerObj = (GameObject)PhotonNetwork.PlayerList[playerIndex].TagObject;
         playerObj.GetComponent<ISetPlayerRoleProps>().SetOwnedAvatarButtonSprite = true;
+
+        PhotonNetwork.PlayerList[playerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.SetOwnedAvatarButtonSprite] = true;
     }
     #endregion
 

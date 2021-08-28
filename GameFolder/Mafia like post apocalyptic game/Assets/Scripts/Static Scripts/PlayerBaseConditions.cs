@@ -65,6 +65,15 @@ public class PlayerBaseConditions : MonoBehaviourPun
         return PhotonNetwork.CurrentRoom.GetPlayer(actorNumber).IsMasterClient;
     }
 
+    public static PhotonView MasterClient
+    {
+        get
+        {
+            GameObject masterClientObj = PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.MasterClientId).TagObject as GameObject;
+            return masterClientObj.GetComponent<PhotonView>();
+        }
+    }
+
     /// <summary>
     /// Local player's gameObject
     /// </summary>

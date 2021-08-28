@@ -1,0 +1,59 @@
+﻿using Photon.Pun;
+using Photon.Realtime;
+using UnityEngine;
+
+public class SwitchMasterClient : MonoBehaviourPunCallbacks
+{
+    GameStartAnnouncement _GameStartAnnouncement;
+    GameManagerTimer _GameManagerTimer;
+
+
+    void Awake()
+    {
+        _GameStartAnnouncement = GetComponent<GameStartAnnouncement>();
+        _GameManagerTimer = GetComponent<GameManagerTimer>();
+    }
+
+    void OnApplicationFocus(bool focus)
+    {
+        if (!focus) _SwitchMasterClient();
+    }
+
+    void OnApplicationPause(bool pause)
+    {
+        if (pause) _SwitchMasterClient();
+    }
+
+    void OnApplicationQuit()
+    {
+        _SwitchMasterClient();
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        _SwitchMasterClient();
+    }
+
+    void _SwitchMasterClient()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (PhotonNetwork.PlayerList.Length > 1)
+            {
+                PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer.GetNext());
+            }
+ 
+            PhotonNetwork.SendAllOutgoingCommands();
+        }
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        GameObject MasterTagObj = newMasterClient.TagObject as GameObject;
+
+        _GameStartAnnouncement.OnMasterSwitchedOrRejoined(MasterTagObj.GetComponent<PhotonView>().IsMine);
+        _GameManagerTimer.OnMasterSwitchedOrRejoined(MasterTagObj.GetComponent<PhotonView>().IsMine);
+    }
+
+    
+}

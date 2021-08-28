@@ -2,6 +2,11 @@
 
 public static class PlayerKeys
 {
+    public struct PlayerPrefabName
+    {
+        public const string PlayerPrefab = "PlayerPrefab 1";
+    }
+
     #region Savable values keys
     public static string UsernameKey => "Username";
     public static string PasswordKey => "Password";
@@ -69,6 +74,18 @@ public static class PlayerKeys
     {
         public static string MessageKey = "Message";
         public static string MessageEndPoint = "*_*_*_";
+    }
+    #endregion
+
+    #region SetPlayersRoleKeys
+    public struct SetPlayersRoleKeys
+    {
+        public const string AvatarButtonIndex = "AvatarButtonIndex";
+        public const string RoleNumber = "RoleNumber";
+        public const string TakeAvatarButtonOwnership = "TakeAvatarButtonOwnership";
+        public const string RoleName = "RoleName";
+        public const string RoomName = "RoomName";
+        public const string SetOwnedAvatarButtonSprite = "SetOwnedAvatarButtonSprite";
     }
     #endregion
 }
