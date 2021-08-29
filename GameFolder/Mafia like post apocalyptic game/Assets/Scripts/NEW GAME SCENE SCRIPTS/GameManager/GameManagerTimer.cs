@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class GameManagerTimer : MonoBehaviourPun
 {
@@ -68,22 +69,31 @@ public class GameManagerTimer : MonoBehaviourPun
 
     public Timer _Timer;
     UISoundsInGame _UISoundsInGame;
-    GameManagerStartTheGame _GameManagerStartTheGame;
 
-
+    const byte CreateVFX_Event = 0;
+    const byte PlaySoundFX_Event = 1;
 
     void Awake()
     {
         _Timer.VfxHolder = GetComponent<GameManagerVFXHolder>();
         _UISoundsInGame = FindObjectOfType<UISoundsInGame>();
-        _GameManagerStartTheGame = GetComponent<GameManagerStartTheGame>();
+    }
+
+    void OnEnable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;  
+    }
+
+    void OnDisable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
     }
 
     void Start()
     {
         _Timer.NightTime = true;
         _Timer.Moon.SetActive(true);
-        _Timer.Sun.SetActive(false);      
+        _Timer.Sun.SetActive(false);       
     }
 
     void Update()
@@ -92,40 +102,61 @@ public class GameManagerTimer : MonoBehaviourPun
         if(_Timer.Sun.activeInHierarchy != _Timer.DayTime) _Timer.Sun.SetActive(_Timer.DayTime);
     }
 
+    void NetworkingClient_EventReceived(ExitGames.Client.Photon.EventData obj)
+    {
+        if (obj.Code == CreateVFX_Event)
+        {
+            object[] datas = (object[])obj.CustomData;
+
+            if ((string)datas[0] == "CreateVFX") CreateTimerStartVFX();
+        }
+        if (obj.Code == PlaySoundFX_Event)
+        {
+            object[] datas = (object[])obj.CustomData;
+
+            if ((string)datas[1] == "PlaySoundFX") _UISoundsInGame.PlaySoundFX(0);
+        }
+    }
+
     internal void RunTimer()
     {
-        StartCoroutine(TimerCoroutine(60));
+        StartCoroutine(TimerCoroutine(_Timer.Seconds));
     }
 
     IEnumerator TimerCoroutine(int currentSeconds)
     {
-        CreateTimerStartVFX();
-
-        _Timer.Seconds = currentSeconds;
-
-        while (true)
+        while (photonView.IsMine)
         {
-            if (_Timer.NightTime && _Timer.Seconds <= 0)
+            _Timer.Seconds = currentSeconds;
+
+            object[] datas = new object[] { "CreateVFX", "PlaySoundFX" };
+
+            PhotonNetwork.RaiseEvent(CreateVFX_Event, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendReliable);
+
+            while (true && photonView.IsMine)
             {
-                _Timer.Seconds = 90;
-                _Timer.NightsCount++;
-                _Timer.NightTime = false;
-                _Timer.DayTime = true;
+                if (_Timer.NightTime && _Timer.Seconds <= 0)
+                {
+                    _Timer.Seconds = 90;
+                    _Timer.NightsCount++;
+                    _Timer.NightTime = false;
+                    _Timer.DayTime = true;
+                }
+                if (_Timer.DayTime && _Timer.Seconds <= 0)
+                {
+                    _Timer.Seconds = 60;
+                    _Timer.DaysCount++;
+                    _Timer.DayTime = false;
+                    _Timer.NightTime = true;
+                }
+
+                _Timer.Seconds--;
+                _Timer.TimerText = _Timer.Seconds.ToString();
+
+                PhotonNetwork.RaiseEvent(PlaySoundFX_Event, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendUnreliable);
+
+                yield return new WaitForSeconds(1);
             }
-            if (_Timer.DayTime && _Timer.Seconds <= 0)
-            {
-                _Timer.Seconds = 60;
-                _Timer.DaysCount++;
-                _Timer.DayTime = false;
-                _Timer.NightTime = true;
-            }
-
-            _Timer.Seconds--;
-            _Timer.TimerText = _Timer.Seconds.ToString();
-
-            _UISoundsInGame.PlaySoundFX(0);
-
-            yield return new WaitForSeconds(1);
         }
     }
 
@@ -136,13 +167,5 @@ public class GameManagerTimer : MonoBehaviourPun
             _Timer.VfxHolder.CreateVFX(0);
             _Timer.HasGameStartVFXInstantiated = true;
         }
-    }
-
-    public void OnMasterSwitchedOrRejoined(bool isPhotonViewMine)
-    {
-        if (isPhotonViewMine) Master = this;
-
-        if (Master != null) StartCoroutine(TimerCoroutine(_Timer.Seconds));
-    }
-
+    }   
 }

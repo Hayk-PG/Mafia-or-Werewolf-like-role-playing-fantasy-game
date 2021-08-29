@@ -37,7 +37,8 @@ public class RoleButtonController : MonoBehaviour
         [SerializeField] Text name;
         [SerializeField] Text votesCount;
         [SerializeField] Text voteName;
-        [SerializeField] Image roleImage;
+        [SerializeField] Sprite roleSprite;
+        [SerializeField] Image visibleToEveryoneImage;
 
         public string Name
         {
@@ -56,8 +57,13 @@ public class RoleButtonController : MonoBehaviour
         }
         public Sprite RoleImage
         {
-            get => roleImage.sprite;
-            set => roleImage.sprite = value;
+            get => roleSprite;
+            set => roleSprite = value;
+        }
+        public Sprite VisibleToEveryoneImage
+        {
+            get => visibleToEveryoneImage.sprite;
+            set => visibleToEveryoneImage.sprite = value;
         }
     }
     [Serializable] public struct GameInfo

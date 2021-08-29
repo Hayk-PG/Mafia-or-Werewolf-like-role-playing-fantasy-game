@@ -5,13 +5,13 @@ using UnityEngine;
 public class SwitchMasterClient : MonoBehaviourPunCallbacks
 {
     GameStartAnnouncement _GameStartAnnouncement;
-    GameManagerTimer _GameManagerTimer;
+    GameManagerStartTheGame _GameManagerStartTheGame;
 
 
     void Awake()
     {
         _GameStartAnnouncement = GetComponent<GameStartAnnouncement>();
-        _GameManagerTimer = GetComponent<GameManagerTimer>();
+        _GameManagerStartTheGame = GetComponent<GameManagerStartTheGame>();
     }
 
     void OnApplicationFocus(bool focus)
@@ -52,7 +52,7 @@ public class SwitchMasterClient : MonoBehaviourPunCallbacks
         GameObject MasterTagObj = newMasterClient.TagObject as GameObject;
 
         _GameStartAnnouncement.OnMasterSwitchedOrRejoined(MasterTagObj.GetComponent<PhotonView>().IsMine);
-        _GameManagerTimer.OnMasterSwitchedOrRejoined(MasterTagObj.GetComponent<PhotonView>().IsMine);
+        _GameManagerStartTheGame.OnMasterSwitchedOrRejoined(MasterTagObj.GetComponent<PhotonView>().IsMine);
     }
 
     

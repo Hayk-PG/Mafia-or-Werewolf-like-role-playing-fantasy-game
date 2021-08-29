@@ -41,6 +41,7 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun
         [SerializeField] Sprite[] soldierRoleSprite;
         [SerializeField] Sprite[] infectedRoleSprites;
         [SerializeField] Sprite[] witcherRoleSprite;
+        [SerializeField] Sprite[] defaultSprites;
 
         public Sprite[] CitizenRoleSprites
         {
@@ -65,6 +66,10 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun
         public Sprite[] WitcherRoleSprites
         {
             get => witcherRoleSprite;
+        }
+        public Sprite[] DefaultSprite
+        {
+            get => defaultSprites;
         }
     }
     [Serializable] public class Condition
@@ -96,45 +101,93 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun
 
     IEnumerator SetPlayersRolesCoroutine()
     {
-        List<int> rolesIndexList = new List<int>();
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        while(photonView.IsMine && !_Condition.HasPlayersRolesBeenSet)
         {
-            rolesIndexList.Add(i);
+            List<int> rolesIndexList = new List<int>();
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                rolesIndexList.Add(i);
+            }
+
+            yield return null;
+
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                Player player = PhotonNetwork.PlayerList[i];
+
+                int randomIndex = UnityEngine.Random.Range(0, rolesIndexList.Count);
+                int roleIndex = rolesIndexList[randomIndex];
+
+                photonView.RPC("PlayersRolesRPC", RpcTarget.AllBufferedViaServer, player.ActorNumber, roleIndex, i);
+
+                rolesIndexList.Remove(roleIndex);
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            _Condition.HasPlayersRolesBeenSet = true;
+            PhotonNetwork.CurrentRoom.IsOpen = !_Condition.HasPlayersRolesBeenSet;
         }
-
-        yield return null;
-
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            Player player = PhotonNetwork.PlayerList[i];
-
-            int randomIndex = UnityEngine.Random.Range(0, rolesIndexList.Count);
-            int roleIndex = rolesIndexList[randomIndex];
-
-            photonView.RPC("PlayersRolesRPC", RpcTarget.All, player.ActorNumber, roleIndex, i);
-
-            rolesIndexList.Remove(roleIndex);
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        _Condition.HasPlayersRolesBeenSet = true;
     } 
 
     [PunRPC]
     public void PlayersRolesRPC(int actorNumber, int roleIndex, int roleButtonIndex)
     {
         Player player = PhotonNetwork.CurrentRoom.GetPlayer(actorNumber);
+        GameObject playerTagObject = player.TagObject as GameObject;
+
+        //For everyone
 
         _RoleButtonControllers.RoleButtons[roleButtonIndex]._OwnerInfo.OwenrUserId = player.UserId;
         _RoleButtonControllers.RoleButtons[roleButtonIndex]._OwnerInfo.OwnerActorNumber = player.ActorNumber;
         _RoleButtonControllers.RoleButtons[roleButtonIndex]._OwnerInfo.OwnerName = player.NickName;
-        _RoleButtonControllers.RoleButtons[roleButtonIndex]._OwnerInfo.OwnerObj = player.TagObject as GameObject;
+        _RoleButtonControllers.RoleButtons[roleButtonIndex]._OwnerInfo.OwnerObj = playerTagObject;
+
         _RoleButtonControllers.RoleButtons[roleButtonIndex].ObjName = player.UserId;
+
         _RoleButtonControllers.RoleButtons[roleButtonIndex]._UI.Name = player.NickName;
         _RoleButtonControllers.RoleButtons[roleButtonIndex]._UI.VotesCount = 0;
         _RoleButtonControllers.RoleButtons[roleButtonIndex]._UI.RoleImage = RoleSprite(player.CustomProperties[PlayerKeys.GenderKey].ToString() == PlayerKeys.Male ? 0 : 1, _ListOfRoles.PlayersRolesNames[roleIndex]);
+        _RoleButtonControllers.RoleButtons[roleButtonIndex]._UI.VisibleToEveryoneImage = _ImageOfRoles.DefaultSprite[player.CustomProperties[PlayerKeys.GenderKey].ToString() == PlayerKeys.Male ? 0 : 1];
+
         _RoleButtonControllers.RoleButtons[roleButtonIndex]._GameInfo.RoleIndex = roleIndex;
         _RoleButtonControllers.RoleButtons[roleButtonIndex]._GameInfo.RoleName = _ListOfRoles.PlayersRolesNames[roleIndex];
+
+        if (playerTagObject.GetComponent<PhotonView>().IsMine && roleButtonIndex != 0)
+        {
+            //Other player
+
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._OwnerInfo.OwenrUserId = _RoleButtonControllers.RoleButtons[0]._OwnerInfo.OwenrUserId;
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._OwnerInfo.OwnerActorNumber = _RoleButtonControllers.RoleButtons[0]._OwnerInfo.OwnerActorNumber;
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._OwnerInfo.OwnerName = _RoleButtonControllers.RoleButtons[0]._OwnerInfo.OwnerName;
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._OwnerInfo.OwnerObj = _RoleButtonControllers.RoleButtons[0]._OwnerInfo.OwnerObj;
+
+            _RoleButtonControllers.RoleButtons[roleButtonIndex].ObjName = _RoleButtonControllers.RoleButtons[0].ObjName;
+
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._UI.Name = _RoleButtonControllers.RoleButtons[0]._UI.Name;
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._UI.VotesCount = _RoleButtonControllers.RoleButtons[0]._UI.VotesCount;
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._UI.RoleImage = _RoleButtonControllers.RoleButtons[0]._UI.RoleImage;
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._UI.VisibleToEveryoneImage = _RoleButtonControllers.RoleButtons[0]._UI.VisibleToEveryoneImage;
+
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._GameInfo.RoleIndex = _RoleButtonControllers.RoleButtons[0]._GameInfo.RoleIndex;
+            _RoleButtonControllers.RoleButtons[roleButtonIndex]._GameInfo.RoleName = _RoleButtonControllers.RoleButtons[0]._GameInfo.RoleName;
+
+            //Local player
+
+            _RoleButtonControllers.RoleButtons[0]._OwnerInfo.OwenrUserId = player.UserId;
+            _RoleButtonControllers.RoleButtons[0]._OwnerInfo.OwnerActorNumber = player.ActorNumber;
+            _RoleButtonControllers.RoleButtons[0]._OwnerInfo.OwnerName = player.NickName;
+            _RoleButtonControllers.RoleButtons[0]._OwnerInfo.OwnerObj = playerTagObject;
+
+            _RoleButtonControllers.RoleButtons[0].ObjName = player.UserId;
+
+            _RoleButtonControllers.RoleButtons[0]._UI.Name = player.NickName;
+            _RoleButtonControllers.RoleButtons[0]._UI.VotesCount = 0;
+            _RoleButtonControllers.RoleButtons[0]._UI.RoleImage = RoleSprite(player.CustomProperties[PlayerKeys.GenderKey].ToString() == PlayerKeys.Male ? 0 : 1, _ListOfRoles.PlayersRolesNames[roleIndex]);
+            _RoleButtonControllers.RoleButtons[0]._UI.VisibleToEveryoneImage = _ImageOfRoles.DefaultSprite[player.CustomProperties[PlayerKeys.GenderKey].ToString() == PlayerKeys.Male ? 0 : 1];
+
+            _RoleButtonControllers.RoleButtons[0]._GameInfo.RoleIndex = roleIndex;
+            _RoleButtonControllers.RoleButtons[0]._GameInfo.RoleName = _ListOfRoles.PlayersRolesNames[roleIndex];
+        }
     }
 
     Sprite RoleSprite(int gender, string roleName)

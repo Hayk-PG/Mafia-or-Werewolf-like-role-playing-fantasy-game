@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -447,7 +447,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: -49.90004}
+  m_AnchoredPosition: {x: 0.000030517578, y: -49.900036}
   m_SizeDelta: {x: -30.023346, y: -2.5237274}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &101902023
@@ -594,6 +594,7 @@ MonoBehaviour:
     gameStartAnnouncementTextObj: {fileID: 1670166589}
     seconds: 60
     isTimeToStartTheGame: 0
+    isMinRequiredCountReached: 0
 --- !u!114 &129607992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -754,6 +755,11 @@ MonoBehaviour:
     witcherRoleSprite:
     - {fileID: 21300000, guid: d69e3531f034e27468eb557b1047ada3, type: 3}
     - {fileID: 21300000, guid: 4e2d8d9292bbb4b4599dd96331263f6e, type: 3}
+    defaultSprites:
+    - {fileID: 21300000, guid: d1543b91ccfb50d4aaa834210f77c191, type: 3}
+    - {fileID: 21300000, guid: 8f64308beeb70d64aa3d19512a106819, type: 3}
+  _Condition:
+    hasPlayersRolesBeenSet: 0
 --- !u!114 &129608000
 MonoBehaviour:
   m_ObjectHideFlags: 0

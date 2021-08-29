@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Photon.Pun;
+using System;
 using UnityEngine;
 
-public class GameManagerStartTheGame : MonoBehaviour
+public class GameManagerStartTheGame : MonoBehaviourPun
 {
+    static GameManagerStartTheGame Master;
+
     [Serializable] public struct GameStart
     {
         [SerializeField] bool gameStarted;
@@ -15,21 +18,34 @@ public class GameManagerStartTheGame : MonoBehaviour
     }
 
     public GameStart _GameStart;
+    GameStartAnnouncement _GameStartAnnouncement;
     GameManagerTimer _GameManagerTimer;
     GameManagerSetPlayersRoles _GameManagerSetPlayersRoles;
 
 
     void Awake()
     {
+        _GameStartAnnouncement = GetComponent<GameStartAnnouncement>();
         _GameManagerTimer = GetComponent<GameManagerTimer>();
         _GameManagerSetPlayersRoles = GetComponent<GameManagerSetPlayersRoles>();
     }
 
     public void StartTheGame()
     {
-        _GameManagerTimer.RunTimer();
-        _GameManagerSetPlayersRoles.SetPlayersRoles();
+        if (_GameStartAnnouncement._Timer.IsTimeToStartTheGame && photonView.IsMine)
+        {
+            _GameManagerTimer.RunTimer();
 
-        _GameStart.GameStarted = true;
+            if(!_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet) _GameManagerSetPlayersRoles.SetPlayersRoles();
+
+            _GameStart.GameStarted = true;
+        }
+    }
+
+    public void OnMasterSwitchedOrRejoined(bool isPhotonViewMine)
+    {
+        if (isPhotonViewMine) Master = this;
+
+        if (Master != null) StartTheGame();
     }
 }

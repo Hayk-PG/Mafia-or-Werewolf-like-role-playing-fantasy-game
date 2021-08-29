@@ -6,12 +6,12 @@ public class CreateRoomTab : MonoBehaviour
     [SerializeField] InputField roomNameInputField;
     [SerializeField] CanvasGroup errorPanelCanvasGroup;
     [SerializeField] Text errorText;
+    [SerializeField] Button backButton;
 
     void Start()
     {
         SubToEvents.SubscribeToEvents(PlayerBaseConditions.IsNetworkManagerComponentsNotNull, () => 
         {
-            print("AAA");
             PlayerBaseConditions.NetworkManagerComponents.NetworkManager.OnCreateRoomError += NetworkManager_OnCreateRoomError;
         });
     }
@@ -19,6 +19,7 @@ public class CreateRoomTab : MonoBehaviour
     void Update()
     {
         OnClickInputField();
+        OnClickBackButton();
     }
 
     void OnDisable()
@@ -49,6 +50,17 @@ public class CreateRoomTab : MonoBehaviour
                 roomNameInputField.text = null;
             }
         }
+    }
+    #endregion
+
+    #region OnClickBackButton
+    void OnClickBackButton()
+    {
+        backButton.onClick.RemoveAllListeners();
+        backButton.onClick.AddListener(() => 
+        {
+            PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnBackFromCreateRoomTab();
+        });
     }
     #endregion
 }

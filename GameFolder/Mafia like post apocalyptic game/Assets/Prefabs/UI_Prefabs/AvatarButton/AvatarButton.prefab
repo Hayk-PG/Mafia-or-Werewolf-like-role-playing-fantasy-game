@@ -468,11 +468,16 @@ MonoBehaviour:
     ownerName: 
     ownerUserId: 
     ownerActorNumber: 0
+    owenrObj: {fileID: 0}
   _UI:
     name: {fileID: 6740486338685022771}
     votesCount: {fileID: 6740486339553402785}
     voteName: {fileID: 6740486337808296053}
-    roleImage: {fileID: 6740486337951315784}
+    roleImage: {fileID: 0}
+    visibleToEveryoneImage: {fileID: 6740486337951315784}
+  _GameInfo:
+    roleName: 
+    roleIndex: 0
 --- !u!1 &6740486338432001230
 GameObject:
   m_ObjectHideFlags: 0

@@ -73,21 +73,17 @@ public class GameStartAnnouncement : MonoBehaviourPun
     {
         _Timer.Seconds = currentSecond;
 
-        if (!_GameManagerStartTheGame._GameStart.GameStarted)
+        yield return new WaitUntil(() => PhotonNetwork.PlayerList.Length >= (int)PhotonNetwork.CurrentRoom.CustomProperties[RoomCustomProperties.MinRequiredCount] || _Timer.IsMinRequiredCountReached);
+
+        _Timer.IsMinRequiredCountReached = true;
+
+        while (!_Timer.IsTimeToStartTheGame && photonView.IsMine)
         {
-            yield return new WaitUntil(() => PhotonNetwork.PlayerList.Length >= (int)PhotonNetwork.CurrentRoom.CustomProperties[RoomCustomProperties.MinRequiredCount] || _Timer.IsMinRequiredCountReached);
-
-            _Timer.IsMinRequiredCountReached = true;
-
-            while (!_Timer.IsTimeToStartTheGame)
-            {
-                _Timer.Seconds--;
-                _Timer.IsTimeToStartTheGame = _Timer.Seconds <= 0 ? true : false;
-                _Timer.GameStartAnnouncementText = "Will start in " + _Timer.Seconds + " seconds";
-                yield return new WaitForSeconds(1);
-            }
-
-            if (!_GameManagerStartTheGame._GameStart.GameStarted) _GameManagerStartTheGame.StartTheGame();
+            _Timer.Seconds--;
+            _Timer.IsTimeToStartTheGame = _Timer.Seconds <= 0 ? true : false;
+            _Timer.GameStartAnnouncementText = "Will start in " + _Timer.Seconds + " seconds";
+            if (_Timer.IsTimeToStartTheGame) _GameManagerStartTheGame.StartTheGame();
+            yield return new WaitForSeconds(1);
         }
     }
 

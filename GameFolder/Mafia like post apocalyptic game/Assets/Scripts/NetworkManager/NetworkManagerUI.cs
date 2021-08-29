@@ -143,4 +143,13 @@ public class NetworkManagerUI : MonoBehaviour
         MyCanvasGroups.CanvasGroupActivity(CreateRoomTab_CG, false);
     }
     #endregion
+
+    #region OnBackFromCreateRoomTab
+    public void OnBackFromCreateRoomTab()
+    {
+        MyCanvasGroups.CanvasGroupActivity(CreateRoomTab_CG, false);
+        MyCanvasGroups.CanvasGroupActivity(LobbyTab_CG, true);
+        MyCanvasGroups.CanvasGroupActivity(CreateRoomButtonTab, true);
+    }
+    #endregion
 }

@@ -104,11 +104,23 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         options.MaxPlayers = 20;
         options.EmptyRoomTtl = 60000;
         options.PlayerTtl = 60000;
+        options.PublishUserId = true;
 
         options.CustomRoomPropertiesForLobby = new string[3] { RoomCustomProperties.IsPasswordSet, RoomCustomProperties.PinNumber, RoomCustomProperties.MinRequiredCount };
         options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable(3) { { RoomCustomProperties.IsPasswordSet, isPasswordSet }, { RoomCustomProperties.PinNumber, pinNumber }, { RoomCustomProperties.MinRequiredCount, minRequiredCount } };
 
-        PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
+        ConnectionUI.instance.ConnectionCheck(0, ConnectionUI.Connected.IsConnectedAndReady, 
+            () => 
+            {
+                PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
+                print(PhotonNetwork.IsConnectedAndReady + "/" + PhotonNetwork.IsConnected);
+            }, 
+            () => 
+            {
+                if (PhotonNetwork.IsConnectedAndReady) PhotonNetwork.JoinLobby();
+                if (!PhotonNetwork.IsConnected) ConnectToPhoton(PlayerBaseConditions.LocalPlayer.UserId);
+                print(PhotonNetwork.IsConnectedAndReady + "/" + PhotonNetwork.IsConnected);
+            });       
     }
     #endregion
 
@@ -137,6 +149,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         OnCreateRoomError?.Invoke(message);
+
+        print(returnCode);
     }
     #endregion
 
@@ -151,6 +165,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         print(returnCode + "/" + message);
+
+        if(returnCode == 32749)
+        {
+            FindObjectOfType<JoinRoomErrorTab>().OnError("Unable to join: The room is currently not available,please try again later!");
+        }
     }
     #endregion
 
