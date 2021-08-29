@@ -151,9 +151,9 @@ public class GameManagerTimer : MonoBehaviourPun
                 }
 
                 _Timer.Seconds--;
-                _Timer.TimerText = _Timer.Seconds.ToString();
+                _Timer.TimerText = _Timer.Seconds.ToString("D2");
 
-                PhotonNetwork.RaiseEvent(PlaySoundFX_Event, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendUnreliable);
+                if(_Timer.Seconds <= 10) PhotonNetwork.RaiseEvent(PlaySoundFX_Event, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendUnreliable);
 
                 yield return new WaitForSeconds(1);
             }

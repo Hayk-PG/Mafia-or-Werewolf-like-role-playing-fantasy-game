@@ -11,6 +11,9 @@ public class NetworkCallbacks : MonoBehaviourPunCallbacks
     public event Action<Player> OnPlayerLeftGame;
     public event Action<Player> OnMasterSwitched;
 
+    public bool disconnect;
+    public bool reconnect;
+
     string RoomName { get; set; }
 
     void Start()
@@ -18,6 +21,20 @@ public class NetworkCallbacks : MonoBehaviourPunCallbacks
         SubToEvents.SubscribeToEvents(()=> OnPlayerWelcome?.Invoke(PhotonNetwork.LocalPlayer));
 
         RoomName = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : null;
+    }
+
+    void Update()
+    {
+        if (disconnect)
+        {
+            PhotonNetwork.Disconnect();
+            disconnect = false;
+        }
+        if (reconnect)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+            reconnect = false;
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)

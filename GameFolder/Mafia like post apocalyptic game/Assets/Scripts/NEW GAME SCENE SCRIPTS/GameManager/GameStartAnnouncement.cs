@@ -49,6 +49,7 @@ public class GameStartAnnouncement : MonoBehaviourPun
 
     public Timer _Timer;
     GameManagerStartTheGame _GameManagerStartTheGame;
+    GameManagerSetPlayersRoles _GameManagerSetPlayersRoles;
 
 
     void Awake()
@@ -56,6 +57,7 @@ public class GameStartAnnouncement : MonoBehaviourPun
         if (photonView.IsMine) Master = this;
 
         _GameManagerStartTheGame = GetComponent<GameManagerStartTheGame>();
+        _GameManagerSetPlayersRoles = GetComponent<GameManagerSetPlayersRoles>();
     }
 
     void Start()
@@ -65,8 +67,8 @@ public class GameStartAnnouncement : MonoBehaviourPun
 
     void Update()
     {
-        if (_Timer.GameStartAnnouncementScreenObj.activeInHierarchy != !_Timer.IsTimeToStartTheGame) _Timer.GameStartAnnouncementScreenObj.SetActive(!_Timer.IsTimeToStartTheGame);
-        if (_Timer.GameStartAnnouncementTextObj.activeInHierarchy != !_Timer.IsTimeToStartTheGame) _Timer.GameStartAnnouncementTextObj.SetActive(!_Timer.IsTimeToStartTheGame);
+        if (_Timer.GameStartAnnouncementScreenObj.activeInHierarchy != !_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet) _Timer.GameStartAnnouncementScreenObj.SetActive(!_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet);
+        if (_Timer.GameStartAnnouncementTextObj.activeInHierarchy != !_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet) _Timer.GameStartAnnouncementTextObj.SetActive(!_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet);
     }
 
     IEnumerator TimerCoroutine(int currentSecond)
@@ -81,7 +83,7 @@ public class GameStartAnnouncement : MonoBehaviourPun
         {
             _Timer.Seconds--;
             _Timer.IsTimeToStartTheGame = _Timer.Seconds <= 0 ? true : false;
-            _Timer.GameStartAnnouncementText = "Will start in " + _Timer.Seconds + " seconds";
+            _Timer.GameStartAnnouncementText = "Will start in " + _Timer.Seconds.ToString("D2") + " seconds";
             if (_Timer.IsTimeToStartTheGame) _GameManagerStartTheGame.StartTheGame();
             yield return new WaitForSeconds(1);
         }

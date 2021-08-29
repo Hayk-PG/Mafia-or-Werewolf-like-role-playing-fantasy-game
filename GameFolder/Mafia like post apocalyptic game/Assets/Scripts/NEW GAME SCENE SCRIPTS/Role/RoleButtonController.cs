@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Photon.Pun;
+using Photon.Realtime;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoleButtonController : MonoBehaviour
+public class RoleButtonController : MonoBehaviourPun
 {   
     [Serializable] public struct OwnerInfo
     {
@@ -93,4 +95,21 @@ public class RoleButtonController : MonoBehaviour
         set => transform.name = value;
     }
 
+
+    void Update()
+    {
+        if(_OwnerInfo.OwenrUserId != null && _OwnerInfo.OwnerObj == null)
+        {
+            Player LocalPlayer = Array.Find(PhotonNetwork.PlayerList, _LocalPlayer => _LocalPlayer == PhotonNetwork.CurrentRoom.GetPlayer(_OwnerInfo.OwnerActorNumber));
+
+            if(LocalPlayer != null && LocalPlayer.TagObject != null)
+            {
+                _OwnerInfo.OwnerObj = LocalPlayer.TagObject as GameObject;
+            }
+        }
+
+        
+
+        
+    }
 }
