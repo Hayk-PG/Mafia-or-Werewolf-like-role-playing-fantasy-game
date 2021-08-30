@@ -72,6 +72,7 @@ public class RoleButtonController : MonoBehaviourPun
     {
         [SerializeField] string roleName;
         [SerializeField] int roleIndex;
+        [SerializeField] bool isPlayerDead;
 
         public string RoleName
         {
@@ -82,6 +83,11 @@ public class RoleButtonController : MonoBehaviourPun
         {
             get => roleIndex;
             set => roleIndex = value;
+        }
+        public bool IsPlayerDead
+        {
+            get => isPlayerDead;
+            set => isPlayerDead = value;
         }
     }
     
@@ -96,20 +102,28 @@ public class RoleButtonController : MonoBehaviourPun
     }
 
 
+    void Start()
+    {
+        _GameInfo.IsPlayerDead = false;
+    }
+
     void Update()
     {
-        if(_OwnerInfo.OwenrUserId != null && _OwnerInfo.OwnerObj == null)
+        AssignOwnerObj();
+    }
+
+    #region AssignOwnerObj
+    void AssignOwnerObj()
+    {
+        if (_OwnerInfo.OwenrUserId != null && _OwnerInfo.OwnerObj == null)
         {
             Player LocalPlayer = Array.Find(PhotonNetwork.PlayerList, _LocalPlayer => _LocalPlayer == PhotonNetwork.CurrentRoom.GetPlayer(_OwnerInfo.OwnerActorNumber));
 
-            if(LocalPlayer != null && LocalPlayer.TagObject != null)
+            if (LocalPlayer != null && LocalPlayer.TagObject != null)
             {
                 _OwnerInfo.OwnerObj = LocalPlayer.TagObject as GameObject;
             }
         }
-
-        
-
-        
     }
+    #endregion
 }

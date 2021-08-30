@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class GameManagerSetPlayersRoles : MonoBehaviourPun
 {
-    static GameManagerSetPlayersRoles GMSPR;
-
     [Serializable] public class RoleButtonControllers
     {
         [SerializeField] RoleButtonController[] roleButtons;
@@ -89,14 +87,9 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun
     public Condition _Condition;
 
 
-    void Awake()
-    {
-        if (photonView.IsMine) GMSPR = this;
-    }
-
     public void SetPlayersRoles()
     {
-       if(GMSPR != null && !_Condition.HasPlayersRolesBeenSet) StartCoroutine(SetPlayersRolesCoroutine());
+        StartCoroutine(SetPlayersRolesCoroutine());
     }
 
     IEnumerator SetPlayersRolesCoroutine()
