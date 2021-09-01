@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4077868784093597117}
   - component: {fileID: 4077868784093597119}
   - component: {fileID: 414759766184833013}
-  - component: {fileID: 460570611683121566}
+  - component: {fileID: 6315238173576620816}
   m_Layer: 0
   m_Name: PlayerPrefab 1
   m_TagString: Untagged
@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f56cd0051981a5e4fab399b9813116ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &460570611683121566
+--- !u!114 &6315238173576620816
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,10 +91,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4077868784093597088}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6db61f61ca94b04ea25e7edacf32c89, type: 3}
+  m_Script: {fileID: 11500000, guid: fc7d7cfafee224a4da93e881765f8986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _Conditions:
-    NightVoteEventReceived: 0
-    DayVoteEventReceived: 0
-    VotesConditionsBeenResetted: 0
+    canPlayerBeActiveInNightPhase: 0
+    canPlayerBeActiveInDayPhase: 0
+    isPlayerAlive: 0
+    hasPlayerVotedInNightPhase: 0
+    hasPlayerVotedInDayPhase: 0
+    hasVotePhaseResetted: 0

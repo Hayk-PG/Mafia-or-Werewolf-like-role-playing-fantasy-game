@@ -18,8 +18,7 @@ public class GameManagerTimer : MonoBehaviourPun
         [SerializeField] Text timerText;
         [SerializeField] GameObject sun;
         [SerializeField] GameObject moon;
-
-        [HideInInspector] public GameManagerVFXHolder VfxHolder;
+       
         public int Seconds
         {
             get => seconds;
@@ -63,17 +62,21 @@ public class GameManagerTimer : MonoBehaviourPun
         {
             get => moon;
         }
+
+        internal GameManagerVFXHolder VfxHolder { get; set; }
+        internal GameManagerSetPlayersRoles GameManagerSetPlayersRoles { get; set; }
     }
 
     public Timer _Timer;
     UISoundsInGame _UISoundsInGame;
 
-    const byte OnCreateVFX = 0;
-    const byte OnEverySecond = 1;
+    const byte CreateVFX = 0;
+    const byte EverySecond = 1;
 
     void Awake()
     {
         _Timer.VfxHolder = GetComponent<GameManagerVFXHolder>();
+        _Timer.GameManagerSetPlayersRoles = GetComponent<GameManagerSetPlayersRoles>();
         _UISoundsInGame = FindObjectOfType<UISoundsInGame>();
     }
 
@@ -102,23 +105,18 @@ public class GameManagerTimer : MonoBehaviourPun
 
     void NetworkingClient_EventReceived(ExitGames.Client.Photon.EventData obj)
     {
-        if (obj.Code == OnCreateVFX)
+        if (obj.Code == CreateVFX)
         {
-            object[] datas = (object[])obj.CustomData;
-
-            if ((string)datas[0] == "CreateVFX") CreateTimerStartVFX();
+            OnCreateVFX(obj);
         }
-        if (obj.Code == OnEverySecond)
+        if (obj.Code == EverySecond)
         {
-            object[] datas = (object[])obj.CustomData;
+            OnPlaySoundFX(obj);
 
-            if ((string)datas[1] == "PlaySoundFX")
-            {
-                if(_Timer.Seconds <= 10) _UISoundsInGame.PlaySoundFX(0);
-            }
+            OnPlayerActivity(obj);
         }
     }
-
+   
     internal void RunTimer()
     {
         StartCoroutine(TimerCoroutine(_Timer.Seconds));
@@ -130,9 +128,17 @@ public class GameManagerTimer : MonoBehaviourPun
         {
             _Timer.Seconds = currentSeconds;
 
-            object[] datas = new object[] { "CreateVFX", "PlaySoundFX", "NightVote" , "DayVote" , "ResetVotesConditions"};
+            object[] datas = new object[] 
+            {
+                "CreateVFX",
+                "PlaySoundFX",
+                "NightVote" ,
+                "DayVote" ,
+                "ResetVotesConditions",
+                "PlayerActivity"
+            };
 
-            PhotonNetwork.RaiseEvent(OnCreateVFX, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(CreateVFX, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendReliable);
 
             while (true && photonView.IsMine)
             {
@@ -154,20 +160,158 @@ public class GameManagerTimer : MonoBehaviourPun
                 _Timer.Seconds--;
                 _Timer.TimerText = _Timer.Seconds.ToString("D2");
 
-                PhotonNetwork.RaiseEvent(OnEverySecond, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendUnreliable);
+                PhotonNetwork.RaiseEvent(EverySecond, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendUnreliable);
 
                 yield return new WaitForSeconds(1);
             }
         }
     }
 
-    void CreateTimerStartVFX()
+    #region Raise Events
+
+    #region OnCreateVFX
+    void OnCreateVFX(ExitGames.Client.Photon.EventData obj)
     {
-        if (!_Timer.HasGameStartVFXInstantiated)
+        object[] datas = (object[])obj.CustomData;
+
+        if ((string)datas[0] == "CreateVFX")
         {
-            _Timer.VfxHolder.CreateVFX(0);
-            _Timer.HasGameStartVFXInstantiated = true;
+            if (!_Timer.HasGameStartVFXInstantiated)
+            {
+                _Timer.VfxHolder.CreateVFX(0);
+                _Timer.HasGameStartVFXInstantiated = true;
+            }
         }
     }
+    #endregion
+
+    #region OnPlaySoundFX
+    void OnPlaySoundFX(ExitGames.Client.Photon.EventData obj)
+    {
+        object[] datas = (object[])obj.CustomData;
+
+        if ((string)datas[1] == "PlaySoundFX")
+        {
+            if (_Timer.Seconds <= 10) _UISoundsInGame.PlaySoundFX(0);
+        }
+    }
+    #endregion
+
+    #region OnPlayerActivity
+    void OnPlayerActivity(ExitGames.Client.Photon.EventData obj)
+    {
+        object[] datas = (object[])obj.CustomData;
+
+        if ((string)datas[5] == "PlayerActivity")
+        {
+            foreach (var player in PhotonNetwork.PlayerList)
+            {
+                GameObject playerTagObj = (GameObject)player.TagObject != null ? (GameObject)player.TagObject : null;
+
+                if (playerTagObj != null)
+                {
+                    IPlayerGameController playerController = playerTagObj.GetComponent<IPlayerGameController>();
+
+                    CheckPlayerParticipationInVoting(playerController);
+                    OnNightPhase(playerController);
+                    OnDayPhase(playerController);
+                    OnResetPhases(playerController);
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region CheckPlayerParticipationInVoting
+    void CheckPlayerParticipationInVoting(IPlayerGameController playerController)
+    {
+        if(Array.Find(_Timer.GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, item => item._OwnerInfo.OwnerActorNumber == playerController.PhotonView.OwnerActorNr) != null)
+        {
+            if (playerController.IsPlayerAlive != Array.Find(_Timer.GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, item => item._OwnerInfo.OwnerActorNumber == playerController.PhotonView.OwnerActorNr)._GameInfo.IsPlayerAlive)
+                playerController.IsPlayerAlive = Array.Find(_Timer.GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, item => item._OwnerInfo.OwnerActorNumber == playerController.PhotonView.OwnerActorNr)._GameInfo.IsPlayerAlive;
+
+            if (_Timer.NightTime && _Timer.Seconds <= 30 && playerController.IsPlayerAlive)
+                playerController.CanPlayerBeActiveInNightPhase = true;
+            else playerController.CanPlayerBeActiveInNightPhase = false;
+
+            if (_Timer.DayTime && _Timer.Seconds <= 60 && playerController.IsPlayerAlive)
+                playerController.CanPlayerBeActiveInDayPhase = true;
+            else playerController.CanPlayerBeActiveInDayPhase = false;
+        }
+
+    }
+    #endregion
+
+    #region OnNightPhase
+    void OnNightPhase(IPlayerGameController playerController)
+    {
+        if (_Timer.NightTime && _Timer.Seconds <= 30 && playerController.CanPlayerBeActiveInNightPhase && !playerController.HasPlayerVotedInNightPhase)
+        {
+            playerController.HasPlayerVotedInDayPhase = false;
+            playerController.HasVotePhaseResetted = false;
+
+            if (playerController.PhotonView.IsMine)
+            {
+                foreach (var roleButton in FindObjectsOfType<RoleButtonController>())
+                {
+                    if (roleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber)
+                    {
+                        roleButton.GameObjectActivity(0, true);
+                    }
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region OnDayPhase
+    void OnDayPhase(IPlayerGameController playerController)
+    {
+        if (_Timer.DayTime && _Timer.Seconds <= 60 && playerController.CanPlayerBeActiveInDayPhase && !playerController.HasPlayerVotedInDayPhase)
+        {
+            playerController.HasPlayerVotedInNightPhase = false;
+            playerController.HasVotePhaseResetted = false;
+
+            if (playerController.PhotonView.IsMine)
+            {
+                foreach (var roleButton in FindObjectsOfType<RoleButtonController>())
+                {
+                    if (roleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber)
+                    {
+                        roleButton.GameObjectActivity(0, true);
+                    }
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region OnResetPhases
+    void OnResetPhases(IPlayerGameController playerController)
+    {
+        if (_Timer.NightTime && _Timer.Seconds > 30 || _Timer.DayTime && _Timer.Seconds > 60)
+        {
+            if (!playerController.HasVotePhaseResetted)
+            {
+                playerController.HasPlayerVotedInDayPhase = false;
+                playerController.HasPlayerVotedInNightPhase = false;
+                playerController.HasVotePhaseResetted = true;
+
+                if (playerController.PhotonView.IsMine)
+                {
+                    foreach (var roleButton in FindObjectsOfType<RoleButtonController>())
+                    {
+                        if (roleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber)
+                        {
+                            roleButton.GameObjectActivity(0, false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #endregion
+
+    #endregion
 }
 

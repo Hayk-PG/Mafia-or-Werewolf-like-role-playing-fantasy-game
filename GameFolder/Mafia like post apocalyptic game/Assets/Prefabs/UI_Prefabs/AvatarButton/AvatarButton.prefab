@@ -342,7 +342,6 @@ GameObject:
   - component: {fileID: 6740486338131692449}
   - component: {fileID: 6740486338131692455}
   - component: {fileID: 8344072711321309560}
-  - component: {fileID: 8634157419719355207}
   m_Layer: 5
   m_Name: AvatarButton
   m_TagString: Untagged
@@ -480,20 +479,10 @@ MonoBehaviour:
   _GameInfo:
     roleName: 
     roleIndex: 0
---- !u!114 &8634157419719355207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6740486338131692451}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a1e74b61d3506446a5d0638c5e84f53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+    isPlayerAlive: 1
   _GameObjects:
-    aimObj: {fileID: 5702561859875355514}
+    iconObjs:
+    - {fileID: 5702561859875355514}
 --- !u!1 &6740486338432001230
 GameObject:
   m_ObjectHideFlags: 0

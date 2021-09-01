@@ -56,10 +56,10 @@ public class UISounds : MonoBehaviour
 
     protected virtual void Update()
     {
-        OnInputFieldValueChanged();
-        OnToggleValueChanged();
-        OnButtonClicked();
-        OnSliderValueChanged();
+        //OnInputFieldValueChanged();
+        //OnToggleValueChanged();
+        //OnButtonClicked();
+        //OnSliderValueChanged();
     }
 
     public void PlayUISoundFX(AudioClip soundFX)

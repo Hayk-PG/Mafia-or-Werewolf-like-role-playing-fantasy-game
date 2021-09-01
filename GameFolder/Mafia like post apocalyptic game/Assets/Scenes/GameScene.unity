@@ -629,7 +629,6 @@ MonoBehaviour:
     timerText: {fileID: 1656060455}
     sun: {fileID: 2137149076}
     moon: {fileID: 617658652}
-    VfxHolder: {fileID: 0}
 --- !u!114 &129607994
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -72,7 +72,7 @@ public class RoleButtonController : MonoBehaviourPun
     {
         [SerializeField] string roleName;
         [SerializeField] int roleIndex;
-        [SerializeField] bool isPlayerDead;
+        [SerializeField] bool isPlayerAlive;
 
         public string RoleName
         {
@@ -84,27 +84,31 @@ public class RoleButtonController : MonoBehaviourPun
             get => roleIndex;
             set => roleIndex = value;
         }
-        public bool IsPlayerDead
+        public bool IsPlayerAlive
         {
-            get => isPlayerDead;
-            set => isPlayerDead = value;
+            get => isPlayerAlive;
+            set => isPlayerAlive = value;
+        }
+    }
+    [Serializable] public struct GameObjects
+    {
+        [SerializeField] GameObject[] iconObjs;
+
+        public GameObject[] IconObjs
+        {
+            get => iconObjs;
         }
     }
     
     public OwnerInfo _OwnerInfo;
     public UI _UI;
     public GameInfo _GameInfo;
+    public GameObjects _GameObjects;
 
     public string ObjName
     {
         get => transform.name;
         set => transform.name = value;
-    }
-
-
-    void Start()
-    {
-        _GameInfo.IsPlayerDead = false;
     }
 
     void Update()
@@ -123,6 +127,23 @@ public class RoleButtonController : MonoBehaviourPun
             {
                 _OwnerInfo.OwnerObj = LocalPlayer.TagObject as GameObject;
             }
+        }
+    }
+    #endregion
+
+    #region GameObjectActivity
+    public void GameObjectActivity(int index, bool isActive)
+    {
+        _GameObjects.IconObjs[index].SetActive(isActive);
+    }
+    #endregion
+
+    #region GameobjectActivityForAllRoleButtons
+    public void GameobjectActivityForAllRoleButtons(int index, bool isActive)
+    {
+        foreach (var roleButtonController in FindObjectsOfType<RoleButtonController>())
+        {
+            roleButtonController._GameObjects.IconObjs[index].SetActive(isActive);
         }
     }
     #endregion
