@@ -134,7 +134,7 @@ public class RoleButtonController : MonoBehaviourPun
     #region GameObjectActivity
     public void GameObjectActivity(int index, bool isActive)
     {
-        _GameObjects.IconObjs[index].SetActive(isActive);
+        if(index >= 0) _GameObjects.IconObjs[index].SetActive(isActive);
     }
     #endregion
 
@@ -143,7 +143,7 @@ public class RoleButtonController : MonoBehaviourPun
     {
         foreach (var roleButtonController in FindObjectsOfType<RoleButtonController>())
         {
-            roleButtonController._GameObjects.IconObjs[index].SetActive(isActive);
+            if (index >= 0) roleButtonController._GameObjects.IconObjs[index].SetActive(isActive);
         }
     }
     #endregion

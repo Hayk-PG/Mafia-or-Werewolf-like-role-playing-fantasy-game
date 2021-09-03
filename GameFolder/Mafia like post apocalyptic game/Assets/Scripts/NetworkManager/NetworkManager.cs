@@ -113,7 +113,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             () => 
             {
                 PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
-                print(PhotonNetwork.IsConnectedAndReady + "/" + PhotonNetwork.IsConnected);
             }, 
             () => 
             {

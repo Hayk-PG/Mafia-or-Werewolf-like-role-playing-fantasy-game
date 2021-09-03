@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using Photon.Pun;
-using Photon.Realtime;
+﻿using Photon.Pun;
+using System.Collections.Generic;
 
 public class GameManagerObserver : MonoBehaviourPun, IPunObservable
 {
@@ -8,6 +7,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
     GameStartAnnouncement _GameStartAnnouncement;
     GameManagerStartTheGame _GameManagerStartTheGame;
     GameManagerSetPlayersRoles _GameManagerSetPlayersRoles;
+    GameManagerPlayerVotesController _GameManagerPlayerVotesController;
 
 
     void Start()
@@ -16,6 +16,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
         _GameStartAnnouncement = GetComponent<GameStartAnnouncement>();
         _GameManagerStartTheGame = GetComponent<GameManagerStartTheGame>();
         _GameManagerSetPlayersRoles = GetComponent<GameManagerSetPlayersRoles>();
+        _GameManagerPlayerVotesController = GetComponent<GameManagerPlayerVotesController>();
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -48,6 +49,11 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 #region GameManagerSetPlayersRoles
                 stream.SendNext(_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet);
                 #endregion
+
+                #region GameManagerPlayerVotesController
+                stream.SendNext(_GameManagerPlayerVotesController._Votes.PlayersVotesAgainst);
+                stream.SendNext(_GameManagerPlayerVotesController._Votes.PlayerVoteCondition);
+                #endregion
             }
         }
         else
@@ -75,6 +81,11 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
 
             #region GameManagerSetPlayersRoles
             _GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet = (bool)stream.ReceiveNext();
+            #endregion
+
+            #region GameManagerPlayerVotesController
+            _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst = (Dictionary<int, int>)stream.ReceiveNext();
+            _GameManagerPlayerVotesController._Votes.PlayerVoteCondition = (Dictionary<int, bool[]>)stream.ReceiveNext();
             #endregion
         }
     }

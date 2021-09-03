@@ -6,7 +6,5 @@ public interface IPlayerGameController
     bool CanPlayerBeActiveInNightPhase { get; set; }
     bool CanPlayerBeActiveInDayPhase { get; set; }
     bool IsPlayerAlive { get; set; }
-    bool HasPlayerVotedInNightPhase { get; set; }
-    bool HasPlayerVotedInDayPhase { get; set; }
     bool HasVotePhaseResetted { get; set; }
 }

@@ -21,6 +21,7 @@ public class GameManagerStartTheGame : MonoBehaviourPun
     GameStartAnnouncement _GameStartAnnouncement;
     GameManagerTimer _GameManagerTimer;
     GameManagerSetPlayersRoles _GameManagerSetPlayersRoles;
+    GameManagerPlayerVotesController _GameManagerPlayerVotesController;
 
 
     void Awake()
@@ -28,6 +29,7 @@ public class GameManagerStartTheGame : MonoBehaviourPun
         _GameStartAnnouncement = GetComponent<GameStartAnnouncement>();
         _GameManagerTimer = GetComponent<GameManagerTimer>();
         _GameManagerSetPlayersRoles = GetComponent<GameManagerSetPlayersRoles>();
+        _GameManagerPlayerVotesController = GetComponent<GameManagerPlayerVotesController>();
     }
 
     public void StartTheGame()
@@ -37,6 +39,8 @@ public class GameManagerStartTheGame : MonoBehaviourPun
             _GameManagerTimer.RunTimer();
 
             if(!_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet) _GameManagerSetPlayersRoles.SetPlayersRoles();
+
+            _GameManagerPlayerVotesController.TransferPlayersVotesToTheNewMaster();
 
             _GameStart.GameStarted = true;
         }

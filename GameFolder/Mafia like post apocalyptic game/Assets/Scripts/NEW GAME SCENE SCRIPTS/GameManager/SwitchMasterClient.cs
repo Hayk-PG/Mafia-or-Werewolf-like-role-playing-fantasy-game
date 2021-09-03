@@ -6,12 +6,14 @@ public class SwitchMasterClient : MonoBehaviourPunCallbacks
 {
     GameStartAnnouncement _GameStartAnnouncement;
     GameManagerStartTheGame _GameManagerStartTheGame;
+    GameManagerPlayerVotesController _GameManagerPlayerVotesController;
 
 
     void Awake()
     {
         _GameStartAnnouncement = GetComponent<GameStartAnnouncement>();
         _GameManagerStartTheGame = GetComponent<GameManagerStartTheGame>();
+        _GameManagerPlayerVotesController = GetComponent<GameManagerPlayerVotesController>();
     }
 
     void OnApplicationFocus(bool focus)
@@ -42,7 +44,7 @@ public class SwitchMasterClient : MonoBehaviourPunCallbacks
             {
                 PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer.GetNext());
             }
- 
+
             PhotonNetwork.SendAllOutgoingCommands();
         }
     }

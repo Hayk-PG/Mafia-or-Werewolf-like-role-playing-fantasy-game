@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
 {
-    static PlayerGameController MyView;
-
     [Serializable] class Conditions
     {
         [SerializeField] internal bool canPlayerBeActiveInNightPhase;
@@ -37,16 +35,6 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
         get => _Conditions.isPlayerAlive;
         set => _Conditions.isPlayerAlive = value;
     }    
-    public bool HasPlayerVotedInNightPhase
-    {
-        get => _Conditions.hasPlayerVotedInNightPhase;
-        set => _Conditions.hasPlayerVotedInNightPhase = value;
-    }
-    public bool HasPlayerVotedInDayPhase
-    {
-        get => _Conditions.hasPlayerVotedInDayPhase;
-        set => _Conditions.hasPlayerVotedInDayPhase = value;
-    }
     public bool HasVotePhaseResetted
     {
         get => _Conditions.hasVotePhaseResetted;
@@ -55,30 +43,29 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
 
 
     GameManagerSetPlayersRoles _GameManagerSetPlayersRoles;
+    GameManagerPlayerVotesController _GameManagerPlayerVotesController;
 
 
     void Awake()
     {
-        if (PhotonView.IsMine)
+        if (photonView.IsMine)
         {
-            MyView = this;
             _GameManagerSetPlayersRoles = FindObjectOfType<GameManagerSetPlayersRoles>();
+            _GameManagerPlayerVotesController = FindObjectOfType<GameManagerPlayerVotesController>();
         }
         else
         {
             enabled = false;
         }
+        
     }
 
     void Update()
     {
-        RoleButtonPressed(RoleButtonController => 
+        RoleButtonPressed(RoleButtonController =>
         {
-            if (MyView != null)
-            {
-                OnNightVote(RoleButtonController);
-                OnDayVote(RoleButtonController);
-            }
+            OnNightVote(RoleButtonController);
+            OnDayVote(RoleButtonController);
         });
     }
 
@@ -94,57 +81,69 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
         }
     }
 
-    #region OnNightVote + NightPhaseVoting RPC
-    void OnNightVote(RoleButtonController RoleButtonController)
+    #region OnNightVote
+    void OnNightVote(RoleButtonController _RoleButtonController)
     {
-        if (CanPlayerBeActiveInNightPhase && !HasPlayerVotedInNightPhase)
+        if (CanPlayerBeActiveInNightPhase)
         {
-            if (RoleButtonController._GameObjects.IconObjs[0].activeInHierarchy)
-            {
-                MyView.photonView.RPC("NightPhaseVoting", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, RoleButtonController._OwnerInfo.OwnerActorNumber, RoleButtonController._OwnerInfo.OwenrUserId);
+            bool hasPlayerVoted = _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(PhotonNetwork.LocalPlayer.ActorNumber) ?
+                _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[PhotonNetwork.LocalPlayer.ActorNumber][0] : false;
 
-                RoleButtonController.GameobjectActivityForAllRoleButtons(0, false);
+            if (!hasPlayerVoted)
+            {               
+                _RoleButtonController._UI.VotesCount++;
+                
+                photonView.RPC("SendVotingInformationToMaster", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, true);
+
+                _RoleButtonController.GameobjectActivityForAllRoleButtons(0, false);
             }
         }
     }
-
-    [PunRPC]
-    void NightPhaseVoting(int senderActorNumber, int votedAgainstActorNumber, string votedAgainstownerId)
-    {
-        GameObject sender = PhotonNetwork.CurrentRoom.GetPlayer(senderActorNumber).TagObject as GameObject;
-
-        sender.GetComponent<IPlayerGameController>().HasPlayerVotedInNightPhase = true;
-    }
     #endregion
 
-    #region OnDayVote + DayPhaseVoting RPC
-    void OnDayVote(RoleButtonController RoleButtonController)
+    #region OnDayVote
+    void OnDayVote(RoleButtonController _RoleButtonController)
     {
-        if (CanPlayerBeActiveInDayPhase && !HasPlayerVotedInDayPhase)
+        if (CanPlayerBeActiveInDayPhase)
         {
-            if (RoleButtonController._GameObjects.IconObjs[0].activeInHierarchy)
-            {
-                MyView.photonView.RPC("DayPhaseVoting", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, RoleButtonController._OwnerInfo.OwnerActorNumber, RoleButtonController._OwnerInfo.OwenrUserId);
+            bool hasPlayerVoted = _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(PhotonNetwork.LocalPlayer.ActorNumber) ?
+                _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[PhotonNetwork.LocalPlayer.ActorNumber][1] : false;
 
-                RoleButtonController.GameobjectActivityForAllRoleButtons(0, false);
+            if (!hasPlayerVoted)
+            {
+                _RoleButtonController._UI.VotesCount++;
+               
+                photonView.RPC("SendVotingInformationToMaster", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, false);
+
+                _RoleButtonController.GameobjectActivityForAllRoleButtons(0, false);
             }
         }
     }
-
-    [PunRPC]
-    void DayPhaseVoting(int senderActorNumber, int votedAgainstActorNumber, string votedAgainstownerId)
-    {
-        GameObject sender = PhotonNetwork.CurrentRoom.GetPlayer(senderActorNumber).TagObject as GameObject;
-
-        sender.GetComponent<IPlayerGameController>().HasPlayerVotedInDayPhase = true;
-    }
     #endregion
 
+    #region SendVotingInformationToMaster RPC
+    [PunRPC]
+    void SendVotingInformationToMaster(int votedAgainstActorNumber, int senderActorNumber, bool isNightPhase)
+    {
+        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.ContainsKey(votedAgainstActorNumber))
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst[votedAgainstActorNumber]++;
+        }
+        else
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.Add(votedAgainstActorNumber, 1);
+        }
 
 
-
-
-
-
-
+        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition.ContainsKey(senderActorNumber))
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition[senderActorNumber][0] = isNightPhase;
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition[senderActorNumber][1] = !isNightPhase;
+        }
+        else
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition.Add(senderActorNumber, new bool[2] { isNightPhase, !isNightPhase });
+        }
+    }
+    #endregion
 }

@@ -608,4 +608,16 @@ public class PlayerBaseConditions : MonoBehaviourPun
         get => Profile.instance;
     }
     #endregion
+
+
+    //NEW
+    public static string PlayerRoleName(int actorNumber)
+    {        
+        string playerRoleName = 
+            System.Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == PhotonNetwork.LocalPlayer.ActorNumber) != null &&
+            System.Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)._GameInfo.RoleName != null?
+            System.Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == PhotonNetwork.CurrentRoom.GetPlayer(actorNumber).ActorNumber)._GameInfo.RoleName : null;
+        return playerRoleName;
+    }
+
 }
