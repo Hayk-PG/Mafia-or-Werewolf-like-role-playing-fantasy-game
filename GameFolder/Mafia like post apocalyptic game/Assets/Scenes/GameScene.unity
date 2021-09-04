@@ -526,6 +526,7 @@ GameObject:
   - component: {fileID: 129607988}
   - component: {fileID: 129607997}
   - component: {fileID: 129607998}
+  - component: {fileID: 129607999}
   - component: {fileID: 129607995}
   - component: {fileID: 129607996}
   - component: {fileID: 129608000}
@@ -630,6 +631,11 @@ MonoBehaviour:
     timerText: {fileID: 1656060455}
     sun: {fileID: 2137149076}
     moon: {fileID: 617658652}
+  _LostPlayer:
+    hasLostPlayerSet: 0
+  _Teams:
+    isTeamsCountSet: 0
+    isTeamsCountUpdated: 0
 --- !u!114 &129607994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -772,6 +778,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3e58f44011297d4a8a90f0d5c767a13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &129607999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129607987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6740c24b602e714494ce2e019d9d9b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TeamsCount:
+    firstTeamCountText: {fileID: 101902023}
+    secondTeamCountText: {fileID: 1742719430}
 --- !u!114 &129608000
 MonoBehaviour:
   m_ObjectHideFlags: 0

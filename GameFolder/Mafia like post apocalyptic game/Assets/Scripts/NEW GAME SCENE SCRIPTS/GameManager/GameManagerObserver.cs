@@ -8,6 +8,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
     GameManagerStartTheGame _GameManagerStartTheGame;
     GameManagerSetPlayersRoles _GameManagerSetPlayersRoles;
     GameManagerPlayerVotesController _GameManagerPlayerVotesController;
+    TeamsController _TeamsController;
 
 
     void Start()
@@ -17,6 +18,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
         _GameManagerStartTheGame = GetComponent<GameManagerStartTheGame>();
         _GameManagerSetPlayersRoles = GetComponent<GameManagerSetPlayersRoles>();
         _GameManagerPlayerVotesController = GetComponent<GameManagerPlayerVotesController>();
+        _TeamsController = GetComponent<TeamsController>();
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -40,6 +42,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 stream.SendNext(_GameManagerTimer._Timer.DaysCount);
                 stream.SendNext(_GameManagerTimer._Timer.DayTime);
                 stream.SendNext(_GameManagerTimer._Timer.HasGameStartVFXInstantiated);
+                stream.SendNext(_GameManagerTimer._LostPlayer.HasLostPlayerSet);
+                stream.SendNext(_GameManagerTimer._LostPlayer.LostPlayers);
                 #endregion
 
                 #region GameManagerStartTheGame
@@ -53,6 +57,13 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 #region GameManagerPlayerVotesController
                 stream.SendNext(_GameManagerPlayerVotesController._Votes.PlayersVotesAgainst);
                 stream.SendNext(_GameManagerPlayerVotesController._Votes.PlayerVoteCondition);
+                stream.SendNext(_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted);
+                #endregion
+
+                #region TeamsController
+                stream.SendNext(_TeamsController._TeamsCount.Team);
+                stream.SendNext(_TeamsController._TeamsCount.FirstTeamCount);
+                stream.SendNext(_TeamsController._TeamsCount.SecondTeamCount);
                 #endregion
             }
         }
@@ -73,6 +84,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             _GameManagerTimer._Timer.DaysCount = (int)stream.ReceiveNext();
             _GameManagerTimer._Timer.DayTime = (bool)stream.ReceiveNext();
             _GameManagerTimer._Timer.HasGameStartVFXInstantiated = (bool)stream.ReceiveNext();
+            _GameManagerTimer._LostPlayer.HasLostPlayerSet = (bool)stream.ReceiveNext();
+            _GameManagerTimer._LostPlayer.LostPlayers = (Dictionary<int, bool>)stream.ReceiveNext();
             #endregion
 
             #region GameManagerStartTheGame
@@ -86,6 +99,13 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             #region GameManagerPlayerVotesController
             _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst = (Dictionary<int, int>)stream.ReceiveNext();
             _GameManagerPlayerVotesController._Votes.PlayerVoteCondition = (Dictionary<int, bool[]>)stream.ReceiveNext();
+            _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted = (Dictionary<int, string>)stream.ReceiveNext();
+            #endregion
+
+            #region TeamsController
+            _TeamsController._TeamsCount.Team = (Dictionary<int, string>)stream.ReceiveNext();
+            _TeamsController._TeamsCount.FirstTeamCount = (int)stream.ReceiveNext();
+            _TeamsController._TeamsCount.SecondTeamCount = (int)stream.ReceiveNext();
             #endregion
         }
     }

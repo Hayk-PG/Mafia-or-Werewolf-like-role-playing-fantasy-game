@@ -93,10 +93,15 @@ public class RoleButtonController : MonoBehaviourPun
     [Serializable] public struct GameObjects
     {
         [SerializeField] GameObject[] iconObjs;
+        [SerializeField] GameObject[] explosionFX;
 
         public GameObject[] IconObjs
         {
             get => iconObjs;
+        }
+        public GameObject[] ExplosionFX
+        {
+            get => explosionFX;
         }
     }
     
@@ -114,6 +119,7 @@ public class RoleButtonController : MonoBehaviourPun
     void Update()
     {
         AssignOwnerObj();
+        OnPlayerLost();
     }
 
     #region AssignOwnerObj
@@ -132,9 +138,10 @@ public class RoleButtonController : MonoBehaviourPun
     #endregion
 
     #region GameObjectActivity
-    public void GameObjectActivity(int index, bool isActive)
+    public void GameObjectActivity(int index, bool isActive, bool activateExplosionFX)
     {
         if(index >= 0) _GameObjects.IconObjs[index].SetActive(isActive);
+        if(index >= 0 && activateExplosionFX) _GameObjects.ExplosionFX[index].SetActive(!isActive);
     }
     #endregion
 
@@ -144,6 +151,19 @@ public class RoleButtonController : MonoBehaviourPun
         foreach (var roleButtonController in FindObjectsOfType<RoleButtonController>())
         {
             if (index >= 0) roleButtonController._GameObjects.IconObjs[index].SetActive(isActive);
+        }
+    }
+    #endregion
+
+    #region OnPlayerLost
+    void OnPlayerLost()
+    {
+        if(!_GameInfo.IsPlayerAlive && !_GameObjects.ExplosionFX[1].activeInHierarchy)
+        {
+            _GameObjects.ExplosionFX[1].SetActive(true);
+            _GameObjects.IconObjs[2].SetActive(true);
+            _UI.VisibleToEveryoneImage = _UI.RoleImage;
+
         }
     }
     #endregion

@@ -7,6 +7,6 @@ public class BloodGoreExplosionScript : MonoBehaviour
 
     void OnEnable()
     {
-        PlayerBaseConditions._MyGameControllerComponents.UISoundsInGame.PlayUISoundFX(bloodGoreExplosionSoundFX);
+        //PlayerBaseConditions._MyGameControllerComponents.UISoundsInGame.PlayUISoundFX(bloodGoreExplosionSoundFX);
     }
 }

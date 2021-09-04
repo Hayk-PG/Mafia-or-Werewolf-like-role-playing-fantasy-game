@@ -6,32 +6,24 @@ public class GameManagerPlayerVotesController : MonoBehaviourPun
 {
     [Serializable] public class Votes
     {
-        public Dictionary<int, int> PlayersVotesAgainst = new Dictionary<int, int>();
-        public Dictionary<int, bool[]> PlayerVoteCondition = new Dictionary<int, bool[]>();
+        public Dictionary<int, int> PlayersVotesAgainst { get; set; }
+        public Dictionary<int, bool[]> PlayerVoteCondition { get; set; }
+        public Dictionary<int, string> AgainstWhomPlayerVoted { get; set; }
     }
 
     public Votes _Votes;
 
-    void Update()
+    void Awake()
     {
-        foreach (var item in _Votes.PlayersVotesAgainst)
-        {
-            print(item.Key + "/" + item.Value);
-        }
-        foreach (var item in _Votes.PlayerVoteCondition)
-        {
-            print(item.Key + "/" + item.Value[0] + "/" + item.Value[1]);
-        }
+        _Votes.PlayersVotesAgainst = new Dictionary<int, int>();
+        _Votes.PlayerVoteCondition = new Dictionary<int, bool[]>();
+        _Votes.AgainstWhomPlayerVoted = new Dictionary<int, string>();
     }
 
     public void TransferPlayersVotesToTheNewMaster()
     {
         _Votes.PlayersVotesAgainst = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst;
         _Votes.PlayerVoteCondition = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition;
-
-        foreach (var item in _Votes.PlayerVoteCondition)
-        {
-            print(item + "/" + item.Value[0] + "/" + item.Value[1]);
-        }
+        _Votes.AgainstWhomPlayerVoted = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted;
     }
 }

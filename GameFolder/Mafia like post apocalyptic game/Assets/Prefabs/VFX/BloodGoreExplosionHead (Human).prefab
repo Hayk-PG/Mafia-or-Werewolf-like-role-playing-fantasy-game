@@ -4913,7 +4913,6 @@ GameObject:
   - component: {fileID: 1033712057897698133}
   - component: {fileID: 7314603049200662889}
   - component: {fileID: 2035050857001296386}
-  - component: {fileID: 7585848365189503198}
   - component: {fileID: -4962221894491348254}
   m_Layer: 0
   m_Name: BloodGoreExplosionHead (Human)
@@ -9739,19 +9738,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &7585848365189503198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2826999541827380041}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 912f3247b0421c443a8398316aa40676, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  second: 3
 --- !u!114 &-4962221894491348254
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -95,6 +95,7 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
                 
                 photonView.RPC("SendVotingInformationToMaster", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, true);
 
+                _RoleButtonController.GameObjectActivity(0, false, true);
                 _RoleButtonController.GameobjectActivityForAllRoleButtons(0, false);
             }
         }
@@ -115,6 +116,7 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
                
                 photonView.RPC("SendVotingInformationToMaster", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, false);
 
+                _RoleButtonController.GameObjectActivity(0, false, true);
                 _RoleButtonController.GameobjectActivityForAllRoleButtons(0, false);
             }
         }
@@ -125,6 +127,8 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
     [PunRPC]
     void SendVotingInformationToMaster(int votedAgainstActorNumber, int senderActorNumber, bool isNightPhase)
     {
+        #region Vote 
+
         if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.ContainsKey(votedAgainstActorNumber))
         {
             FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst[votedAgainstActorNumber]++;
@@ -134,6 +138,9 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
             FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.Add(votedAgainstActorNumber, 1);
         }
 
+        #endregion
+
+        #region Has player voted ?
 
         if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition.ContainsKey(senderActorNumber))
         {
@@ -144,6 +151,21 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
         {
             FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition.Add(senderActorNumber, new bool[2] { isNightPhase, !isNightPhase });
         }
+
+        #endregion
+
+        #region Showing all players against whom we voted
+
+        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.ContainsKey(senderActorNumber))
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted[senderActorNumber] = Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, RoleButton => RoleButton._OwnerInfo.OwnerActorNumber == votedAgainstActorNumber)._OwnerInfo.OwnerName;
+        }
+        else
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.Add(senderActorNumber, Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, RoleButton => RoleButton._OwnerInfo.OwnerActorNumber == votedAgainstActorNumber)._OwnerInfo.OwnerName);
+        }
+
+        #endregion
     }
     #endregion
 }
