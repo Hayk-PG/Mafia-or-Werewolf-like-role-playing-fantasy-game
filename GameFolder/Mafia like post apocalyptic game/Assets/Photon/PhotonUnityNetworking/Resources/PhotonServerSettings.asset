@@ -72,6 +72,10 @@ MonoBehaviour:
   - NightPhaseVoting
   - DayPhaseVoting
   - SendVotingInformationToMaster
+  - MedicRPC
+  - RPC
+  - DayVoteRPC
+  - NightRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

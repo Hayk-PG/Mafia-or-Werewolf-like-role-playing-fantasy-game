@@ -722,7 +722,7 @@ MonoBehaviour:
     - {fileID: 1869263856}
   _ListOfRoles:
     playersRolesNames:
-    - Citizen
+    - Medic
     - Citizen
     - Infected
     - Medic

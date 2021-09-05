@@ -20,7 +20,7 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
     {
         get => GetComponent<PhotonView>();
     }
-    public bool CanPlayerBeActiveInNightPhase
+    public virtual bool CanPlayerBeActiveInNightPhase
     {
         get => _Conditions.canPlayerBeActiveInNightPhase;
         set => _Conditions.canPlayerBeActiveInNightPhase = value;
@@ -42,8 +42,9 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
     }
 
 
-    GameManagerSetPlayersRoles _GameManagerSetPlayersRoles;
-    GameManagerPlayerVotesController _GameManagerPlayerVotesController;
+    GameManagerSetPlayersRoles _GameManagerSetPlayersRoles { get; set; }
+    GameManagerPlayerVotesController _GameManagerPlayerVotesController { get; set; }
+    PlayerActionOnDifferentRoles _PlayerActionOnDifferentRoles { get; set; }
 
 
     void Awake()
@@ -52,20 +53,20 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
         {
             _GameManagerSetPlayersRoles = FindObjectOfType<GameManagerSetPlayersRoles>();
             _GameManagerPlayerVotesController = FindObjectOfType<GameManagerPlayerVotesController>();
+            _PlayerActionOnDifferentRoles = GetComponent<PlayerActionOnDifferentRoles>();
         }
         else
         {
             enabled = false;
         }
-        
     }
 
     void Update()
     {
         RoleButtonPressed(RoleButtonController =>
         {
-            OnNightVote(RoleButtonController);
-            OnDayVote(RoleButtonController);
+            _PlayerActionOnDifferentRoles.PlayerActionInNightPhase(CanPlayerBeActiveInNightPhase, HasPlayerVoted(), RoleButtonController);
+            _PlayerActionOnDifferentRoles.PlayerActionInDayPhase(CanPlayerBeActiveInDayPhase, HasPlayerVoted(), RoleButtonController);
         });
     }
 
@@ -81,91 +82,9 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
         }
     }
 
-    #region OnNightVote
-    void OnNightVote(RoleButtonController _RoleButtonController)
+    bool HasPlayerVoted()
     {
-        if (CanPlayerBeActiveInNightPhase)
-        {
-            bool hasPlayerVoted = _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(PhotonNetwork.LocalPlayer.ActorNumber) ?
+        return _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(PhotonNetwork.LocalPlayer.ActorNumber) ?
                 _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[PhotonNetwork.LocalPlayer.ActorNumber][0] : false;
-
-            if (!hasPlayerVoted)
-            {               
-                _RoleButtonController._UI.VotesCount++;
-                
-                photonView.RPC("SendVotingInformationToMaster", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, true);
-
-                _RoleButtonController.GameObjectActivity(0, false, true);
-                _RoleButtonController.GameobjectActivityForAllRoleButtons(0, false);
-            }
-        }
     }
-    #endregion
-
-    #region OnDayVote
-    void OnDayVote(RoleButtonController _RoleButtonController)
-    {
-        if (CanPlayerBeActiveInDayPhase)
-        {
-            bool hasPlayerVoted = _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(PhotonNetwork.LocalPlayer.ActorNumber) ?
-                _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[PhotonNetwork.LocalPlayer.ActorNumber][1] : false;
-
-            if (!hasPlayerVoted)
-            {
-                _RoleButtonController._UI.VotesCount++;
-               
-                photonView.RPC("SendVotingInformationToMaster", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, false);
-
-                _RoleButtonController.GameObjectActivity(0, false, true);
-                _RoleButtonController.GameobjectActivityForAllRoleButtons(0, false);
-            }
-        }
-    }
-    #endregion
-
-    #region SendVotingInformationToMaster RPC
-    [PunRPC]
-    void SendVotingInformationToMaster(int votedAgainstActorNumber, int senderActorNumber, bool isNightPhase)
-    {
-        #region Vote 
-
-        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.ContainsKey(votedAgainstActorNumber))
-        {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst[votedAgainstActorNumber]++;
-        }
-        else
-        {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.Add(votedAgainstActorNumber, 1);
-        }
-
-        #endregion
-
-        #region Has player voted ?
-
-        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition.ContainsKey(senderActorNumber))
-        {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition[senderActorNumber][0] = isNightPhase;
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition[senderActorNumber][1] = !isNightPhase;
-        }
-        else
-        {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition.Add(senderActorNumber, new bool[2] { isNightPhase, !isNightPhase });
-        }
-
-        #endregion
-
-        #region Showing all players against whom we voted
-
-        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.ContainsKey(senderActorNumber))
-        {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted[senderActorNumber] = Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, RoleButton => RoleButton._OwnerInfo.OwnerActorNumber == votedAgainstActorNumber)._OwnerInfo.OwnerName;
-        }
-        else
-        {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.Add(senderActorNumber, Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, RoleButton => RoleButton._OwnerInfo.OwnerActorNumber == votedAgainstActorNumber)._OwnerInfo.OwnerName);
-        }
-
-        #endregion
-    }
-    #endregion
 }

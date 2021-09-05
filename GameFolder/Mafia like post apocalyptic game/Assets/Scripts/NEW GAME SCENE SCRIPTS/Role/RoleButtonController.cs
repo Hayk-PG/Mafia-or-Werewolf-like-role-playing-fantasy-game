@@ -73,6 +73,7 @@ public class RoleButtonController : MonoBehaviourPun
         [SerializeField] string roleName;
         [SerializeField] int roleIndex;
         [SerializeField] bool isPlayerAlive;
+        [SerializeField] bool isPlayerHealed;
 
         public string RoleName
         {
@@ -89,11 +90,17 @@ public class RoleButtonController : MonoBehaviourPun
             get => isPlayerAlive;
             set => isPlayerAlive = value;
         }
+        public bool IsPlayerHealed
+        {
+            get => isPlayerHealed;
+            set => isPlayerHealed = value;
+        }
     }
     [Serializable] public struct GameObjects
     {
         [SerializeField] GameObject[] iconObjs;
         [SerializeField] GameObject[] explosionFX;
+        [SerializeField] GameObject[] otherFX;
 
         public GameObject[] IconObjs
         {
@@ -102,6 +109,10 @@ public class RoleButtonController : MonoBehaviourPun
         public GameObject[] ExplosionFX
         {
             get => explosionFX;
+        }
+        public GameObject[] OtherFX
+        {
+            get => otherFX;
         }
     }
     
@@ -160,8 +171,8 @@ public class RoleButtonController : MonoBehaviourPun
     {
         if(!_GameInfo.IsPlayerAlive && !_GameObjects.ExplosionFX[1].activeInHierarchy)
         {
-            _GameObjects.ExplosionFX[1].SetActive(true);
-            _GameObjects.IconObjs[2].SetActive(true);
+            _GameObjects.OtherFX[0].SetActive(true);
+            _GameObjects.OtherFX[1].SetActive(true);
             _UI.VisibleToEveryoneImage = _UI.RoleImage;
 
         }

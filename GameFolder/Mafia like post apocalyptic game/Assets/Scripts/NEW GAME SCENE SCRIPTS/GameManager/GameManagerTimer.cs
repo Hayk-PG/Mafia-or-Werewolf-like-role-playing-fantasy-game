@@ -123,8 +123,6 @@ public class GameManagerTimer : MonoBehaviourPun
     const byte CreateVFX = 0;
     const byte EverySecond = 1;
 
-    int roleButtonIconIndex = -1;
-
 
     void Awake()
     {
@@ -290,9 +288,7 @@ public class GameManagerTimer : MonoBehaviourPun
                 if (playerTagObj != null)
                 {
                     IPlayerGameController playerController = playerTagObj.GetComponent<IPlayerGameController>();
-
-                    if (roleButtonIconIndex == -1 && PlayerBaseConditions.PlayerRoleName(playerController.PhotonView.OwnerActorNr) != null) roleButtonIconIndex = PlayerBaseConditions.PlayerRoleName(playerController.PhotonView.OwnerActorNr) == RoleNames.Medic ? 1 : 0;
-
+             
                     Callback(playerController);
                 }
             }
@@ -335,25 +331,50 @@ public class GameManagerTimer : MonoBehaviourPun
                     {
                         if (PlayerHasntVotedYet(playerController, 0))
                         {
-                            ActivateGameobjectActivityForAllRoleButtons();
+                            ActivateGameobjectActivityForAllRoleButtons(PlayerBaseConditions.RoleIndex(playerController.PhotonView.OwnerActorNr));
                         }
                         if (PlayerHasVoted(playerController, 0))
                         {
-                            DeactivateGameobjectActivityForAllRoleButtons();
+                            DeactivateGameobjectActivityForAllRoleButtons(PlayerBaseConditions.RoleIndex(playerController.PhotonView.OwnerActorNr));
                         }
 
                         _PhasesIcons.IsNightPhaseIconsActive = true;
                         _PhasesIcons.IsDayPhaseIconsActive = false;
-                    }                    
+                    }
+
+                    SheriffDiscoverTheRole(playerController);
                 }
 
                 if (DoesVotedConditionsExist(playerController))
                 {
                     _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[playerController.PhotonView.OwnerActorNr][1] = false;
                 }
-            }          
-        }     
-    }   
+            }
+
+            MedicHealsThePlayer();            
+        }
+    }
+
+    #region MedicHealsThePlayer
+    void MedicHealsThePlayer()
+    {
+        foreach (var heal in _GameManagerPlayerVotesController._Votes.HealedPlayers)
+        {
+            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == heal.Key)._GameInfo.IsPlayerHealed = heal.Value;
+        }
+    }
+    #endregion
+
+    #region SheriffDiscoverTheRole
+    void SheriffDiscoverTheRole(IPlayerGameController playerController)
+    {
+        foreach (var role in _GameManagerPlayerVotesController._Votes.DiscoverTheRole)
+        {
+            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == role.Key)._UI.VisibleToEveryoneImage = Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == role.Key)._UI.RoleImage;
+        }
+    }
+    #endregion
+
     #endregion
 
     #region OnDayPhase
@@ -372,11 +393,11 @@ public class GameManagerTimer : MonoBehaviourPun
                     {
                         if (PlayerHasntVotedYet(playerController, 1))
                         {
-                            ActivateGameobjectActivityForAllRoleButtons();
+                            ActivateGameobjectActivityForAllRoleButtons(0);
                         }
                         if (PlayerHasVoted(playerController, 1))
                         {
-                            DeactivateGameobjectActivityForAllRoleButtons();
+                            DeactivateGameobjectActivityForAllRoleButtons(0);
                         }
 
                         _PhasesIcons.IsDayPhaseIconsActive = true;
@@ -403,24 +424,24 @@ public class GameManagerTimer : MonoBehaviourPun
         }
     }
 
-    void ActivateGameobjectActivityForAllRoleButtons()
+    void ActivateGameobjectActivityForAllRoleButtons(int iconIndex)
     {
         LoopRoleButtonsCallback(RoleButton => 
         {
             if (RoleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber)
             {
-                if (RoleButton._GameInfo.IsPlayerAlive) RoleButton.GameObjectActivity(roleButtonIconIndex, true, false);
+                if (RoleButton._GameInfo.IsPlayerAlive) RoleButton.GameObjectActivity(iconIndex, true, false);
             }
         });
     }
 
-    void DeactivateGameobjectActivityForAllRoleButtons()
+    void DeactivateGameobjectActivityForAllRoleButtons(int iconIndex)
     {
         LoopRoleButtonsCallback(RoleButton =>
         {
             if (RoleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber)
             {
-                RoleButton.GameObjectActivity(roleButtonIconIndex, false, false);
+                RoleButton.GameObjectActivity(PlayerBaseConditions.RoleIndex(iconIndex), false, false);
             }
         });
     }
@@ -456,6 +477,8 @@ public class GameManagerTimer : MonoBehaviourPun
     {
         if (_Timer.NightTime && _Timer.Seconds > 30 || _Timer.DayTime && _Timer.Seconds > 60)
         {
+            GetTeamsCount();
+
             if (DoesVotedConditionsExist(playerController))
             {
                 _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[playerController.PhotonView.OwnerActorNr][0] = false;
@@ -467,11 +490,15 @@ public class GameManagerTimer : MonoBehaviourPun
 
             if (playerController.PhotonView.IsMine)
             {
-                DeactivateGameobjectActivityForAllRoleButtons();             
+                DeactivateGameobjectActivityForAllRoleButtons(playerController.PhotonView.OwnerActorNr);             
             }
 
             GetLostPlayer();
-            GetTeamsCount(); 
+
+            if (_LostPlayer.HasLostPlayerSet)
+            {               
+                OnResetPlayersVotes();
+            }            
         }
     }
     #endregion
@@ -487,7 +514,7 @@ public class GameManagerTimer : MonoBehaviourPun
 
             LoopRoleButtonsCallback(Rolebutton =>
             {
-                if (Rolebutton._UI.VotesCount > 0) playersReceivedVotesCount.Add(Rolebutton._UI.VotesCount);
+                if (Rolebutton._UI.VotesCount > 0 && !Rolebutton._GameInfo.IsPlayerHealed) playersReceivedVotesCount.Add(Rolebutton._UI.VotesCount);
             });
 
             playersReceivedVotesCount.Sort();
@@ -495,15 +522,11 @@ public class GameManagerTimer : MonoBehaviourPun
             SetLostPlayer(playersReceivedVotesCount, LostPlayer =>
             {
                 _LostPlayer.LostPlayers.Add(LostPlayer._OwnerInfo.OwnerActorNumber, false);
-            },
-            OnLostPlayerFound => 
-            {
-                OnResetPlayersVotes();
             });           
         }      
     }
 
-    void SetLostPlayer(List<int> playersReceivedVotesCount, Action<RoleButtonController> Callback, Action<bool> Finish)
+    void SetLostPlayer(List<int> playersReceivedVotesCount, Action<RoleButtonController> Callback)
     {
         if (playersReceivedVotesCount.Count > 0)
         {
@@ -519,8 +542,6 @@ public class GameManagerTimer : MonoBehaviourPun
                 }
             }
         }
-
-        Finish?.Invoke(_LostPlayer.HasLostPlayerSet);
     }
 
     void ShareLostPlayers(IPlayerGameController playerController)
@@ -541,7 +562,7 @@ public class GameManagerTimer : MonoBehaviourPun
         object[] datas = (object[])obj.CustomData;
 
         if ((string)datas[3] == "PlayersVotes")
-        {
+        {          
             foreach (var votes in _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst)
             {
                 Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == votes.Key)._UI.VotesCount = votes.Value;
@@ -560,10 +581,13 @@ public class GameManagerTimer : MonoBehaviourPun
     { 
         if (_GameManagerPlayerVotesController._Votes.PlayersVotesAgainst.Count > 0) _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst = new Dictionary<int, int>();
         if (_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted.Count > 0) _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted = new Dictionary<int, string>();
-     
+        if (_GameManagerPlayerVotesController._Votes.HealedPlayers.Count > 0) _GameManagerPlayerVotesController._Votes.HealedPlayers = new Dictionary<int, bool>();
+        if (_GameManagerPlayerVotesController._Votes.DiscoverTheRole.Count > 0) _GameManagerPlayerVotesController._Votes.DiscoverTheRole = new Dictionary<int, bool>();
+
         LoopRoleButtonsCallback(RoleButton => 
         {
             RoleButton._UI.VotesCount = 0;
+            RoleButton._GameInfo.IsPlayerHealed = false;
         });
 
         OnUpdateTeamsCount();

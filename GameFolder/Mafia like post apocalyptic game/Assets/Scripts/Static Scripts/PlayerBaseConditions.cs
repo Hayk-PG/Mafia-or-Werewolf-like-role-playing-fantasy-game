@@ -619,5 +619,17 @@ public class PlayerBaseConditions : MonoBehaviourPun
             System.Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == PhotonNetwork.CurrentRoom.GetPlayer(actorNumber).ActorNumber)._GameInfo.RoleName : null;
         return playerRoleName;
     }
+    public static RoleButtonController GetRoleButton(int actorNumber)
+    {
+        return System.Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == actorNumber);
+    }
+    public static int RoleIndex(int actorNumber)
+    {
+        if (PlayerRoleName(actorNumber) != null)
+        {
+            return PlayerRoleName(actorNumber) == RoleNames.Citizen ? 0 : PlayerRoleName(actorNumber) == RoleNames.Medic ? 1 : PlayerRoleName(actorNumber) == RoleNames.Sheriff ? 2 : PlayerRoleName(actorNumber) == RoleNames.Soldier ? 3 : PlayerRoleName(actorNumber) == RoleNames.Infected ? 4 : 5;
+        }
+        else return 0;
+    }
 
 }
