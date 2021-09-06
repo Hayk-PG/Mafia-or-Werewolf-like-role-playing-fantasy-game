@@ -722,7 +722,7 @@ MonoBehaviour:
     - {fileID: 1869263856}
   _ListOfRoles:
     playersRolesNames:
-    - Medic
+    - Infected
     - Citizen
     - Infected
     - Medic
@@ -47196,6 +47196,7 @@ GameObject:
   - component: {fileID: 9093511863045106186}
   - component: {fileID: 9093511863045106184}
   - component: {fileID: 9093511863045106181}
+  - component: {fileID: 9093511863045106182}
   m_Layer: 0
   m_Name: AudioController
   m_TagString: Untagged
@@ -47225,6 +47226,18 @@ MonoBehaviour:
   _Sounds:
     soundFX:
     - {fileID: 8300000, guid: 66af1e392fd164546985a66d611dae52, type: 3}
+--- !u!114 &9093511863045106182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9093511863045106180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81ae09c0d1641fe469c7068189a385c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &9093511863045106184
 AudioSource:
   m_ObjectHideFlags: 0

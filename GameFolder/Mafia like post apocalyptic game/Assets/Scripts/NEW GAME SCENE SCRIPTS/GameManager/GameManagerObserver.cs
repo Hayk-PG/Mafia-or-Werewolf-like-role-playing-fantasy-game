@@ -60,6 +60,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 stream.SendNext(_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted);
                 stream.SendNext(_GameManagerPlayerVotesController._Votes.HealedPlayers);
                 stream.SendNext(_GameManagerPlayerVotesController._Votes.DiscoverTheRole);
+                stream.SendNext(_GameManagerPlayerVotesController._Votes.InfectedVotesAgainst);
                 #endregion
 
                 #region TeamsController
@@ -104,6 +105,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted = (Dictionary<int, string>)stream.ReceiveNext();
             _GameManagerPlayerVotesController._Votes.HealedPlayers = (Dictionary<int, bool>)stream.ReceiveNext();
             _GameManagerPlayerVotesController._Votes.DiscoverTheRole = (Dictionary<int, bool>)stream.ReceiveNext();
+            _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst = (Dictionary<int, int>)stream.ReceiveNext();
             #endregion
 
             #region TeamsController

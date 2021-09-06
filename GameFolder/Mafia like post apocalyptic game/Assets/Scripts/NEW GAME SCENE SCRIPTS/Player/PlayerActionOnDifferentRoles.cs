@@ -12,8 +12,8 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
                 photonView.RPC("NightRPC", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, true);
             }
 
-            _RoleButtonController.GameObjectActivity(RoleIndex(), false, true);
-            _RoleButtonController.GameobjectActivityForAllRoleButtons(RoleIndex(), false);
+            _RoleButtonController.VoteFXActivity(false, true);
+            _RoleButtonController.VoteFXActivityForAllRoleButton(false);
         }  
     }
 
@@ -28,8 +28,8 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
                 photonView.RPC("DayVoteRPC", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, false);
             }
 
-            _RoleButtonController.GameObjectActivity(0, false, true);
-            _RoleButtonController.GameobjectActivityForAllRoleButtons(0, false);
+            _RoleButtonController.VoteFXActivity(false, true);
+            _RoleButtonController.VoteFXActivityForAllRoleButton(false);
         }
     }
 
@@ -40,6 +40,7 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
         {
             case RoleNames.Medic: OnMedic(votedAgainstActorNumber); break;
             case RoleNames.Sheriff: OnSheriff(votedAgainstActorNumber); break;
+            case RoleNames.Infected: OnInfecteds(votedAgainstActorNumber); break;
         }
         
         PlayerVoted(votedAgainstActorNumber, senderActorNumber, isNightPhase);
@@ -116,6 +117,18 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
         else
         {
             FindObjectOfType<GameManagerPlayerVotesController>()._Votes.DiscoverTheRole.Add(votedAgainstActorNumber, true);
+        }
+    }
+
+    void OnInfecteds(int votedAgainstActorNumber)
+    {
+        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.InfectedVotesAgainst.ContainsKey(votedAgainstActorNumber))
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.InfectedVotesAgainst[votedAgainstActorNumber]++;
+        }
+        else
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.InfectedVotesAgainst.Add(votedAgainstActorNumber, 1);
         }
     }
 }

@@ -41,6 +41,7 @@ public class RoleButtonController : MonoBehaviourPun
         [SerializeField] Text voteName;
         [SerializeField] Sprite roleSprite;
         [SerializeField] Image visibleToEveryoneImage;
+        [SerializeField] CanvasGroup votesCountTextCanvasGroup;
 
         public string Name
         {
@@ -66,6 +67,10 @@ public class RoleButtonController : MonoBehaviourPun
         {
             get => visibleToEveryoneImage.sprite;
             set => visibleToEveryoneImage.sprite = value;
+        }
+        public CanvasGroup VotesCountTextCanvasGroup
+        {
+            get => votesCountTextCanvasGroup;
         }
     }
     [Serializable] public struct GameInfo
@@ -98,21 +103,27 @@ public class RoleButtonController : MonoBehaviourPun
     }
     [Serializable] public struct GameObjects
     {
-        [SerializeField] GameObject[] iconObjs;
-        [SerializeField] GameObject[] explosionFX;
-        [SerializeField] GameObject[] otherFX;
+        [SerializeField] GameObject voteFX;
+        [SerializeField] GameObject voteFxExplosion;
 
-        public GameObject[] IconObjs
+        [SerializeField] GameObject diedIcon;
+        [SerializeField] GameObject diedGoreExplosion;
+
+        public GameObject VoteFX
         {
-            get => iconObjs;
+            get => voteFX;
         }
-        public GameObject[] ExplosionFX
+        public GameObject VoteFxExplosion
         {
-            get => explosionFX;
+            get => voteFxExplosion;
         }
-        public GameObject[] OtherFX
+        public GameObject DiedIcon
         {
-            get => otherFX;
+            get => diedIcon;
+        }
+        public GameObject DiedGoreExplosion
+        {
+            get => diedGoreExplosion;
         }
     }
     
@@ -149,19 +160,19 @@ public class RoleButtonController : MonoBehaviourPun
     #endregion
 
     #region GameObjectActivity
-    public void GameObjectActivity(int index, bool isActive, bool activateExplosionFX)
+    public void VoteFXActivity(bool isActive, bool isClicked)
     {
-        if(index >= 0) _GameObjects.IconObjs[index].SetActive(isActive);
-        if(index >= 0 && activateExplosionFX) _GameObjects.ExplosionFX[index].SetActive(!isActive);
+        if (_GameObjects.VoteFX.activeInHierarchy != isActive) _GameObjects.VoteFX.SetActive(isActive);
+        if ( isClicked) _GameObjects.VoteFxExplosion.SetActive(true);
     }
     #endregion
 
     #region GameobjectActivityForAllRoleButtons
-    public void GameobjectActivityForAllRoleButtons(int index, bool isActive)
+    public void VoteFXActivityForAllRoleButton(bool isActive)
     {
         foreach (var roleButtonController in FindObjectsOfType<RoleButtonController>())
         {
-            if (index >= 0) roleButtonController._GameObjects.IconObjs[index].SetActive(isActive);
+            if (roleButtonController._GameObjects.VoteFX.activeInHierarchy != isActive) roleButtonController._GameObjects.VoteFX.SetActive(isActive);
         }
     }
     #endregion
@@ -169,12 +180,11 @@ public class RoleButtonController : MonoBehaviourPun
     #region OnPlayerLost
     void OnPlayerLost()
     {
-        if(!_GameInfo.IsPlayerAlive && !_GameObjects.ExplosionFX[1].activeInHierarchy)
+        if(!_GameInfo.IsPlayerAlive && _GameObjects.DiedIcon.activeInHierarchy == false)
         {
-            _GameObjects.OtherFX[0].SetActive(true);
-            _GameObjects.OtherFX[1].SetActive(true);
             _UI.VisibleToEveryoneImage = _UI.RoleImage;
-
+            _GameObjects.DiedIcon.SetActive(true);
+            _GameObjects.DiedGoreExplosion.SetActive(true);
         }
     }
     #endregion
