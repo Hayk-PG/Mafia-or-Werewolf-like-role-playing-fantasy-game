@@ -184,21 +184,21 @@ public class AvatarButtonController : MonoBehaviour
 
     public void VoteBarController(string playerName, bool isActive)
     {
-        VoteBar.Name = playerName;
+        //VoteBar.Name = playerName;
 
-        if (isActive)
-        {
-            VoteBar.VoteBarCanvasGroup.alpha = 1;
-            VoteBar.VoteBarCanvasGroup.blocksRaycasts = true;
-            VoteBar.VoteBarCanvasGroup.interactable = true;
-            VoteBar.Anim.SetTrigger("play");           
-        }
-        else
-        {
-            VoteBar.VoteBarCanvasGroup.alpha = 0;
-            VoteBar.VoteBarCanvasGroup.blocksRaycasts = false;
-            VoteBar.VoteBarCanvasGroup.interactable = false;
-        }
+        //if (isActive)
+        //{
+        //    VoteBar.VoteBarCanvasGroup.alpha = 1;
+        //    VoteBar.VoteBarCanvasGroup.blocksRaycasts = true;
+        //    VoteBar.VoteBarCanvasGroup.interactable = true;
+        //    VoteBar.Anim.SetTrigger("play");           
+        //}
+        //else
+        //{
+        //    VoteBar.VoteBarCanvasGroup.alpha = 0;
+        //    VoteBar.VoteBarCanvasGroup.blocksRaycasts = false;
+        //    VoteBar.VoteBarCanvasGroup.interactable = false;
+        //}
     }
 
     public void ShowHiddenAvatarSprite()

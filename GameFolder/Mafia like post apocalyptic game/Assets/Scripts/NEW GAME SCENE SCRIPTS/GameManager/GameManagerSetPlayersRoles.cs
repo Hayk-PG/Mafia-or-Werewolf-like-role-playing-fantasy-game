@@ -198,6 +198,7 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun
             case RoleNames.Citizen: roleImage = _ImageOfRoles.CitizenRoleSprites[gender]; break;
             case RoleNames.Medic: roleImage = _ImageOfRoles.DoctorRoleSprites[gender]; break;
             case RoleNames.Sheriff: roleImage = _ImageOfRoles.SheriffRoleSprites[gender]; break;
+            case RoleNames.Soldier: roleImage = _ImageOfRoles.SoldierRoleSprite[gender]; break;
             case RoleNames.Infected: roleImage = _ImageOfRoles.InfectedRoleSprites[gender]; break;
             case RoleNames.Lizard: roleImage = _ImageOfRoles.WitcherRoleSprites[gender]; break;
         }

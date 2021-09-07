@@ -341,54 +341,7 @@ public class GameManagerTimer : MonoBehaviourPun
         }
 
         InfectedTeam(playerController);
-    }
-
-    #region MedicHealsThePlayer
-    void MedicHealsThePlayer()
-    {
-        foreach (var heal in _GameManagerPlayerVotesController._Votes.HealedPlayers)
-        {
-            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == heal.Key)._GameInfo.IsPlayerHealed = heal.Value;
-        }
-    }
-    #endregion
-
-    #region SheriffDiscoverTheRole
-    void SheriffDiscoverTheRole(IPlayerGameController playerController)
-    {
-        foreach (var role in _GameManagerPlayerVotesController._Votes.DiscoverTheRole)
-        {
-            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == role.Key)._UI.VisibleToEveryoneImage = Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == role.Key)._UI.RoleImage;
-        }
-    }
-    #endregion
-
-    #region InfectedsVotes
-    void InfectedsVotes(IPlayerGameController playerController)
-    {
-        foreach (var victim in _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst)
-        {
-            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == victim.Key)._UI.VotesCount = victim.Value;
-        }
-    }
-    #endregion
-
-    #region InfectedTeam
-    void InfectedTeam(IPlayerGameController playerController)
-    {
-        if(PlayerBaseConditions.PlayerRoleName(playerController.PhotonView.OwnerActorNr) == RoleNames.Infected && playerController.PhotonView.IsMine)
-        {
-            LoopRoleButtonsCallback(RoleButton => 
-            {
-                if(RoleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber && RoleButton._GameInfo.RoleName == RoleNames.Infected)
-                {
-                    if (RoleButton._UI.VisibleToEveryoneImage != RoleButton._UI.RoleImage) RoleButton._UI.VisibleToEveryoneImage = RoleButton._UI.RoleImage;
-                }
-            });
-        }
-    }
-    #endregion
-
+    }   
     #endregion
 
     #region OnDayPhase
@@ -543,11 +496,68 @@ public class GameManagerTimer : MonoBehaviourPun
             }
 
             GetLostPlayer();
+            OnResetPlayersVotes();
+        }
 
-            if (_LostPlayer.HasLostPlayerSet)
-            {               
-                OnResetPlayersVotes();
-            }            
+        ResetLizardsVotes();
+    }
+    #endregion
+
+    #region ResetLizardsVotes
+    void ResetLizardsVotes()
+    {
+        if (_Timer.NightTime && _Timer.Seconds > 30)
+        {
+            if (_GameManagerPlayerVotesController._Votes.LizardVoteAgainst.Count > 0) _GameManagerPlayerVotesController._Votes.LizardVoteAgainst = new Dictionary<int, bool>();
+        }
+    }
+    #endregion
+
+    #region MedicHealsThePlayer
+    void MedicHealsThePlayer()
+    {
+        foreach (var heal in _GameManagerPlayerVotesController._Votes.HealedPlayers)
+        {
+            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == heal.Key)._GameInfo.IsPlayerHealed = heal.Value;
+        }
+    }
+    #endregion
+
+    #region SheriffDiscoverTheRole
+    void SheriffDiscoverTheRole(IPlayerGameController playerController)
+    {
+        foreach (var role in _GameManagerPlayerVotesController._Votes.DiscoverTheRole)
+        {
+            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == role.Key)._UI.VisibleToEveryoneImage = Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == role.Key)._UI.RoleImage;
+        }
+    }
+    #endregion
+
+    #region InfectedsVotes
+    void InfectedsVotes(IPlayerGameController playerController)
+    {
+        foreach (var victim in _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst)
+        {
+            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == victim.Key)._UI.VotesCount = victim.Value;
+        }
+    }
+    #endregion
+
+    #region InfectedTeam
+    void InfectedTeam(IPlayerGameController playerController)
+    {
+        if (playerController.PhotonView.IsMine)
+        {
+            if (PlayerBaseConditions.PlayerRoleName(playerController.PhotonView.OwnerActorNr) == RoleNames.Infected)
+            {
+                LoopRoleButtonsCallback(RoleButton =>
+                {
+                    if (RoleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber && RoleButton._GameInfo.RoleName == RoleNames.Infected)
+                    {
+                        if (RoleButton._UI.VisibleToEveryoneImage != RoleButton._UI.RoleImage) RoleButton._UI.VisibleToEveryoneImage = RoleButton._UI.RoleImage;
+                    }
+                });
+            }
         }
     }
     #endregion
@@ -570,7 +580,26 @@ public class GameManagerTimer : MonoBehaviourPun
 
             SetLostPlayer(playersReceivedVotesCount, LostPlayer =>
             {
-                _LostPlayer.LostPlayers.Add(LostPlayer._OwnerInfo.OwnerActorNumber, false);
+                if (!_LostPlayer.LostPlayers.ContainsKey(LostPlayer._OwnerInfo.OwnerActorNumber))
+                {
+                    _LostPlayer.LostPlayers.Add(LostPlayer._OwnerInfo.OwnerActorNumber, false);
+                }
+                else
+                {
+                    _LostPlayer.LostPlayers[LostPlayer._OwnerInfo.OwnerActorNumber] = false;
+                }                   
+            });
+
+            SoldierVote(Key => 
+            {
+                if (!_LostPlayer.LostPlayers.ContainsKey(Key))
+                {
+                    _LostPlayer.LostPlayers.Add(Key, false);
+                }
+                else
+                {
+                    _LostPlayer.LostPlayers[Key] = false;
+                }
             });           
         }      
     }
@@ -590,6 +619,14 @@ public class GameManagerTimer : MonoBehaviourPun
                     break;
                 }
             }
+        }
+    }
+
+    void SoldierVote(Action<int> Key)
+    {
+        foreach (var soldierVote in _GameManagerPlayerVotesController._Votes.SoldierVoteAgainst)
+        {
+            Key?.Invoke(soldierVote.Key);
         }
     }
 
@@ -619,7 +656,7 @@ public class GameManagerTimer : MonoBehaviourPun
 
             foreach (var votes in _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted)
             {
-                print(votes.Key + "/" + votes.Value);
+                Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, _roleButton => _roleButton._OwnerInfo.OwnerActorNumber == votes.Key).VotedNameIconActivity(true, votes.Value);              
             }
         }
     }
@@ -627,18 +664,28 @@ public class GameManagerTimer : MonoBehaviourPun
 
     #region OnResetPlayersVotes
     void OnResetPlayersVotes()
-    { 
-        if (_GameManagerPlayerVotesController._Votes.PlayersVotesAgainst.Count > 0) _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst = new Dictionary<int, int>();
-        if (_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted.Count > 0) _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted = new Dictionary<int, string>();
-        if (_GameManagerPlayerVotesController._Votes.HealedPlayers.Count > 0) _GameManagerPlayerVotesController._Votes.HealedPlayers = new Dictionary<int, bool>();
-        if (_GameManagerPlayerVotesController._Votes.DiscoverTheRole.Count > 0) _GameManagerPlayerVotesController._Votes.DiscoverTheRole = new Dictionary<int, bool>();
-        if (_GameManagerPlayerVotesController._Votes.InfectedVotesAgainst.Count > 0) _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst = new Dictionary<int, int>();
-
+    {
         LoopRoleButtonsCallback(RoleButton => 
         {
+            int key = RoleButton._OwnerInfo.OwnerActorNumber;
+
+            if (_GameManagerPlayerVotesController._Votes.PlayersVotesAgainst.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst[key] = 0;
+            if (_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted[key] = "";
+            if (_GameManagerPlayerVotesController._Votes.HealedPlayers.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.HealedPlayers[key] = false;
+            if (_GameManagerPlayerVotesController._Votes.DiscoverTheRole.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.DiscoverTheRole[key] = false;
+            if (_GameManagerPlayerVotesController._Votes.InfectedVotesAgainst.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst[key] = 0;
+
             RoleButton._UI.VotesCount = 0;
             RoleButton._GameInfo.IsPlayerHealed = false;
+            RoleButton.VotedNameIconActivity(false, null);
         });
+
+
+        //if (_GameManagerPlayerVotesController._Votes.PlayersVotesAgainst.Count > 0) _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst = new Dictionary<int, int>();
+        //if (_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted.Count > 0) _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted = new Dictionary<int, string>();
+        //if (_GameManagerPlayerVotesController._Votes.HealedPlayers.Count > 0) _GameManagerPlayerVotesController._Votes.HealedPlayers = new Dictionary<int, bool>();
+        //if (_GameManagerPlayerVotesController._Votes.DiscoverTheRole.Count > 0) _GameManagerPlayerVotesController._Votes.DiscoverTheRole = new Dictionary<int, bool>();
+        //if (_GameManagerPlayerVotesController._Votes.InfectedVotesAgainst.Count > 0) _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst = new Dictionary<int, int>();
 
         OnUpdateTeamsCount();
     }
@@ -664,6 +711,7 @@ public class GameManagerTimer : MonoBehaviourPun
             {
                 _TeamsController.UpdateTeamsCount();
                 _Teams.IsTeamsCountUpdated = true;
+                print("Teams count updated");
             }
         }
     }

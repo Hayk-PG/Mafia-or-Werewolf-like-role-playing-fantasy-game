@@ -447,7 +447,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: -49.90004}
+  m_AnchoredPosition: {x: 0.000030517578, y: -49.900036}
   m_SizeDelta: {x: -30.023346, y: -2.5237274}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &101902023
@@ -722,8 +722,8 @@ MonoBehaviour:
     - {fileID: 1869263856}
   _ListOfRoles:
     playersRolesNames:
-    - Infected
-    - Citizen
+    - Lizard
+    - Soldier
     - Infected
     - Medic
     - Infected
@@ -47226,6 +47226,7 @@ MonoBehaviour:
   _Sounds:
     soundFX:
     - {fileID: 8300000, guid: 66af1e392fd164546985a66d611dae52, type: 3}
+    - {fileID: 8300000, guid: 052386c1a03eb4c47b4255206f9af3fc, type: 3}
 --- !u!114 &9093511863045106182
 MonoBehaviour:
   m_ObjectHideFlags: 0

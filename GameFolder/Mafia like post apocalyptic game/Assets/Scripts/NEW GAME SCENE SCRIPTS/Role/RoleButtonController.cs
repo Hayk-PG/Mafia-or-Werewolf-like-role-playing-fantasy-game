@@ -103,10 +103,13 @@ public class RoleButtonController : MonoBehaviourPun
     }
     [Serializable] public struct GameObjects
     {
+        [SerializeField] internal GameObject votedNameIconObj;
+
         [SerializeField] GameObject voteFX;
         [SerializeField] GameObject voteFxExplosion;
 
         [SerializeField] GameObject diedIcon;
+        [SerializeField] GameObject diedIcon2;
         [SerializeField] GameObject diedGoreExplosion;
 
         public GameObject VoteFX
@@ -120,6 +123,10 @@ public class RoleButtonController : MonoBehaviourPun
         public GameObject DiedIcon
         {
             get => diedIcon;
+        }
+        public GameObject DiedIcon2
+        {
+            get => diedIcon2;
         }
         public GameObject DiedGoreExplosion
         {
@@ -177,6 +184,23 @@ public class RoleButtonController : MonoBehaviourPun
     }
     #endregion
 
+    #region VotedNameIconActivity
+    public void VotedNameIconActivity(bool isActive, string votedName)
+    {
+        _UI.VoteName = votedName;
+
+        if (isActive == true && !String.IsNullOrEmpty(votedName) && _GameObjects.votedNameIconObj.activeInHierarchy != true)
+        {
+            _GameObjects.votedNameIconObj.SetActive(true);
+            FindObjectOfType<UISoundsInGame>().PlaySoundFX(1);
+        }
+        if (isActive == false)
+        {
+            _GameObjects.votedNameIconObj.SetActive(false);
+        }                 
+    }
+    #endregion
+
     #region OnPlayerLost
     void OnPlayerLost()
     {
@@ -184,6 +208,7 @@ public class RoleButtonController : MonoBehaviourPun
         {
             _UI.VisibleToEveryoneImage = _UI.RoleImage;
             _GameObjects.DiedIcon.SetActive(true);
+            _GameObjects.DiedIcon2.SetActive(true);
             _GameObjects.DiedGoreExplosion.SetActive(true);
         }
     }

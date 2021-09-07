@@ -8,7 +8,7 @@ public class UISoundsInGame : UISounds
        [SerializeField] AudioClip[] soundFX;      
         
         /// <summary>
-        /// 0: Timer
+        /// 0: Timer Pop up 
         /// </summary>
         public AudioClip[] SoundFX
         {

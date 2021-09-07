@@ -44,6 +44,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 stream.SendNext(_GameManagerTimer._Timer.HasGameStartVFXInstantiated);
                 stream.SendNext(_GameManagerTimer._LostPlayer.HasLostPlayerSet);
                 stream.SendNext(_GameManagerTimer._LostPlayer.LostPlayers);
+                stream.SendNext(_GameManagerTimer._Teams.IsTeamsCountSet);
+                stream.SendNext(_GameManagerTimer._Teams.IsTeamsCountUpdated);
                 #endregion
 
                 #region GameManagerStartTheGame
@@ -61,6 +63,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 stream.SendNext(_GameManagerPlayerVotesController._Votes.HealedPlayers);
                 stream.SendNext(_GameManagerPlayerVotesController._Votes.DiscoverTheRole);
                 stream.SendNext(_GameManagerPlayerVotesController._Votes.InfectedVotesAgainst);
+                stream.SendNext(_GameManagerPlayerVotesController._Votes.SoldierVoteAgainst);
+                stream.SendNext(_GameManagerPlayerVotesController._Votes.LizardVoteAgainst);
                 #endregion
 
                 #region TeamsController
@@ -89,6 +93,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             _GameManagerTimer._Timer.HasGameStartVFXInstantiated = (bool)stream.ReceiveNext();
             _GameManagerTimer._LostPlayer.HasLostPlayerSet = (bool)stream.ReceiveNext();
             _GameManagerTimer._LostPlayer.LostPlayers = (Dictionary<int, bool>)stream.ReceiveNext();
+            _GameManagerTimer._Teams.IsTeamsCountSet = (bool)stream.ReceiveNext();
+            _GameManagerTimer._Teams.IsTeamsCountUpdated = (bool)stream.ReceiveNext();
             #endregion
 
             #region GameManagerStartTheGame
@@ -106,6 +112,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             _GameManagerPlayerVotesController._Votes.HealedPlayers = (Dictionary<int, bool>)stream.ReceiveNext();
             _GameManagerPlayerVotesController._Votes.DiscoverTheRole = (Dictionary<int, bool>)stream.ReceiveNext();
             _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst = (Dictionary<int, int>)stream.ReceiveNext();
+            _GameManagerPlayerVotesController._Votes.SoldierVoteAgainst = (Dictionary<int, int>)stream.ReceiveNext();
+            _GameManagerPlayerVotesController._Votes.LizardVoteAgainst = (Dictionary<int, bool>)stream.ReceiveNext();
             #endregion
 
             #region TeamsController

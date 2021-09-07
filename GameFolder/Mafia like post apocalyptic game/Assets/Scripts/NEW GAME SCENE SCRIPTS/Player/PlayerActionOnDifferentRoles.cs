@@ -41,6 +41,8 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
             case RoleNames.Medic: OnMedic(votedAgainstActorNumber); break;
             case RoleNames.Sheriff: OnSheriff(votedAgainstActorNumber); break;
             case RoleNames.Infected: OnInfecteds(votedAgainstActorNumber); break;
+            case RoleNames.Soldier: OnSoldier(votedAgainstActorNumber); break;
+            case RoleNames.Lizard: OnLizard(votedAgainstActorNumber); break;
         }
         
         PlayerVoted(votedAgainstActorNumber, senderActorNumber, isNightPhase);
@@ -49,7 +51,7 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
     [PunRPC]
     void DayVoteRPC(int votedAgainstActorNumber, int senderActorNumber, bool isNightPhase)
     {
-        SendPlayerVoteResultToMasterClient(votedAgainstActorNumber);
+        SendPlayerVoteResultToMasterClient(votedAgainstActorNumber, senderActorNumber);
         PlayerVoted(votedAgainstActorNumber, senderActorNumber, isNightPhase);
         InformMasterClientAgainstWhomPlayerVoted(votedAgainstActorNumber, senderActorNumber);
     }
@@ -72,15 +74,32 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
         }
     }
 
-    void SendPlayerVoteResultToMasterClient(int votedAgainstActorNumber)
+    void SendPlayerVoteResultToMasterClient(int votedAgainstActorNumber, int senderActorNumber)
     {
-        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.ContainsKey(votedAgainstActorNumber))
+        if (HasLizardVotedAgainstUs(senderActorNumber))
         {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst[votedAgainstActorNumber]++;
+            Vote(senderActorNumber);
         }
         else
         {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.Add(votedAgainstActorNumber, 1);
+            Vote(votedAgainstActorNumber);
+        }  
+    }
+
+    bool HasLizardVotedAgainstUs(int senderActorNumber)
+    {
+        return FindObjectOfType<GameManagerPlayerVotesController>()._Votes.LizardVoteAgainst.ContainsKey(senderActorNumber);
+    }
+
+    void Vote(int actorNumber)
+    {
+        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.ContainsKey(actorNumber))
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst[actorNumber]++;
+        }
+        else
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst.Add(actorNumber, 1);
         }
     }
 
@@ -129,6 +148,30 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
         else
         {
             FindObjectOfType<GameManagerPlayerVotesController>()._Votes.InfectedVotesAgainst.Add(votedAgainstActorNumber, 1);
+        }
+    }
+
+    void OnSoldier(int votedAgainstActorNumber)
+    {
+        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.SoldierVoteAgainst.ContainsKey(votedAgainstActorNumber))
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.SoldierVoteAgainst[votedAgainstActorNumber]++;
+        }
+        else
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.SoldierVoteAgainst.Add(votedAgainstActorNumber, 1);
+        }
+    }
+
+    void OnLizard(int votedAgainstActorNumber)
+    {
+        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.LizardVoteAgainst.ContainsKey(votedAgainstActorNumber))
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.LizardVoteAgainst[votedAgainstActorNumber] = true;
+        }
+        else
+        {
+            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.LizardVoteAgainst.Add(votedAgainstActorNumber, true);
         }
     }
 }

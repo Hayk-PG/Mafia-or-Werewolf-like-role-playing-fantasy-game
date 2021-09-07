@@ -38,15 +38,15 @@ public class SwitchMasterClient : MonoBehaviourPunCallbacks
 
     void _SwitchMasterClient()
     {
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    if (PhotonNetwork.PlayerList.Length > 1)
-        //    {
-        //        PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer.GetNext());
-        //    }
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (PhotonNetwork.PlayerList.Length > 1)
+            {
+                PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer.GetNext());
+            }
 
-        //    PhotonNetwork.SendAllOutgoingCommands();
-        //}
+            PhotonNetwork.SendAllOutgoingCommands();
+        }
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)

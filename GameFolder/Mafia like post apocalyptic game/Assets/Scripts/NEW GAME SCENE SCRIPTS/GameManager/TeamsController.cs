@@ -33,7 +33,7 @@ public class TeamsController : MonoBehaviour
         {
             if (!String.IsNullOrEmpty(roleButton._GameInfo.RoleName))
             {
-                _TeamsCount.Team.Add(roleButton._OwnerInfo.OwnerActorNumber, roleButton._GameInfo.RoleName);
+                if (!_TeamsCount.Team.ContainsKey(roleButton._OwnerInfo.OwnerActorNumber)) _TeamsCount.Team.Add(roleButton._OwnerInfo.OwnerActorNumber, roleButton._GameInfo.RoleName);
             }        
         }
 
