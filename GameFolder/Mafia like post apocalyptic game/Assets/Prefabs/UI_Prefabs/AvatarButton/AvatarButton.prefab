@@ -32,10 +32,10 @@ RectTransform:
   m_Father: {fileID: 3139033438916547917}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.48, y: 11.299999}
-  m_SizeDelta: {x: 44, y: 26.7}
+  m_AnchorMin: {x: 0.1525389, y: 0.402}
+  m_AnchorMax: {x: 0.8322695, y: 0.92100006}
+  m_AnchoredPosition: {x: 0.020000458, y: -0.08000183}
+  m_SizeDelta: {x: -1, y: -1.0227928}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6675324661828453039
 CanvasRenderer:
@@ -76,7 +76,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: astvacatur
+  m_Text: astvacaturlllllll
 --- !u!1 &363278906395872515
 GameObject:
   m_ObjectHideFlags: 0
@@ -19830,7 +19830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.2879931, b: 0.23137254, a: 1}
+  m_Color: {r: 0.7960785, g: 0.75294125, b: 0.7019608, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -40000,7 +40000,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6740486339131443022
 RectTransform:
   m_ObjectHideFlags: 0
@@ -40084,9 +40084,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6740486339131443017}
   m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &6740486339131443023
 MonoBehaviour:

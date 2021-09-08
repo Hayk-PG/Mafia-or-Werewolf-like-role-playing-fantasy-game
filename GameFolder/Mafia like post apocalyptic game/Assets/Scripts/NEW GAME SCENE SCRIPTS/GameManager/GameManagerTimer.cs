@@ -159,6 +159,7 @@ public class GameManagerTimer : MonoBehaviourPun
         StartCoroutine(TimerCoroutine(_Timer.Seconds));
 
         _LostPlayer.LostPlayers = FindObjectOfType<GameManagerTimer>()._LostPlayer.LostPlayers;
+        _Teams.IsTeamsCountUpdated = false;
     }
     #endregion
 
@@ -707,12 +708,14 @@ public class GameManagerTimer : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            if (!_Teams.IsTeamsCountUpdated)
-            {
-                _TeamsController.UpdateTeamsCount();
-                _Teams.IsTeamsCountUpdated = true;
-                print("Teams count updated");
-            }
+            //if (!_Teams.IsTeamsCountUpdated)
+            //{
+            //    _TeamsController.UpdateTeamsCount();
+            //    _Teams.IsTeamsCountUpdated = true;
+            //    print("Teams count updated");
+            //}
+
+            _TeamsController.UpdateTeamsCount();
         }
     }
     #endregion
