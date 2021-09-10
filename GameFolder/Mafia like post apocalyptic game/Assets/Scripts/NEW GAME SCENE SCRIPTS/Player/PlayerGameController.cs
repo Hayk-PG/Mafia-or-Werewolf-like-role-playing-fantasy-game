@@ -43,7 +43,7 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
 
 
     GameManagerSetPlayersRoles _GameManagerSetPlayersRoles { get; set; }
-    GameManagerPlayerVotesController _GameManagerPlayerVotesController { get; set; }
+    ProfileForGameScene _ProfileForGameScene { get; set; }
     PlayerActionOnDifferentRoles _PlayerActionOnDifferentRoles { get; set; }
 
 
@@ -52,7 +52,7 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
         if (photonView.IsMine)
         {
             _GameManagerSetPlayersRoles = FindObjectOfType<GameManagerSetPlayersRoles>();
-            _GameManagerPlayerVotesController = FindObjectOfType<GameManagerPlayerVotesController>();
+            _ProfileForGameScene = FindObjectOfType<ProfileForGameScene>();
             _PlayerActionOnDifferentRoles = GetComponent<PlayerActionOnDifferentRoles>();
         }
         else
@@ -65,8 +65,9 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
     {
         RoleButtonPressed(RoleButtonController =>
         {
-            _PlayerActionOnDifferentRoles.PlayerActionInNightPhase(CanPlayerBeActiveInNightPhase, HasPlayerVoted(), RoleButtonController);
-            _PlayerActionOnDifferentRoles.PlayerActionInDayPhase(CanPlayerBeActiveInDayPhase, HasPlayerVoted(), RoleButtonController);
+            _PlayerActionOnDifferentRoles.PlayerActionInNightPhase(CanPlayerBeActiveInNightPhase, RoleButtonController);
+            _PlayerActionOnDifferentRoles.PlayerActionInDayPhase(CanPlayerBeActiveInDayPhase, RoleButtonController);
+            _ProfileForGameScene.OnClickRoleButton(!CanPlayerBeActiveInNightPhase && !CanPlayerBeActiveInDayPhase, RoleButtonController._OwnerInfo.OwnerActorNumber, RoleButtonController._OwnerInfo.OwenrUserId);
         });
     }
 
@@ -80,11 +81,5 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
                 OnClick?.Invoke(roleButton);
             });
         }
-    }
-
-    bool HasPlayerVoted()
-    {
-        return _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(PhotonNetwork.LocalPlayer.ActorNumber) ?
-                _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[PhotonNetwork.LocalPlayer.ActorNumber][0] : false;
     }
 }

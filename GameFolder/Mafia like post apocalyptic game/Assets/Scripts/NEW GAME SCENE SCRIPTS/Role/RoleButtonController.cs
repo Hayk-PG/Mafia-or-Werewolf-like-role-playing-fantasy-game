@@ -41,6 +41,7 @@ public class RoleButtonController : MonoBehaviourPun
         [SerializeField] Text voteName;
         [SerializeField] Sprite roleSprite;
         [SerializeField] Image visibleToEveryoneImage;
+        [SerializeField] Button button;
         [SerializeField] CanvasGroup votesCountTextCanvasGroup;
 
         public string Name
@@ -67,6 +68,10 @@ public class RoleButtonController : MonoBehaviourPun
         {
             get => visibleToEveryoneImage.sprite;
             set => visibleToEveryoneImage.sprite = value;
+        }
+        public Button Button
+        {
+            get => button;
         }
         public CanvasGroup VotesCountTextCanvasGroup
         {

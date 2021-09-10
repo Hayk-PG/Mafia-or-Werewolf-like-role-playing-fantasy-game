@@ -120,6 +120,9 @@ public class GameManagerTimer : MonoBehaviourPun
     GameManagerPlayerVotesController _GameManagerPlayerVotesController { get; set; }
     TeamsController _TeamsController { get; set; }
 
+    public delegate void PhaseCallback(bool isResetPhase);
+    public PhaseCallback IsResetPhaseActive;
+
 
     void Awake()
     {
@@ -337,6 +340,7 @@ public class GameManagerTimer : MonoBehaviourPun
                 }
             }
 
+            IsResetPhaseActive?.Invoke(false);
             MedicHealsThePlayer();
             InfectedsVotes(playerController);           
         }
@@ -380,6 +384,8 @@ public class GameManagerTimer : MonoBehaviourPun
                     _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[playerController.PhotonView.OwnerActorNr][0] = false;
                 }
             }
+
+            IsResetPhaseActive?.Invoke(false);
         }
     }
     #endregion
@@ -496,6 +502,7 @@ public class GameManagerTimer : MonoBehaviourPun
                 RoleButtonsVoteCountTextVisibility(playerController, false, false, true);
             }
 
+            IsResetPhaseActive?.Invoke(true);
             GetLostPlayer();
             OnResetPlayersVotes();
         }

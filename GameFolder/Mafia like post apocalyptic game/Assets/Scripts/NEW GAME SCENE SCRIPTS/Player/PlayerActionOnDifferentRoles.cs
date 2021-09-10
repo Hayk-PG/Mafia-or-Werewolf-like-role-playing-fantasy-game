@@ -3,33 +3,33 @@ using System;
 
 public class PlayerActionOnDifferentRoles: MonoBehaviourPun
 {   
-    internal void PlayerActionInNightPhase(bool CanPlayerBeActiveInNightPhase, bool HasPlayerVoted, RoleButtonController _RoleButtonController)
+    internal void PlayerActionInNightPhase(bool CanPlayerBeActiveInNightPhase, RoleButtonController _RoleButtonController)
     {
         if (CanPlayerBeActiveInNightPhase)
         {
-            if (!HasPlayerVoted)
+            if (!HasPlayerVoted(PhotonNetwork.LocalPlayer.ActorNumber, true))
             {
                 photonView.RPC("NightRPC", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, true);
-            }
 
-            _RoleButtonController.VoteFXActivity(false, true);
-            _RoleButtonController.VoteFXActivityForAllRoleButton(false);
+                _RoleButtonController.VoteFXActivity(false, true);
+                _RoleButtonController.VoteFXActivityForAllRoleButton(false);
+            }           
         }  
     }
 
-    internal void PlayerActionInDayPhase(bool CanPlayerBeActiveInDayPhase, bool HasPlayerVoted, RoleButtonController _RoleButtonController)
+    internal void PlayerActionInDayPhase(bool CanPlayerBeActiveInDayPhase, RoleButtonController _RoleButtonController)
     {
         if (CanPlayerBeActiveInDayPhase)
         {
-            if (!HasPlayerVoted)
+            if (!HasPlayerVoted(PhotonNetwork.LocalPlayer.ActorNumber, false))
             {
                 _RoleButtonController._UI.VotesCount++;
 
                 photonView.RPC("DayVoteRPC", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, false);
-            }
 
-            _RoleButtonController.VoteFXActivity(false, true);
-            _RoleButtonController.VoteFXActivityForAllRoleButton(false);
+                _RoleButtonController.VoteFXActivity(false, true);
+                _RoleButtonController.VoteFXActivityForAllRoleButton(false);
+            }           
         }
     }
 
@@ -71,6 +71,25 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
         else
         {
             FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition.Add(senderActorNumber, new bool[2] { isNightPhase, !isNightPhase });
+        }
+    }
+
+    bool HasPlayerVoted(int senderActorNumber, bool isNightPhase)
+    {
+        if(FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition.ContainsKey(senderActorNumber))
+        {
+            if (isNightPhase)
+            {
+                return FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition[senderActorNumber][0];
+            }
+            else
+            {
+                return FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition[senderActorNumber][1];
+            }
+        }
+        else
+        {
+            return false;
         }
     }
 

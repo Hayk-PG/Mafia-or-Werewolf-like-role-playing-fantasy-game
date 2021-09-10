@@ -11,6 +11,7 @@ public class GameStartAnnouncement : MonoBehaviourPun
     [Serializable] public class Timer
     {
         [SerializeField] Text gameStartAnnouncementText;
+        [SerializeField] Text onlinePlayersListText;
         [SerializeField] GameObject gameStartAnnouncementScreenObj;
         [SerializeField] GameObject gameStartAnnouncementTextObj;
         [SerializeField] int seconds;
@@ -21,6 +22,11 @@ public class GameStartAnnouncement : MonoBehaviourPun
         {
             get => gameStartAnnouncementText.text;
             set => gameStartAnnouncementText.text = value;
+        }
+        public string OnlinePlayersListText
+        {
+            get => onlinePlayersListText.text;
+            set => onlinePlayersListText.text = value;
         }
         public GameObject GameStartAnnouncementScreenObj
         {
@@ -50,6 +56,7 @@ public class GameStartAnnouncement : MonoBehaviourPun
     public Timer _Timer;
     GameManagerStartTheGame _GameManagerStartTheGame;
     GameManagerSetPlayersRoles _GameManagerSetPlayersRoles;
+    NetworkCallbacks _NetworkCallbacks;
 
 
     void Awake()
@@ -58,6 +65,17 @@ public class GameStartAnnouncement : MonoBehaviourPun
 
         _GameManagerStartTheGame = GetComponent<GameManagerStartTheGame>();
         _GameManagerSetPlayersRoles = GetComponent<GameManagerSetPlayersRoles>();
+        _NetworkCallbacks = GetComponent<NetworkCallbacks>();
+    }
+
+    void OnEnable()
+    {
+        _NetworkCallbacks.UpdateOnlinePlayersListCallback += OnUpdateOnlinePlayersList;
+    }
+
+    void OnDisable()
+    {
+        _NetworkCallbacks.UpdateOnlinePlayersListCallback -= OnUpdateOnlinePlayersList;
     }
 
     void Start()
@@ -86,6 +104,19 @@ public class GameStartAnnouncement : MonoBehaviourPun
             _Timer.GameStartAnnouncementText = "Will start in " + _Timer.Seconds.ToString("D2") + " seconds";
             if (_Timer.IsTimeToStartTheGame) _GameManagerStartTheGame.StartTheGame();
             yield return new WaitForSeconds(1);
+        }
+    }
+
+    void OnUpdateOnlinePlayersList()
+    {
+        if (!_Timer.IsTimeToStartTheGame)
+        {
+            _Timer.OnlinePlayersListText = "<color=#ffa500ff>" + PhotonNetwork.PlayerList.Length + "/" + (int)PhotonNetwork.CurrentRoom.CustomProperties[RoomCustomProperties.MinRequiredCount] + "</color>" + "\n";
+
+            foreach (var onlinePlayer in PhotonNetwork.PlayerList)
+            {
+                _Timer.OnlinePlayersListText += onlinePlayer.NickName + " is <color=#00ff00ff>online...</color>" + "\n";
+            }
         }
     }
 

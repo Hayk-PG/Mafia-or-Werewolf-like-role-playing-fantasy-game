@@ -1,62 +1,56 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class ProfileForGameScene : MonoBehaviour
 {
     int previousActorNumber;
+    bool isResetPhase;
 
+    GameManagerTimer _GameManagerTimer;
+
+
+    void Awake()
+    {
+        _GameManagerTimer = FindObjectOfType<GameManagerTimer>();
+    }
 
     void OnEnable()
     {
-        SubToEvents.SubscribeToEvents(delegate
-        {
-            PlayerBaseConditions.MyComponents.GetGameManagerEvents.OnClickPlayerAvatar += GetGameManagerEvents_OnClickPlayerAvatar;
-
-            PlayerBaseConditions._MyGameManager.OnDayVote += _MyGameManager_OnDayVote;
-            PlayerBaseConditions._MyGameManager.OnNightVote += _MyGameManager_OnNightVote;
-        });
+        _GameManagerTimer.IsResetPhaseActive += CanViewTheProfile;
     }
-   
+
     void OnDisable()
     {
-        if (PlayerBaseConditions.MyComponents != null)
+        _GameManagerTimer.IsResetPhaseActive -= CanViewTheProfile;
+    }
+
+    void Update()
+    {
+        if (!isResetPhase)
         {
-            PlayerBaseConditions.MyComponents.GetGameManagerEvents.OnClickPlayerAvatar -= GetGameManagerEvents_OnClickPlayerAvatar;
-        }
-
-        if (PlayerBaseConditions._IsMyGameControllerComponentesNotNull)
-        {            
-            PlayerBaseConditions._MyGameManager.OnDayVote -= _MyGameManager_OnDayVote;
-            PlayerBaseConditions._MyGameManager.OnNightVote -= _MyGameManager_OnNightVote;
+            MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[0], false);
         }
     }
 
-    #region _MyGameManager_OnNightVote
-    void _MyGameManager_OnNightVote()
-    {
-        MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[0], false);
-        PlayerBaseConditions.HideUnhideVFXByTags(Tags.NightTimeVFX, false);
+    void CanViewTheProfile(bool isResetPhase)
+    {       
+        this.isResetPhase = isResetPhase;
     }
-    #endregion
 
-    #region _MyGameManager_OnDayVote
-    void _MyGameManager_OnDayVote()
+    #region OnClickRoleButton
+    public void OnClickRoleButton(bool canPlayerViewTheProfile, int actorNumber, string playfabId)
     {
-        MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[0], false);
-        PlayerBaseConditions.HideUnhideVFXByTags(Tags.NightTimeVFX, false);
-    }
-    #endregion
+        if (canPlayerViewTheProfile)
+        {
+            MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[0], true);
 
-    #region GetGameManagerEvents_OnClickPlayerAvatar
-    void GetGameManagerEvents_OnClickPlayerAvatar(int actorNumber, string playfabId)
-    {
-        MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[0], true);
-
-        GameScene();
-        UpdatePlayerProfile(actorNumber);
-        UpdatePlaterStats(actorNumber);
-        CheckPlayerVotes(actorNumber);
-        SendFriendButtonActivity(playfabId);
-        ShowPlayerProfilePicture(actorNumber);
+            GameScene();
+            UpdatePlayerProfile(actorNumber);
+            UpdatePlaterStats(actorNumber);
+            //CheckPlayerVotes(actorNumber);
+            SendFriendButtonActivity(playfabId);
+            ShowPlayerProfilePicture(actorNumber);
+        }
     }
     #endregion
 
@@ -72,7 +66,7 @@ public class ProfileForGameScene : MonoBehaviour
     #region CheckPlayerProfile + SetDefaultPage
     void UpdatePlayerProfile(int actorNumber)
     {        
-        PlayerBaseConditions.PlayerProfile.Name = PlayerBaseConditions.Avatar(actorNumber).AvatarName;
+        PlayerBaseConditions.PlayerProfile.Name = PlayerBaseConditions.GetRoleButton(actorNumber)._OwnerInfo.OwnerName;
         PlayerBaseConditions.PlayerProfile.FlagImage = System.Array.Find(Flags.instance.FlagSprites, flag => flag.name.Substring(5, flag.name.Length - 5) == ConvertStrings.GetCountryCode(PlayerBaseConditions.Player(actorNumber).CustomProperties[PlayerKeys.LocationKey].ToString()));
         PlayerBaseConditions.PlayerProfile.FirstLoginDate = PlayerBaseConditions.Player(actorNumber).CustomProperties[PlayerKeys.RegDateKey].ToString();       
     }

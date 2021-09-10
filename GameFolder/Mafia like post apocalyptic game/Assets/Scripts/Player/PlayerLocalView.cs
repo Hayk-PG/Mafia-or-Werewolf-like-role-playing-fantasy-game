@@ -37,10 +37,10 @@ public class PlayerLocalView : MonoBehaviourPun
             PlayerBaseConditions.MyComponents.GetGameManagerEvents.OnClickDayVote += GetGameManagerEvents_OnClickDayVote;
             PlayerBaseConditions.MyComponents.PlayerRPC.OnLizardMixPlayersNamesChars += PlayerRPC_OnLizardMixPlayersNamesChars;
 
-            PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerWelcome += NetworkCallbacks_OnPlayerWelcome;
-            PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerJoinedGame += NetworkCallbacks_OnPlayerJoinedGame;
-            PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerLeftGame += NetworkCallbacks_OnPlayerLeftGame;
-            PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnMasterSwitched += NetworkCallbacks_OnMasterSwitched;
+            //PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerWelcome += NetworkCallbacks_OnPlayerWelcome;
+            //PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerJoinedGame += NetworkCallbacks_OnPlayerJoinedGame;
+            //PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerLeftGame += NetworkCallbacks_OnPlayerLeftGame;
+            //PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnMasterSwitched += NetworkCallbacks_OnMasterSwitched;
         });
     }
    
@@ -67,10 +67,10 @@ public class PlayerLocalView : MonoBehaviourPun
             PlayerBaseConditions._MyGameControllerComponents.DeathTab.OnDeathTabClosed -= DeathTab_OnDeathTabClosed;           
             PlayerBaseConditions._MyGameControllerComponents.GameControllerRPC.OnLostPlayer -= GameControllerRPC_OnLostPlayer;
 
-            PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerWelcome -= NetworkCallbacks_OnPlayerWelcome;
-            PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerJoinedGame -= NetworkCallbacks_OnPlayerJoinedGame;
-            PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerLeftGame -= NetworkCallbacks_OnPlayerLeftGame;
-            PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnMasterSwitched -= NetworkCallbacks_OnMasterSwitched;
+            //PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerWelcome -= NetworkCallbacks_OnPlayerWelcome;
+            //PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerJoinedGame -= NetworkCallbacks_OnPlayerJoinedGame;
+            //PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnPlayerLeftGame -= NetworkCallbacks_OnPlayerLeftGame;
+            //PlayerBaseConditions._MyGameControllerComponents.NetworkCallbacks.OnMasterSwitched -= NetworkCallbacks_OnMasterSwitched;
         }
 
         if(PlayerBaseConditions.MyComponents != null)
