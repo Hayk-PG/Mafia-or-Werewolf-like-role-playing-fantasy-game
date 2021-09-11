@@ -19,6 +19,7 @@ public class Profile : MonoBehaviour
     [SerializeField] FriendsTab _FriendsTab;
     [SerializeField] NotificationTab _NotificationTab;
     [SerializeField] FriendProfileTab _FriendProfileTab;
+    [SerializeField] FirstTabMessageTab _FirstTabMessageTab;
     [SerializeField] Icons _Icons;
    
     [Serializable] class Global
@@ -38,6 +39,8 @@ public class Profile : MonoBehaviour
         [SerializeField] internal Sprite loadingProfilePic;
         [SerializeField] internal Text nameText;
         [SerializeField] internal Button sendFriendRequestButton;
+        [SerializeField] internal Button deleteFriendButton;
+        [SerializeField] internal Button sendMessageButton;
     }
     [Serializable] class SecondTab
     {
@@ -114,6 +117,12 @@ public class Profile : MonoBehaviour
             [SerializeField] internal Button sendMessageButton;
             [SerializeField] internal Button closeMessageButton;
         }
+    }
+    [Serializable] class FirstTabMessageTab
+    {
+        [SerializeField] internal Button sendMessageButton;
+        [SerializeField] internal Button closeMessageTabButton;
+        [SerializeField] internal InputField friendMessageInputField;
     }
     [Serializable] class Icons
     {
@@ -293,6 +302,14 @@ public class Profile : MonoBehaviour
     {
         get => _FirstTab.sendFriendRequestButton;
     }
+    public Button DeleteFriendButton
+    {
+        get => _FirstTab.deleteFriendButton;
+    }
+    public Button SendMessageButton
+    {
+        get => _FirstTab.sendMessageButton;
+    }
     public Button FriendProfileFriendMessageButton
     {
         get => _FriendProfileTab.friendMessageButton;
@@ -304,14 +321,14 @@ public class Profile : MonoBehaviour
     public Button CloseFriendMessageButton
     {
         get => _FriendProfileTab._FriendMessageTab.closeMessageButton;
-    }
+    } 
     public Button CloseNotificationMessageButton
     {
         get => _NotificationTab._NotificationMessageTab.closeMessageTabButton;
     }
 
     /// <summary>
-    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab 7:FriendMessageTab 8: NoticiationMessageTab
+    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab 7:FriendMessageTab 8: NoticiationMessageTab 9:FriendMessageTab
     /// </summary>
     public CanvasGroup[] CanvasGroups;    
     public Transform PlayerVotesTabContainer
@@ -346,8 +363,8 @@ public class Profile : MonoBehaviour
     }
 
 
-    Color32 releasedTabButtonColor => new Color32(255, 255, 255, 255);
-    Color32 clickedTabButtonColor => new Color32(6, 255, 0, 255);
+    public Color32 releasedTabButtonColor;
+    public Color32 clickedTabButtonColor;
 
     ProfilePicContainer ProfilePicContainer { get; set; }
 
@@ -382,6 +399,13 @@ public class Profile : MonoBehaviour
         OnClickTabButtons(TabButtons[2]);
         OnClickTabButtons(TabButtons[3]);
         OnClickTabButtons(TabButtons[4]);
+
+        OnClickSendFriendRequestButton(SendFriendRequestButton);
+        OnClickDeleteFriendButton(DeleteFriendButton);
+        OnClickSendMessageButton(SendMessageButton);
+
+        OnClickFirstTabMessageTabsButtons(_FirstTabMessageTab.sendMessageButton);
+        OnClickFirstTabMessageTabsButtons(_FirstTabMessageTab.closeMessageTabButton);
 
         OnClickFriendProfileButtons(FriendProfileFriendMessageButton);
         OnClickFriendProfileButtons(SendFriendMessageButton);
@@ -451,6 +475,64 @@ public class Profile : MonoBehaviour
                 BgImage = BellIcon;
             }
         });       
+    }
+    #endregion
+
+    #region OnClickSendFriendRequestButton
+    void OnClickSendFriendRequestButton(Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => 
+        {
+            PlayerBaseConditions.PlayfabManager.PlayfabFriends.SendFriendRequest(button.name);
+        });
+    }
+    #endregion
+
+    #region OnClickDeleteFriendButton
+    void OnClickDeleteFriendButton(Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() =>
+        {
+            PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(PlayerBaseConditions.OwnPlayfabId, button.name);
+            PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(button.name, PlayerBaseConditions.OwnPlayfabId);
+        });
+    }
+    #endregion
+
+    #region OnClickSendMessageButton
+    void OnClickSendMessageButton(Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() =>
+        {
+            MyCanvasGroups.CanvasGroupActivity(CanvasGroups[9], true);
+        });
+    }
+    #endregion
+
+    #region OnClickFirstTabMessageTabsButtons
+    void OnClickFirstTabMessageTabsButtons(Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() =>
+        {
+            if(button == _FirstTabMessageTab.sendMessageButton)
+            {
+                if (!String.IsNullOrEmpty(_FirstTabMessageTab.friendMessageInputField.text))
+                {
+                    PlayerBaseConditions.PlayfabManager.PlayfabInternalData.UpdatePlayerInternalData(button.name,
+                        PlayerKeys.InternalData.MessageKey + PlayerBaseConditions.LocalPlayer.NickName, _FirstTabMessageTab.friendMessageInputField.text);
+
+                    _FirstTabMessageTab.friendMessageInputField.text = null;
+                }
+            }
+            if (button == _FirstTabMessageTab.closeMessageTabButton)
+            {
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[9], false);
+            }          
+        });
     }
     #endregion
 

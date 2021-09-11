@@ -1,6 +1,7 @@
 ﻿using Photon.Pun;
 using System.Collections.Generic;
 
+
 public class GameManagerObserver : MonoBehaviourPun, IPunObservable
 {
     GameManagerTimer _GameManagerTimer;
@@ -108,7 +109,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             #region GameManagerPlayerVotesController
             _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst = (Dictionary<int, int>)stream.ReceiveNext();
             _GameManagerPlayerVotesController._Votes.PlayerVoteCondition = (Dictionary<int, bool[]>)stream.ReceiveNext();
-            _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted = (Dictionary<int, string>)stream.ReceiveNext();
+            _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted = (Dictionary<int, string[]>)stream.ReceiveNext();
             _GameManagerPlayerVotesController._Votes.HealedPlayers = (Dictionary<int, bool>)stream.ReceiveNext();
             _GameManagerPlayerVotesController._Votes.DiscoverTheRole = (Dictionary<int, bool>)stream.ReceiveNext();
             _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst = (Dictionary<int, int>)stream.ReceiveNext();

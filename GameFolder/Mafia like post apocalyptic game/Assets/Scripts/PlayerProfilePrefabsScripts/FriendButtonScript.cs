@@ -33,6 +33,8 @@ public class FriendButtonScript : MonoBehaviour
         {
             OnClickFriendButton(GetComponent<FriendButtonScript>());
         });
+
+        OnClickDeleteFriendButton();
     }
 
     void OnClickFriendButton(FriendButtonScript friend)
@@ -47,5 +49,15 @@ public class FriendButtonScript : MonoBehaviour
             });
 
         MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[6], true);
+    }
+
+    void OnClickDeleteFriendButton()
+    {
+        deleteFriendButton.onClick.RemoveAllListeners();
+        deleteFriendButton.onClick.AddListener(() =>
+        {
+            PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(PlayerBaseConditions.OwnPlayfabId, transform.parent.name);
+            PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(transform.parent.name, PlayerBaseConditions.OwnPlayfabId);
+        });
     }
 }

@@ -47,8 +47,8 @@ public class ProfileForGameScene : MonoBehaviour
             GameScene();
             UpdatePlayerProfile(actorNumber);
             UpdatePlaterStats(actorNumber);
-            //CheckPlayerVotes(actorNumber);
-            SendFriendButtonActivity(playfabId);
+            CheckPlayerVotes(actorNumber);
+            IfPlayerIsFriend(playfabId);
             ShowPlayerProfilePicture(actorNumber);
         }
     }
@@ -58,8 +58,18 @@ public class ProfileForGameScene : MonoBehaviour
     void GameScene()
     {
         PlayerBaseConditions.PlayerProfile.SetDefaultPage();
-        PlayerBaseConditions.PlayerProfile.TabButtons[3].gameObject.SetActive(false);
-        PlayerBaseConditions.PlayerProfile.TabButtons[2].gameObject.SetActive(false);
+
+        for (int i = 0; i < PlayerBaseConditions.PlayerProfile.TabButtons.Length; i++)
+        {
+            if (i < 2)
+            {
+                PlayerBaseConditions.PlayerProfile.TabButtons[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                PlayerBaseConditions.PlayerProfile.TabButtons[i].gameObject.SetActive(false);
+            }
+        }
     }
     #endregion
 
@@ -93,16 +103,19 @@ public class ProfileForGameScene : MonoBehaviour
         }
         #endregion
 
-        for (int i = 0; i < PlayerBaseConditions._PlayerTagObject(actorNumber).GetComponent<PlayerGamePlayStatus>().VotedNames.Count; i++)
+        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.ContainsKey(actorNumber))
         {
-            PlayerDisplayedVoteObj playerVote = Instantiate(PlayerBaseConditions.PlayerProfile.PlayerVotesPrefab, PlayerBaseConditions.PlayerProfile.PlayerVotesTabContainer);
-            playerVote.Name = PlayerBaseConditions._PlayerTagObject(actorNumber).GetComponent<PlayerGamePlayStatus>().VotedNames[i];
+            for (int i = 0; i < FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted[actorNumber].Length; i++)
+            {
+                PlayerDisplayedVoteObj playerVote = Instantiate(PlayerBaseConditions.PlayerProfile.PlayerVotesPrefab, PlayerBaseConditions.PlayerProfile.PlayerVotesTabContainer);
+                playerVote.Name = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted[actorNumber][i];
+            }
         }
     }
     #endregion
 
-    #region SendFriendButtonActivity
-    void SendFriendButtonActivity(string playfabId)
+    #region IfPlayerIsFriend
+    void IfPlayerIsFriend(string playfabId)
     {
         PlayerBaseConditions.PlayerProfile.SendFriendRequestButton.gameObject.SetActive(false);
 
@@ -114,13 +127,25 @@ public class ProfileForGameScene : MonoBehaviour
                     if (friend == null)
                     {
                         PlayerBaseConditions.PlayerProfile.SendFriendRequestButton.gameObject.SetActive(true);
+                        PlayerBaseConditions.PlayerProfile.SendMessageButton.gameObject.SetActive(false);
+                        PlayerBaseConditions.PlayerProfile.DeleteFriendButton.gameObject.SetActive(false);
                         SetSendFriendRequestButtonName(playfabId);
                     }
                     else
                     {
                         PlayerBaseConditions.PlayerProfile.SendFriendRequestButton.gameObject.SetActive(false);
+                        PlayerBaseConditions.PlayerProfile.SendMessageButton.gameObject.SetActive(true);
+                        PlayerBaseConditions.PlayerProfile.DeleteFriendButton.gameObject.SetActive(true);
+                        SetMessageButtonName(playfabId);
+                        SetDeleteFriendButtonName(playfabId);
                     }
                 });
+        }
+        else
+        {
+            PlayerBaseConditions.PlayerProfile.SendFriendRequestButton.gameObject.SetActive(false);
+            PlayerBaseConditions.PlayerProfile.SendMessageButton.gameObject.SetActive(false);
+            PlayerBaseConditions.PlayerProfile.DeleteFriendButton.gameObject.SetActive(false);
         }
     }
     #endregion
@@ -129,6 +154,20 @@ public class ProfileForGameScene : MonoBehaviour
     void SetSendFriendRequestButtonName(string playfabId)
     {
         PlayerBaseConditions.PlayerProfile.SendFriendRequestButton.name = playfabId;
+    }
+    #endregion
+
+    #region SetMessageButtonName
+    void SetMessageButtonName(string playfabId)
+    {
+        PlayerBaseConditions.PlayerProfile.SendMessageButton.name = playfabId;
+    }
+    #endregion
+
+    #region SetDeleteFriendButtonName
+    void SetDeleteFriendButtonName(string playfabId)
+    {
+        PlayerBaseConditions.PlayerProfile.DeleteFriendButton.name = playfabId;
     }
     #endregion
 

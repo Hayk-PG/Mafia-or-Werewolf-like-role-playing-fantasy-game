@@ -664,7 +664,8 @@ public class GameManagerTimer : MonoBehaviourPun
 
             foreach (var votes in _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted)
             {
-                Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, _roleButton => _roleButton._OwnerInfo.OwnerActorNumber == votes.Key).VotedNameIconActivity(true, votes.Value);              
+                bool activateVoteNameIcon = _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(votes.Key) && _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[votes.Key][0] == true || _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(votes.Key) && _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[votes.Key][1] == true ? true : false;
+                Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, _roleButton => _roleButton._OwnerInfo.OwnerActorNumber == votes.Key).VotedNameIconActivity(activateVoteNameIcon, votes.Value[votes.Value.Length - 1]);              
             }
         }
     }
@@ -678,7 +679,7 @@ public class GameManagerTimer : MonoBehaviourPun
             int key = RoleButton._OwnerInfo.OwnerActorNumber;
 
             if (_GameManagerPlayerVotesController._Votes.PlayersVotesAgainst.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst[key] = 0;
-            if (_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted[key] = "";
+            //if (_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted[key] = "";
             if (_GameManagerPlayerVotesController._Votes.HealedPlayers.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.HealedPlayers[key] = false;
             if (_GameManagerPlayerVotesController._Votes.DiscoverTheRole.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.DiscoverTheRole[key] = false;
             if (_GameManagerPlayerVotesController._Votes.InfectedVotesAgainst.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst[key] = 0;
@@ -687,13 +688,6 @@ public class GameManagerTimer : MonoBehaviourPun
             RoleButton._GameInfo.IsPlayerHealed = false;
             RoleButton.VotedNameIconActivity(false, null);
         });
-
-
-        //if (_GameManagerPlayerVotesController._Votes.PlayersVotesAgainst.Count > 0) _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst = new Dictionary<int, int>();
-        //if (_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted.Count > 0) _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted = new Dictionary<int, string>();
-        //if (_GameManagerPlayerVotesController._Votes.HealedPlayers.Count > 0) _GameManagerPlayerVotesController._Votes.HealedPlayers = new Dictionary<int, bool>();
-        //if (_GameManagerPlayerVotesController._Votes.DiscoverTheRole.Count > 0) _GameManagerPlayerVotesController._Votes.DiscoverTheRole = new Dictionary<int, bool>();
-        //if (_GameManagerPlayerVotesController._Votes.InfectedVotesAgainst.Count > 0) _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst = new Dictionary<int, int>();
 
         OnUpdateTeamsCount();
     }

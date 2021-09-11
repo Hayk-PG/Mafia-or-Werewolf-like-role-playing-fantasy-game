@@ -107,6 +107,26 @@ public class PlayfabFriends : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region UnFriend
+    public void UnFriend(string playfabID, string friendPlayfabID)
+    {
+        RemoveFriendRequest removeFriend = new RemoveFriendRequest();
+        removeFriend.PlayFabId = playfabID;
+        removeFriend.FriendPlayFabId = friendPlayfabID;
+
+
+        PlayFabServerAPI.RemoveFriend(removeFriend, 
+            removed => 
+            {
+                print("Removed");
+            }, 
+            error => 
+            {
+                print(error.ErrorMessage);
+            });
+    }
+    #endregion
+
     #region DeleteData
     /// <summary>
     /// Deleting the friend request from the internal data
@@ -211,7 +231,7 @@ public class PlayfabFriends : MonoBehaviourPunCallbacks
             {
                 if (PlayerBaseConditions.PlayerProfile.FriendsListContainer.GetChild(i).GetComponent<FriendButtonScript>()?.Name == friend.UserId)
                 {
-                    PlayerBaseConditions.PlayerProfile.FriendsListContainer.GetChild(i).GetComponent<FriendButtonScript>().StatusImageColor = friend.IsOnline ? Color.green : Color.red;
+                    PlayerBaseConditions.PlayerProfile.FriendsListContainer.GetChild(i).GetComponent<FriendButtonScript>().StatusImageColor = friend.IsOnline ? PlayerBaseConditions.PlayerProfile.clickedTabButtonColor : new Color32(255, 0, 64, 255);
                 }
             }
         }

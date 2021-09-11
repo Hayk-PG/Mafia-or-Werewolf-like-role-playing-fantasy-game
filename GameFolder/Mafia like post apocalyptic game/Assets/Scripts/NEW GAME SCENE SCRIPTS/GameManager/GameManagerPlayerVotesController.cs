@@ -13,7 +13,7 @@ public class GameManagerPlayerVotesController : MonoBehaviourPun
         public Dictionary<int, int> SoldierVoteAgainst { get; set; }
         public Dictionary<int, bool> LizardVoteAgainst { get; set; }
         public Dictionary<int, bool[]> PlayerVoteCondition { get; set; }
-        public Dictionary<int, string> AgainstWhomPlayerVoted { get; set; } 
+        public Dictionary<int, string[]> AgainstWhomPlayerVoted { get; set; } 
     }
 
     public Votes _Votes;
@@ -27,7 +27,7 @@ public class GameManagerPlayerVotesController : MonoBehaviourPun
         _Votes.SoldierVoteAgainst = new Dictionary<int, int>();
         _Votes.LizardVoteAgainst = new Dictionary<int, bool>();
         _Votes.PlayerVoteCondition = new Dictionary<int, bool[]>();
-        _Votes.AgainstWhomPlayerVoted = new Dictionary<int, string>();
+        _Votes.AgainstWhomPlayerVoted = new Dictionary<int, string[]>();
     }
 
     public void TransferPlayersVotesToTheNewMaster()
