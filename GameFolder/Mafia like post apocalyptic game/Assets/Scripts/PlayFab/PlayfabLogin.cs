@@ -49,7 +49,7 @@ public class PlayfabLogin : MonoBehaviour
                 PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(result.PlayFabId,
                     get =>
                     {
-                        PlayerBaseConditions.PlayerCustomPropertiesController.SetPhotonPlayerStats(new List<int>
+                        PlayerBaseConditions.PlayerCustomPropertiesController.SetPhotonRankAndTotalTimePlayed(new List<int>
                         {
                                 get.rank,
                                 get.totalTimePlayed

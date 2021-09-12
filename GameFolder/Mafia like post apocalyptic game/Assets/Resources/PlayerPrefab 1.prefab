@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 414759766184833013}
   - component: {fileID: 6315238173576620816}
   - component: {fileID: 9070906567896806046}
+  - component: {fileID: 1427782197283943596}
   m_Layer: 0
   m_Name: PlayerPrefab 1
   m_TagString: Untagged
@@ -114,3 +115,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b90efd0cf168e6409333e67f27c8b6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1427782197283943596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4077868784093597088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451bc6815d47c884bbeac6b8feefeadd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _StatsValue:
+    rank: 0
+    totalTimePlayed: 0
+    asSurvivor: 0
+    asDoctor: 0
+    asSheriff: 0
+    asSoldier: 0
+    asInfected: 0
+    asLizard: 0
+  _Conditions:
+    isPlayerRoleSet: 0

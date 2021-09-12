@@ -53,15 +53,39 @@ public class PlayerCustomPropertiesController : MonoBehaviourPun
     }
     #endregion
 
-    #region SetPhotonPlayerStats
+    #region SetPhotonRankAndTotalTimePlayed
     /// <summary>
     /// 0:Rank 1:TotalTimePlayed
     /// </summary>
     /// <param name="statsList"></param>
-    public void SetPhotonPlayerStats(List<int> statsList)
+    public void SetPhotonRankAndTotalTimePlayed(List<int> statsList)
     {
         PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.Rank] = statsList[0];
         PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.TotalTimePlayed] = statsList[1];
+    }
+    #endregion
+
+    #region SetPhotonPlayerRolesStats
+
+    /// <summary>
+    /// 0:AsSurvivor 1:AsDoctor 2:AsSheriff 3:AsSoldier 4:AsInfected 5:AsWitch
+    /// </summary>
+    /// <param name="statsList"></param>
+    public void SetPhotonPlayerRolesStats(List<int> statsList)
+    {
+        PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.AsSurvivor] = statsList[0];
+        PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.AsDoctor] = statsList[1];
+        PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.AsSheriff] = statsList[2];
+        PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.AsSoldier] = statsList[3];
+        PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.AsInfected] = statsList[4];
+        PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.AsWitch] = statsList[5];
+    }
+    #endregion
+
+    #region SetPhotonPlayerLastRoomName
+    public void SetPhotonPlayerLastRoomName(string roomName)
+    {
+        PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoomName] = roomName;
     }
     #endregion
 }

@@ -56,8 +56,8 @@ public class FriendButtonScript : MonoBehaviour
         deleteFriendButton.onClick.RemoveAllListeners();
         deleteFriendButton.onClick.AddListener(() =>
         {
-            PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(PlayerBaseConditions.OwnPlayfabId, transform.parent.name);
-            PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(transform.parent.name, PlayerBaseConditions.OwnPlayfabId);
+            PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(PlayerBaseConditions.OwnPlayfabId, transform.name);
+            PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(transform.name, PlayerBaseConditions.OwnPlayfabId);
         });
     }
 }

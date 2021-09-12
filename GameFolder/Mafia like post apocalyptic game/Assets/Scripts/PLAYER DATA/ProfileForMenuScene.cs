@@ -33,6 +33,7 @@ public class ProfileForMenuScene : MonoBehaviour
             UpdatePlayerStats();                      
             UpdateNotificationTab();
             UpdateFriendsList();
+
         }
     }
     #endregion
@@ -58,8 +59,7 @@ public class ProfileForMenuScene : MonoBehaviour
     #region UpdatePlayerStats
     void UpdatePlayerStats()
     {
-        PlayerBaseConditions.PlayerProfile.TimePlayed = PlayerBaseConditions.LocalPlayer.CustomProperties.ContainsKey(PlayerKeys.StatisticKeys.TotalTimePlayed) ? PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.TotalTimePlayed].ToString() : "--";
-        PlayerBaseConditions.PlayerProfile.RankNumber = PlayerBaseConditions.LocalPlayer.CustomProperties.ContainsKey(PlayerKeys.StatisticKeys.Rank) ? PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.StatisticKeys.Rank].ToString() : "--";
+        PlayerBaseConditions.PlayerProfile.ShowPlayerStats(PlayerBaseConditions.OwnPlayfabId);
     }
     #endregion
 

@@ -58,16 +58,19 @@ public class PlayfabStats : MonoBehaviour
                 GetPlayerStats(new StatsValue
                 {
                     rank = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Rank).Value,
-                    totalTimePlayed = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.TotalTimePlayed).Value
-                });
+                    totalTimePlayed = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.TotalTimePlayed).Value,
+                    countPlayedAsSurvivor = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSurvivor).Value,                  
+                    countPlayedAsDoctor = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsDoctor).Value,
+                    countPlayedAsSheriff = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSheriff).Value,
+                    countPlayedAsSoldier = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSoldier).Value,
+                    countPlayedAsInfected = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsInfected).Value,
+                    countPlayedAsLizard = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsWitch).Value
+                }); ;
             },
             error =>
             {
                 print(error.ErrorMessage);
             });
     }
-    #endregion
-
-
-   
+    #endregion 
 }

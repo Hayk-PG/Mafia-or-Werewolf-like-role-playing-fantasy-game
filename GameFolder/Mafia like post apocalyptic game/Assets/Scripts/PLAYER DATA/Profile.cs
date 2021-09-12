@@ -251,7 +251,7 @@ public class Profile : MonoBehaviour
         get => _PlayedAsTab.playedAsLizardCountText.text;
         set => _PlayedAsTab.playedAsLizardCountText.text = value;
     }
-    public string AsWendigoCount
+    public string AsInfectedCount
     {
         get => _PlayedAsTab.playedAsWendigoCountText.text;
         set => _PlayedAsTab.playedAsWendigoCountText.text = value;
@@ -689,6 +689,23 @@ public class Profile : MonoBehaviour
             Texture2D downloadedAvatar = ((DownloadHandlerTexture)request.downloadHandler).texture;
             ProfilePic(Sprite.Create(downloadedAvatar, new Rect(0, 0, downloadedAvatar.width, downloadedAvatar.height), new Vector2(0.5f, 0.5f), 100));
         }
+    }
+    #endregion
+
+    #region ShowPlayerStats
+    public void ShowPlayerStats(string playfabId)
+    {
+        PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(playfabId, Stats => 
+        {
+            TimePlayed = Stats.totalTimePlayed.ToString();
+            RankNumber = Stats.rank.ToString();
+            AsSurvivorCount = Stats.countPlayedAsSurvivor.ToString();
+            AsDoctorCount = Stats.countPlayedAsDoctor.ToString();
+            AsSheriffCount = Stats.countPlayedAsSheriff.ToString();
+            AsSoldierCount = Stats.countPlayedAsSoldier.ToString();
+            AsInfectedCount = Stats.countPlayedAsInfected.ToString();
+            AsLizardCount = Stats.countPlayedAsLizard.ToString();
+        });
     }
     #endregion
 }

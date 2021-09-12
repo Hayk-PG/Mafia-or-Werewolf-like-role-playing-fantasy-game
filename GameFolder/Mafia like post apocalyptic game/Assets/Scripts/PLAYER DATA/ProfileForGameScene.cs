@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 public class ProfileForGameScene : MonoBehaviour
 {
@@ -46,7 +45,7 @@ public class ProfileForGameScene : MonoBehaviour
 
             GameScene();
             UpdatePlayerProfile(actorNumber);
-            UpdatePlaterStats(actorNumber);
+            UpdatePlaterStats(playfabId);
             CheckPlayerVotes(actorNumber);
             IfPlayerIsFriend(playfabId);
             ShowPlayerProfilePicture(actorNumber);
@@ -83,10 +82,9 @@ public class ProfileForGameScene : MonoBehaviour
     #endregion
 
     #region UpdatePlaterStats
-    void UpdatePlaterStats(int actorNumber)
+    void UpdatePlaterStats(string playfabId)
     {
-        PlayerBaseConditions.PlayerProfile.TimePlayed = PlayerBaseConditions.Player(actorNumber).CustomProperties[PlayerKeys.StatisticKeys.TotalTimePlayed].ToString();
-        PlayerBaseConditions.PlayerProfile.RankNumber = PlayerBaseConditions.Player(actorNumber).CustomProperties[PlayerKeys.StatisticKeys.Rank].ToString();
+        PlayerBaseConditions.PlayerProfile.ShowPlayerStats(playfabId);
     }
     #endregion
 

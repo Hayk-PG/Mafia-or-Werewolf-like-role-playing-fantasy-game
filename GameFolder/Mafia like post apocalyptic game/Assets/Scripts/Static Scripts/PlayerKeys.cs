@@ -38,6 +38,13 @@ public static class PlayerKeys
         public static string TotalTimePlayed => "Total time played";
         public static string Rank => "Rank";
         public static string Points => "Points";
+        public static string AsSurvivor => "As survivor";
+        public static string AsDoctor => "As doctor";
+        public static string AsSheriff => "As sheriff";
+        public static string AsSoldier => "As soldier";
+        public static string AsInfected => "As infected";
+        public static string AsWitch => "As lizard";
+
 
         public static string WinAsSurvivor => "Win as survivor";
         public static string WinAsInfected => "Win as infected";
