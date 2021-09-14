@@ -2,10 +2,11 @@
 
 public class PlayerBadgeButton : MonoBehaviour
 {
-    [SerializeField] Animator anim;
+    [SerializeField] Transform vfxSpawnPoint;
+    [SerializeField] GameObject vfxPrefab;
 
-    public void PlayBadgeAnimation()
+    public void OnPlayerLoggedIn()
     {
-        anim.Play("PlayerBadgeAnimation");
+        GameObject vfxPrefabCopy = Instantiate(vfxPrefab, vfxSpawnPoint.position, Quaternion.identity);
     }
 }

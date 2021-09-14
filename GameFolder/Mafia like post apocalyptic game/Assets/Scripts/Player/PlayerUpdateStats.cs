@@ -7,7 +7,7 @@ using System.Collections;
 public class PlayerUpdateStats : MonoBehaviourPun
 {
     [SerializeField] StatsValue _StatsValue;
-    [SerializeField] Conditions _Conditions;
+    [SerializeField] internal Conditions _Conditions;
     [Serializable] struct StatsValue
     {
         [SerializeField] internal int rank;
@@ -19,7 +19,7 @@ public class PlayerUpdateStats : MonoBehaviourPun
         [SerializeField] internal int asInfected;
         [SerializeField] internal int asLizard;
     }
-    [Serializable] struct Conditions
+    [Serializable] internal struct Conditions
     {
         [SerializeField] internal bool isPlayerRoleSet;
     }
@@ -30,24 +30,8 @@ public class PlayerUpdateStats : MonoBehaviourPun
         _StatsValue = new StatsValue();
     }
 
-    void Update()
-    {
-        if (photonView.IsMine)
-        {
-            if (PlayerBaseConditions.PlayerRoleName(PhotonNetwork.LocalPlayer.ActorNumber) != null && !_Conditions.isPlayerRoleSet)
-            {
-                if (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(PlayerKeys.SetPlayersRoleKeys.RoomName) || PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(PlayerKeys.SetPlayersRoleKeys.RoomName) && (string)PhotonNetwork.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoomName] != PhotonNetwork.CurrentRoom.Name)
-                {
-                    PlayerCustomPropertiesController.PCPC.SetPhotonPlayerLastRoomName(PhotonNetwork.CurrentRoom.Name);
-
-                    GetPlayerStats(delegate { StartCoroutine(UpdatePlayerStatsCoroutine()); });
-                }               
-            }
-        }
-    }
-
     #region GetPlayerStats
-    void GetPlayerStats(Action UpdateCoroutine)
+    internal void GetPlayerStats(Action UpdateCoroutine)
     {
         PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.UserID].ToString(), getPlayerStats =>
         {
@@ -77,7 +61,7 @@ public class PlayerUpdateStats : MonoBehaviourPun
     #endregion
 
     #region UpdatePlayerStats
-    void UpdatePlayerStats()
+    internal void UpdatePlayerStats()
     {
         PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.UserID].ToString(), updatePlayerStats =>
         {
@@ -95,7 +79,7 @@ public class PlayerUpdateStats : MonoBehaviourPun
     #endregion
 
     #region UpdatePlayerStatsCoroutine
-    IEnumerator UpdatePlayerStatsCoroutine()
+    internal IEnumerator UpdatePlayerStatsCoroutine()
     {
         yield return new WaitForSeconds(1);
         UpdatePlayerStats();
