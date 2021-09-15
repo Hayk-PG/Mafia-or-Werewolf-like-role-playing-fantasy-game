@@ -39,6 +39,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 stream.SendNext(_GameManagerTimer._Timer.Seconds);
                 stream.SendNext(_GameManagerTimer._Timer.TimerText);
                 stream.SendNext(_GameManagerTimer._Timer.NightsCount);
+                stream.SendNext(_GameManagerTimer._Timer.NextPhaseWaitUntil);
+                stream.SendNext(_GameManagerTimer._Timer.WasNextWaitUntilRunning);
                 stream.SendNext(_GameManagerTimer._Timer.NightTime);
                 stream.SendNext(_GameManagerTimer._Timer.DaysCount);
                 stream.SendNext(_GameManagerTimer._Timer.DayTime);
@@ -88,6 +90,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             _GameManagerTimer._Timer.Seconds = (int)stream.ReceiveNext();
             _GameManagerTimer._Timer.TimerText = (string)stream.ReceiveNext();
             _GameManagerTimer._Timer.NightsCount = (int)stream.ReceiveNext();
+            _GameManagerTimer._Timer.NextPhaseWaitUntil = (float)stream.ReceiveNext();
+            _GameManagerTimer._Timer.WasNextWaitUntilRunning = (bool)stream.ReceiveNext();
             _GameManagerTimer._Timer.NightTime = (bool)stream.ReceiveNext();
             _GameManagerTimer._Timer.DaysCount = (int)stream.ReceiveNext();
             _GameManagerTimer._Timer.DayTime = (bool)stream.ReceiveNext();

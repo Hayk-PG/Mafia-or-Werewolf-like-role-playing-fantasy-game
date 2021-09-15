@@ -15,6 +15,10 @@ public class OnClickResume : MonoBehaviour
     void OnClickResumeButton()
     {
         resumeButton.onClick.RemoveAllListeners();
-        resumeButton.onClick.AddListener(() => Options.instance.OnPressedOptionsButtons());
+        resumeButton.onClick.AddListener(() => 
+        {
+            Options.instance.OnPressedOptionsButtons();
+            if (PlayerBaseConditions.VFXCamera() != null) PlayerBaseConditions.VFXCamera().enabled = true;
+        });
     }
 }

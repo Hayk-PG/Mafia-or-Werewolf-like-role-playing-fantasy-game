@@ -65,9 +65,16 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
     {
         RoleButtonPressed(RoleButtonController =>
         {
-            _PlayerActionOnDifferentRoles.PlayerActionInNightPhase(CanPlayerBeActiveInNightPhase, RoleButtonController);
-            _PlayerActionOnDifferentRoles.PlayerActionInDayPhase(CanPlayerBeActiveInDayPhase, RoleButtonController);
-            _ProfileForGameScene.OnClickRoleButton(!CanPlayerBeActiveInNightPhase && !CanPlayerBeActiveInDayPhase, RoleButtonController._OwnerInfo.OwnerActorNumber, RoleButtonController._OwnerInfo.OwenrUserId);
+            if (!String.IsNullOrEmpty(RoleButtonController._OwnerInfo.OwenrUserId))
+            {
+                if (RoleButtonController._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber && RoleButtonController._GameInfo.IsPlayerAlive)
+                {
+                    _PlayerActionOnDifferentRoles.PlayerActionInNightPhase(CanPlayerBeActiveInNightPhase, RoleButtonController);
+                    _PlayerActionOnDifferentRoles.PlayerActionInDayPhase(CanPlayerBeActiveInDayPhase, RoleButtonController);
+                }
+
+                _ProfileForGameScene.OnClickRoleButton(!CanPlayerBeActiveInNightPhase && !CanPlayerBeActiveInDayPhase, RoleButtonController._OwnerInfo.OwnerActorNumber, RoleButtonController._OwnerInfo.OwenrUserId);
+            }         
         });
     }
 

@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 8125786577400946532}
   - component: {fileID: 6170742566979539587}
   - component: {fileID: 7132484324416577722}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4901,7 +4901,7 @@ GameObject:
   - component: {fileID: 2998957423268819609}
   - component: {fileID: 3589949391434931728}
   - component: {fileID: 5133673791042163210}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Meat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9812,7 +9812,7 @@ GameObject:
   - component: {fileID: 4988344578241296827}
   - component: {fileID: 5839880605157666679}
   - component: {fileID: 4118050630992362095}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Jaw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14726,7 +14726,7 @@ GameObject:
   - component: {fileID: 1286280018892344218}
   - component: {fileID: 6971864662622030379}
   - component: {fileID: 6073035290374605459}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BloodGoreExplosionHead (Human)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19890,7 +19890,7 @@ GameObject:
   - component: {fileID: 851645390215409500}
   - component: {fileID: 5870954224894303138}
   - component: {fileID: 672677166244975298}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BoneDebris
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24792,7 +24792,7 @@ GameObject:
   - component: {fileID: 221495429908840026}
   - component: {fileID: 122743717158345003}
   - component: {fileID: 4072614077469823747}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SphereGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29613,7 +29613,7 @@ GameObject:
   - component: {fileID: 287485824936488374}
   - component: {fileID: 5415861168320163472}
   - component: {fileID: 3431428349329066453}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Brain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34524,7 +34524,7 @@ GameObject:
   - component: {fileID: 9212059420982179677}
   - component: {fileID: 1667672833500362380}
   - component: {fileID: 1741220212927888922}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BloodTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40218,7 +40218,7 @@ GameObject:
   - component: {fileID: 5631052796174501546}
   - component: {fileID: 5986738355499191718}
   - component: {fileID: 6321314733908951555}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45085,7 +45085,7 @@ GameObject:
   - component: {fileID: 7981746112048249221}
   - component: {fileID: 7978241214222757059}
   - component: {fileID: 5048739494042607715}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AuraChargePink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49967,7 +49967,7 @@ GameObject:
   - component: {fileID: 7812372824175737697}
   - component: {fileID: 7978958284819488437}
   - component: {fileID: 7978391074872371931}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54824,7 +54824,7 @@ GameObject:
   - component: {fileID: 7812410585454003533}
   - component: {fileID: 7978544016909750969}
   - component: {fileID: 7979632438220418887}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RisingClouds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59690,7 +59690,7 @@ GameObject:
   - component: {fileID: 7812301973228861827}
   - component: {fileID: 7979010453732129895}
   - component: {fileID: 7979839172628215313}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ChargeParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64514,7 +64514,7 @@ GameObject:
   - component: {fileID: 7525713003688009415}
   - component: {fileID: 6534281192189205166}
   - component: {fileID: 4417455457454964866}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MagicExplosionPink
   m_TagString: Untagged
   m_Icon: {fileID: 0}

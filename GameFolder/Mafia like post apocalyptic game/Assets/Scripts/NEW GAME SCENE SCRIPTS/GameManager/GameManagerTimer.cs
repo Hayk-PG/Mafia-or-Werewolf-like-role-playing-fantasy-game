@@ -10,9 +10,11 @@ public class GameManagerTimer : MonoBehaviourPun
 {
     [Serializable] public class Timer
     {
-        [SerializeField] int seconds;
+        [SerializeField] int seconds;       
         [SerializeField] int nightsCount;
         [SerializeField] int daysCount;
+        [SerializeField] float nextPhaseWaitUntil;
+        [SerializeField] bool wasNextWaitUntilRunning;
         [SerializeField] bool nightTime;
         [SerializeField] bool dayTime;
         [SerializeField] bool hasGameStartVFXInstantiated;
@@ -34,6 +36,16 @@ public class GameManagerTimer : MonoBehaviourPun
         {
             get => daysCount;
             set => daysCount = value;
+        }
+        public float NextPhaseWaitUntil
+        {
+            get => nextPhaseWaitUntil;
+            set => nextPhaseWaitUntil = value;
+        }
+        public bool WasNextWaitUntilRunning
+        {
+            get => wasNextWaitUntilRunning;
+            set => wasNextWaitUntilRunning = value;
         }
         public bool NightTime
         {
@@ -119,6 +131,7 @@ public class GameManagerTimer : MonoBehaviourPun
     GameManagerSetPlayersRoles _GameManagerSetPlayersRoles { get; set; }
     GameManagerPlayerVotesController _GameManagerPlayerVotesController { get; set; }
     TeamsController _TeamsController { get; set; }
+    CardsTabController _CardsTabController { get; set; }
 
     public delegate void PhaseCallback(bool isResetPhase);
     public PhaseCallback IsResetPhaseActive;
@@ -131,6 +144,7 @@ public class GameManagerTimer : MonoBehaviourPun
         _GameManagerPlayerVotesController = GetComponent<GameManagerPlayerVotesController>();
         _TeamsController = GetComponent<TeamsController>();
         _TimerTickSound = FindObjectOfType<TimerTickSound>();
+        _CardsTabController = FindObjectOfType<CardsTabController>();
     }
 
     void OnEnable()
@@ -154,6 +168,9 @@ public class GameManagerTimer : MonoBehaviourPun
     {
         if (_Timer.Moon.activeInHierarchy != _Timer.NightTime) _Timer.Moon.SetActive(_Timer.NightTime);
         if (_Timer.Sun.activeInHierarchy != _Timer.DayTime) _Timer.Sun.SetActive(_Timer.DayTime);
+
+        RunNextPhaseUntilTimer(null);
+        StopRunNextPhaseUntilTimer(delegate{ _CardsTabController.OnDeathTab(false); });
     }
 
     #region RunTimer
@@ -179,27 +196,63 @@ public class GameManagerTimer : MonoBehaviourPun
 
             while (true && photonView.IsMine)
             {
-                if (_Timer.NightTime && _Timer.Seconds <= 0)
+                if (_Timer.NextPhaseWaitUntil <= 0)
                 {
-                    _Timer.Seconds = 90;
-                    _Timer.NightsCount++;
-                    _Timer.NightTime = false;
-                    _Timer.DayTime = true;
-                }
-                if (_Timer.DayTime && _Timer.Seconds <= 0)
-                {
-                    _Timer.Seconds = 60;
-                    _Timer.DaysCount++;
-                    _Timer.DayTime = false;
-                    _Timer.NightTime = true;
-                }
+                    if (_Timer.NightTime && _Timer.Seconds <= 0)
+                    {
+                        _Timer.Seconds = 90;
+                        _Timer.NightsCount++;
+                        _Timer.NightTime = false;
+                        _Timer.DayTime = true;
+                    }
+                    if (_Timer.DayTime && _Timer.Seconds <= 0)
+                    {
+                        _Timer.Seconds = 60;
+                        _Timer.DaysCount++;
+                        _Timer.DayTime = false;
+                        _Timer.NightTime = true;
+                    }
 
-                _Timer.Seconds--;
-                _Timer.TimerText = _Timer.Seconds.ToString("D2");
+                    _Timer.Seconds--;
+                    _Timer.TimerText = _Timer.Seconds.ToString("D2");
+                    _Timer.WasNextWaitUntilRunning = false;
 
-                PhotonNetwork.RaiseEvent(RaiseEventsStrings.OnEverySecondKey, datas, _RaiseEventOptions, ExitGames.Client.Photon.SendOptions.SendUnreliable);
+                    PhotonNetwork.RaiseEvent(RaiseEventsStrings.OnEverySecondKey, datas, _RaiseEventOptions, ExitGames.Client.Photon.SendOptions.SendUnreliable);
+                }
 
                 yield return new WaitForSeconds(1);
+            }
+        }
+    }
+    #endregion
+
+    #region RunNextPhaseUntilTimer
+    void RunNextPhaseUntilTimer(Action DoSomething)
+    {
+        if(_Timer.NightsCount > 0)
+        {
+            if(_Timer.NightTime && _Timer.Seconds >= 59 || _Timer.DayTime && _Timer.DayTime && _Timer.Seconds >= 89)
+            {
+                if (_Timer.NextPhaseWaitUntil < 5 && !_Timer.WasNextWaitUntilRunning)
+                {
+                    _Timer.NextPhaseWaitUntil += Time.deltaTime;
+                    DoSomething?.Invoke();                   
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region StopRunNextPhaseUntilTimer
+    void StopRunNextPhaseUntilTimer(Action DoSomething)
+    {
+        if (_Timer.NextPhaseWaitUntil >= 5 || _Timer.NightTime && _Timer.Seconds <= 55 || _Timer.DayTime && _Timer.Seconds <= 85)
+        {
+            if (!_Timer.WasNextWaitUntilRunning || _Timer.NextPhaseWaitUntil != 0)
+            {
+                _Timer.WasNextWaitUntilRunning = true;
+                _Timer.NextPhaseWaitUntil = 0;
+                DoSomething?.Invoke();
             }
         }
     }

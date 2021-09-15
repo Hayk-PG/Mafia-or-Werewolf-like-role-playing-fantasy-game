@@ -611,6 +611,8 @@ public class PlayerBaseConditions : MonoBehaviourPun
 
 
     //NEW
+
+    #region Role && RoleButton
     public static string PlayerRoleName(int actorNumber)
     {        
         string playerRoleName = 
@@ -631,5 +633,13 @@ public class PlayerBaseConditions : MonoBehaviourPun
         }
         else return 0;
     }
+    #endregion
+
+    #region Camera
+    public static Camera VFXCamera()
+    {
+        return GameObject.FindGameObjectWithTag(Tags.VFXCamera).GetComponent<Camera>();
+    }
+    #endregion
 
 }

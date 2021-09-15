@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,13 +30,14 @@ public class InformPlayerRole : MonoBehaviour
     void Update()
     {
         _UI.GotItButton.onClick.RemoveAllListeners();
-        _UI.GotItButton.onClick.AddListener(() => { MyCanvasGroups.CanvasGroupActivity(_UI.CanvasGroup, false);}); 
+        _UI.GotItButton.onClick.AddListener(() => { MyCanvasGroups.CanvasGroupActivity(_UI.CanvasGroup, false); PlayerBaseConditions.VFXCamera().enabled = true; }); 
     }
 
     public void OnPopUp(string text)
     {
         _UI.Text = text;
         MyCanvasGroups.CanvasGroupActivity(_UI.CanvasGroup, true);
+        PlayerBaseConditions.VFXCamera().enabled = false;
     }
 
 }

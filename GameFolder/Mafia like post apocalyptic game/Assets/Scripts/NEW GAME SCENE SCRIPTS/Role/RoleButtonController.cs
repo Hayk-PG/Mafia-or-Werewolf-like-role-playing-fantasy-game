@@ -144,10 +144,17 @@ public class RoleButtonController : MonoBehaviourPun
     public GameInfo _GameInfo;
     public GameObjects _GameObjects;
 
+    CardsTabController _CardsTabController { get; set; }
+
     public string ObjName
     {
         get => transform.name;
         set => transform.name = value;
+    }
+
+    void Awake()
+    {
+        _CardsTabController = FindObjectOfType<CardsTabController>();
     }
 
     void Update()
@@ -215,6 +222,7 @@ public class RoleButtonController : MonoBehaviourPun
             _GameObjects.DiedIcon.SetActive(true);
             _GameObjects.DiedIcon2.SetActive(true);
             _GameObjects.DiedGoreExplosion.SetActive(true);
+            _CardsTabController.OnDeathTab(true);
         }
     }
     #endregion
