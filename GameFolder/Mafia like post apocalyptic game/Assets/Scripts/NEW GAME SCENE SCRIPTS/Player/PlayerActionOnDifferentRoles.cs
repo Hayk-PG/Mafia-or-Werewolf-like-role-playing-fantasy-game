@@ -1,9 +1,37 @@
 ﻿using Photon.Pun;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class PlayerActionOnDifferentRoles: MonoBehaviourPun
-{   
+{
+    //[SerializeField] bool test;
+
+
+    //void Update()
+    //{
+    //    if (test)
+    //    {
+    //        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.ContainsKey(PhotonNetwork.LocalPlayer.ActorNumber))
+    //        {
+    //            List<string> names = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted[PhotonNetwork.LocalPlayer.ActorNumber].ToList();
+    //            print(names.Count);
+    //            names.Add("Admin");
+
+    //            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted[PhotonNetwork.LocalPlayer.ActorNumber] = names.ToArray();
+    //            print("Contains");
+    //        }
+    //        else
+    //        {
+    //            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.Add(PhotonNetwork.LocalPlayer.ActorNumber, new string[] { "Admin" });
+    //            print("Empty");
+    //        }
+
+    //        test = false;
+    //    }
+    //}
+
     internal void PlayerActionInNightPhase(bool CanPlayerBeActiveInNightPhase, RoleButtonController _RoleButtonController)
     {
         if (CanPlayerBeActiveInNightPhase)
@@ -125,13 +153,18 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
 
     void InformMasterClientAgainstWhomPlayerVoted(int votedAgainstActorNumber, int senderActorNumber)
     {
-        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.ContainsKey(senderActorNumber))
+        GameManagerPlayerVotesController.Votes Votes = FindObjectOfType<GameManagerPlayerVotesController>()._Votes;        
+        string newName = Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, RoleButton => RoleButton._OwnerInfo.OwnerActorNumber == votedAgainstActorNumber)._OwnerInfo.OwnerName;
+        
+        if (Votes.AgainstWhomPlayerVoted.ContainsKey(senderActorNumber))
         {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted[senderActorNumber].ToList().Add(Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, RoleButton => RoleButton._OwnerInfo.OwnerActorNumber == votedAgainstActorNumber)._OwnerInfo.OwnerName);
+            List<string> names = Votes.AgainstWhomPlayerVoted[senderActorNumber].ToList();
+            names.Add(newName);
+            Votes.AgainstWhomPlayerVoted[senderActorNumber] = names.ToArray();
         }
         else
         {
-            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.Add(senderActorNumber, new string[] { Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, RoleButton => RoleButton._OwnerInfo.OwnerActorNumber == votedAgainstActorNumber)._OwnerInfo.OwnerName });
+            Votes.AgainstWhomPlayerVoted.Add(senderActorNumber, new string[] { newName });           
         }
     }
 

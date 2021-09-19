@@ -49,7 +49,7 @@ public class PlayerGameController : MonoBehaviourPun, IPlayerGameController
 
     void Awake()
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine && photonView.AmOwner)
         {
             _GameManagerSetPlayersRoles = FindObjectOfType<GameManagerSetPlayersRoles>();
             _ProfileForGameScene = FindObjectOfType<ProfileForGameScene>();

@@ -1,8 +1,5 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
-using System;
-using System.Collections;
-using UnityEngine;
 
 public class NetworkCallbacks : MonoBehaviourPunCallbacks
 {
@@ -30,5 +27,13 @@ public class NetworkCallbacks : MonoBehaviourPunCallbacks
         UpdateChatMessage?.Invoke(otherPlayer.NickName, false);
     }
 
-   
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        LoadingUI.LI._ConnectingScreen.EnableConnectionLostScreen();
+    }
+
+    public override void OnJoinedRoom()
+    {
+        LoadingUI.LI._ConnectingScreen.DisableConnectionLostScreen();
+    }
 }

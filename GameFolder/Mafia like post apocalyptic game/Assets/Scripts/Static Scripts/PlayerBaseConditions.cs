@@ -638,7 +638,22 @@ public class PlayerBaseConditions : MonoBehaviourPun
     #region Camera
     public static Camera VFXCamera()
     {
-        return GameObject.FindGameObjectWithTag(Tags.VFXCamera).GetComponent<Camera>();
+        if (GameObject.FindGameObjectWithTag(Tags.VFXCamera) != null)
+            return GameObject.FindGameObjectWithTag(Tags.VFXCamera).GetComponent<Camera>();
+        else
+            return null;
+    }
+    #endregion
+
+    #region Photonview
+    public static bool IsPhotonviewMine(PhotonView photonView)
+    {
+        return photonView.IsMine;
+    }
+
+    public static bool AmOwner(PhotonView photonView)
+    {
+        return photonView.AmOwner;
     }
     #endregion
 

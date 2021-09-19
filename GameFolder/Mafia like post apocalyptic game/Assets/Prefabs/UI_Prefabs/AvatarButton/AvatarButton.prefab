@@ -39676,6 +39676,7 @@ GameObject:
   - component: {fileID: 6740486338131692449}
   - component: {fileID: 6740486338131692455}
   - component: {fileID: 8344072711321309560}
+  - component: {fileID: 2054040550245246903}
   m_Layer: 5
   m_Name: AvatarButton
   m_TagString: Untagged
@@ -39817,6 +39818,7 @@ MonoBehaviour:
     visibleToEveryoneImage: {fileID: 6740486337951315784}
     button: {fileID: 6740486338131692455}
     votesCountTextCanvasGroup: {fileID: 6740486339553402787}
+    roleButtonCanvasGroup: {fileID: 2054040550245246903}
   _GameInfo:
     roleName: 
     roleIndex: 0
@@ -39829,6 +39831,18 @@ MonoBehaviour:
     diedIcon: {fileID: 3756304694304993457}
     diedIcon2: {fileID: 2451518853637614807}
     diedGoreExplosion: {fileID: 991047812227500593}
+--- !u!225 &2054040550245246903
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6740486338131692451}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6740486338432001230
 GameObject:
   m_ObjectHideFlags: 0

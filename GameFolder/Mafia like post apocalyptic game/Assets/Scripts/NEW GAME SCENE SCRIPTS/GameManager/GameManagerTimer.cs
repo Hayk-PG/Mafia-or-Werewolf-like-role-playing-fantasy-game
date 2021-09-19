@@ -169,8 +169,13 @@ public class GameManagerTimer : MonoBehaviourPun
         if (_Timer.Moon.activeInHierarchy != _Timer.NightTime) _Timer.Moon.SetActive(_Timer.NightTime);
         if (_Timer.Sun.activeInHierarchy != _Timer.DayTime) _Timer.Sun.SetActive(_Timer.DayTime);
 
-        RunNextPhaseUntilTimer(null);
-        StopRunNextPhaseUntilTimer(delegate{ _CardsTabController.OnDeathTab(false); });
+        RunNextPhaseUntilTimer(delegate { /*_CardsTabController.OnDeathTab(true, null);*/ });
+        StopRunNextPhaseUntilTimer(delegate{ _CardsTabController.OnDeathTab(false, null); });
+
+        foreach (var item in _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted)
+        {
+            print(item.Key + "/" + item.Value.Length);
+        }
     }
 
     #region RunTimer
@@ -215,10 +220,10 @@ public class GameManagerTimer : MonoBehaviourPun
 
                     _Timer.Seconds--;
                     _Timer.TimerText = _Timer.Seconds.ToString("D2");
-                    _Timer.WasNextWaitUntilRunning = false;
-
-                    PhotonNetwork.RaiseEvent(RaiseEventsStrings.OnEverySecondKey, datas, _RaiseEventOptions, ExitGames.Client.Photon.SendOptions.SendUnreliable);
+                    _Timer.WasNextWaitUntilRunning = false;                   
                 }
+
+                PhotonNetwork.RaiseEvent(RaiseEventsStrings.OnEverySecondKey, datas, _RaiseEventOptions, ExitGames.Client.Photon.SendOptions.SendUnreliable);
 
                 yield return new WaitForSeconds(1);
             }
@@ -248,7 +253,7 @@ public class GameManagerTimer : MonoBehaviourPun
     {
         if (_Timer.NextPhaseWaitUntil >= 5 || _Timer.NightTime && _Timer.Seconds <= 55 || _Timer.DayTime && _Timer.Seconds <= 85)
         {
-            if (!_Timer.WasNextWaitUntilRunning || _Timer.NextPhaseWaitUntil != 0)
+            if (!_Timer.WasNextWaitUntilRunning || _Timer.NextPhaseWaitUntil != 0 || _CardsTabController.CardsTabCanvasGroup.interactable)
             {
                 _Timer.WasNextWaitUntilRunning = true;
                 _Timer.NextPhaseWaitUntil = 0;
@@ -365,7 +370,7 @@ public class GameManagerTimer : MonoBehaviourPun
 
             if (playerController.CanPlayerBeActiveInNightPhase)
             {
-                if (playerController.PhotonView.IsMine)
+                if (PlayerBaseConditions.IsPhotonviewMine(playerController.PhotonView) && PlayerBaseConditions.AmOwner(playerController.PhotonView))
                 {
                     if (!_PhasesIcons.IsNightPhaseIconsActive)
                     {
@@ -412,7 +417,7 @@ public class GameManagerTimer : MonoBehaviourPun
 
             if (playerController.CanPlayerBeActiveInDayPhase)
             {
-                if (playerController.PhotonView.IsMine)
+                if (PlayerBaseConditions.IsPhotonviewMine(playerController.PhotonView) && PlayerBaseConditions.AmOwner(playerController.PhotonView))
                 {
                     if (!_PhasesIcons.IsDayPhaseIconsActive)
                     {
@@ -457,9 +462,12 @@ public class GameManagerTimer : MonoBehaviourPun
     {
         LoopRoleButtonsCallback(RoleButton => 
         {
-            if (RoleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber)
+            if (RoleButton._UI.RoleButtonCanvasGroup.interactable)
             {
-                if (RoleButton._GameInfo.IsPlayerAlive) RoleButton.VoteFXActivity(true, false);
+                if (RoleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber)
+                {
+                    if (RoleButton._GameInfo.IsPlayerAlive) RoleButton.VoteFXActivity(true, false);
+                }
             }
         });
     }
@@ -549,7 +557,7 @@ public class GameManagerTimer : MonoBehaviourPun
             }
             playerController.HasVotePhaseResetted = true;
 
-            if (playerController.PhotonView.IsMine)
+            if (PlayerBaseConditions.IsPhotonviewMine(playerController.PhotonView) && PlayerBaseConditions.AmOwner(playerController.PhotonView))
             {
                 DeactivateGameobjectActivityForAllRoleButtons();
                 RoleButtonsVoteCountTextVisibility(playerController, false, false, true);
@@ -604,6 +612,16 @@ public class GameManagerTimer : MonoBehaviourPun
     }
     #endregion
 
+    #region SoldierVote
+    void SoldierVote(Action<int> Key)
+    {
+        foreach (var soldierVote in _GameManagerPlayerVotesController._Votes.SoldierVoteAgainst)
+        {
+            Key?.Invoke(soldierVote.Key);
+        }
+    }
+    #endregion
+
     #region InfectedTeam
     void InfectedTeam(IPlayerGameController playerController)
     {
@@ -624,6 +642,7 @@ public class GameManagerTimer : MonoBehaviourPun
     #endregion
 
     #region SetLostPlayer
+   
     void GetLostPlayer()
     {
         if (!_LostPlayer.HasLostPlayerSet && photonView.IsMine)
@@ -634,33 +653,19 @@ public class GameManagerTimer : MonoBehaviourPun
 
             LoopRoleButtonsCallback(Rolebutton =>
             {
-                if (Rolebutton._UI.VotesCount > 0 && !Rolebutton._GameInfo.IsPlayerHealed) playersReceivedVotesCount.Add(Rolebutton._UI.VotesCount);
+                if (Rolebutton._UI.VotesCount > 0) playersReceivedVotesCount.Add(Rolebutton._UI.VotesCount);
             });
 
             playersReceivedVotesCount.Sort();
 
             SetLostPlayer(playersReceivedVotesCount, LostPlayer =>
             {
-                if (!_LostPlayer.LostPlayers.ContainsKey(LostPlayer._OwnerInfo.OwnerActorNumber))
-                {
-                    _LostPlayer.LostPlayers.Add(LostPlayer._OwnerInfo.OwnerActorNumber, false);
-                }
-                else
-                {
-                    _LostPlayer.LostPlayers[LostPlayer._OwnerInfo.OwnerActorNumber] = false;
-                }                   
+                AssignLostPlayer(LostPlayer);
             });
 
             SoldierVote(Key => 
             {
-                if (!_LostPlayer.LostPlayers.ContainsKey(Key))
-                {
-                    _LostPlayer.LostPlayers.Add(Key, false);
-                }
-                else
-                {
-                    _LostPlayer.LostPlayers[Key] = false;
-                }
+                AssignLostPlayerBySoldierVote(Key);
             });           
         }      
     }
@@ -682,15 +687,7 @@ public class GameManagerTimer : MonoBehaviourPun
             }
         }
     }
-
-    void SoldierVote(Action<int> Key)
-    {
-        foreach (var soldierVote in _GameManagerPlayerVotesController._Votes.SoldierVoteAgainst)
-        {
-            Key?.Invoke(soldierVote.Key);
-        }
-    }
-
+   
     void ShareLostPlayers(IPlayerGameController playerController)
     {
         if (playerController.PhotonView.IsMine)
@@ -701,6 +698,59 @@ public class GameManagerTimer : MonoBehaviourPun
             }
         }      
     }
+
+    #region AssignLostPlayer
+    void AssignLostPlayer(RoleButtonController LostPlayer)
+    {
+        if(LostPlayer._GameInfo.IsPlayerAlive)
+        {
+            if (!LostPlayer._GameInfo.IsPlayerHealed)
+            {
+                if (!_LostPlayer.LostPlayers.ContainsKey(LostPlayer._OwnerInfo.OwnerActorNumber))
+                {
+                    _LostPlayer.LostPlayers.Add(LostPlayer._OwnerInfo.OwnerActorNumber, false);
+                }
+                else
+                {
+                    _LostPlayer.LostPlayers[LostPlayer._OwnerInfo.OwnerActorNumber] = false;
+                }
+            }
+            else
+            {
+                if (_LostPlayer.LostPlayers.ContainsKey(LostPlayer._OwnerInfo.OwnerActorNumber))
+                    _LostPlayer.LostPlayers.Remove(LostPlayer._OwnerInfo.OwnerActorNumber);
+            }
+        }
+    }
+    #endregion
+
+    #region AssignLostPlayerBySoldierVote
+    void AssignLostPlayerBySoldierVote(int Key)
+    {
+        RoleButtonController LostPlayer = Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, _lostPlayer => _lostPlayer._OwnerInfo.OwnerActorNumber == Key);
+
+        if (LostPlayer._GameInfo.IsPlayerAlive)
+        {
+            if (!LostPlayer._GameInfo.IsPlayerHealed)
+            {
+                if (!_LostPlayer.LostPlayers.ContainsKey(Key))
+                {
+                    _LostPlayer.LostPlayers.Add(Key, false);
+                }
+                else
+                {
+                    _LostPlayer.LostPlayers[Key] = false;
+                }
+            }
+            else
+            {
+                if (_LostPlayer.LostPlayers.ContainsKey(Key))
+                    _LostPlayer.LostPlayers.Remove(Key);
+            }
+        }
+    }
+    #endregion
+
     #endregion
 
     #region OnPlayersVotes
@@ -718,7 +768,7 @@ public class GameManagerTimer : MonoBehaviourPun
             foreach (var votes in _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted)
             {
                 bool activateVoteNameIcon = _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(votes.Key) && _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[votes.Key][0] == true || _GameManagerPlayerVotesController._Votes.PlayerVoteCondition.ContainsKey(votes.Key) && _GameManagerPlayerVotesController._Votes.PlayerVoteCondition[votes.Key][1] == true ? true : false;
-                Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, _roleButton => _roleButton._OwnerInfo.OwnerActorNumber == votes.Key).VotedNameIconActivity(activateVoteNameIcon, votes.Value[votes.Value.Length - 1]);              
+                Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, _roleButton => _roleButton._OwnerInfo.OwnerActorNumber == votes.Key).VotedNameIconActivity(activateVoteNameIcon && _Timer.DayTime, votes.Value[votes.Value.Length - 1]);              
             }
         }
     }
@@ -732,10 +782,10 @@ public class GameManagerTimer : MonoBehaviourPun
             int key = RoleButton._OwnerInfo.OwnerActorNumber;
 
             if (_GameManagerPlayerVotesController._Votes.PlayersVotesAgainst.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.PlayersVotesAgainst[key] = 0;
-            //if (_GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted[key] = "";
             if (_GameManagerPlayerVotesController._Votes.HealedPlayers.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.HealedPlayers[key] = false;
             if (_GameManagerPlayerVotesController._Votes.DiscoverTheRole.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.DiscoverTheRole[key] = false;
             if (_GameManagerPlayerVotesController._Votes.InfectedVotesAgainst.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst[key] = 0;
+            if (_GameManagerPlayerVotesController._Votes.SoldierVoteAgainst.ContainsKey(key)) _GameManagerPlayerVotesController._Votes.InfectedVotesAgainst[key] = 0;
 
             RoleButton._UI.VotesCount = 0;
             RoleButton._GameInfo.IsPlayerHealed = false;
@@ -762,13 +812,6 @@ public class GameManagerTimer : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            //if (!_Teams.IsTeamsCountUpdated)
-            //{
-            //    _TeamsController.UpdateTeamsCount();
-            //    _Teams.IsTeamsCountUpdated = true;
-            //    print("Teams count updated");
-            //}
-
             _TeamsController.UpdateTeamsCount();
         }
     }

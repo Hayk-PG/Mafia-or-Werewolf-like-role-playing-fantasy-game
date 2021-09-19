@@ -43,6 +43,7 @@ public class RoleButtonController : MonoBehaviourPun
         [SerializeField] Image visibleToEveryoneImage;
         [SerializeField] Button button;
         [SerializeField] CanvasGroup votesCountTextCanvasGroup;
+        [SerializeField] CanvasGroup roleButtonCanvasGroup;
 
         public string Name
         {
@@ -76,6 +77,10 @@ public class RoleButtonController : MonoBehaviourPun
         public CanvasGroup VotesCountTextCanvasGroup
         {
             get => votesCountTextCanvasGroup;
+        }
+        public CanvasGroup RoleButtonCanvasGroup
+        {
+            get => roleButtonCanvasGroup;
         }
     }
     [Serializable] public struct GameInfo
@@ -161,6 +166,7 @@ public class RoleButtonController : MonoBehaviourPun
     {
         AssignOwnerObj();
         OnPlayerLost();
+        RoleButtonActivity();
     }
 
     #region AssignOwnerObj
@@ -222,7 +228,27 @@ public class RoleButtonController : MonoBehaviourPun
             _GameObjects.DiedIcon.SetActive(true);
             _GameObjects.DiedIcon2.SetActive(true);
             _GameObjects.DiedGoreExplosion.SetActive(true);
-            _CardsTabController.OnDeathTab(true);
+            _CardsTabController.OnDeathTab(true, _OwnerInfo.OwnerName);
+        }
+    }
+    #endregion
+
+    #region RoleButtonActivity
+    void RoleButtonActivity()
+    {
+        if (String.IsNullOrEmpty(_OwnerInfo.OwenrUserId))
+        {
+            if (_UI.RoleButtonCanvasGroup.interactable)
+            {
+                MyCanvasGroups.CanvasGroupActivity(_UI.RoleButtonCanvasGroup, false);
+            }
+        }
+        else
+        {
+            if (!_UI.RoleButtonCanvasGroup.interactable)
+            {
+                MyCanvasGroups.CanvasGroupActivity(_UI.RoleButtonCanvasGroup, true);
+            }
         }
     }
     #endregion

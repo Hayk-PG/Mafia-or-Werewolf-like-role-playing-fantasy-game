@@ -55,7 +55,7 @@ public class ChatController : MonoBehaviourPun
     {
         StartCoroutine(GetPhotonview(photonview => 
         {
-            if (photonview.IsMine)
+            if (photonview.IsMine && photonview.AmOwner)
             {
                 string messageText = playerName == null ? "Welcome " + PhotonNetwork.NickName + "!" : playerName != null && hasNewPlayerJoined ? playerName + " joined the game!" : playerName != null && !hasNewPlayerJoined ? playerName + " left the game!" : null;
 

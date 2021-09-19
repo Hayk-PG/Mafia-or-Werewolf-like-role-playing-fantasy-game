@@ -96,7 +96,7 @@ public class ProfileForGameScene : MonoBehaviour
         {
             for (int i = 0; i < PlayerBaseConditions.PlayerProfile.PlayerVotesTabContainer.childCount; i++)
             {
-                Destroy(PlayerBaseConditions.PlayerProfile.PlayerVotesTabContainer.GetChild(0).gameObject);
+                Destroy(PlayerBaseConditions.PlayerProfile.PlayerVotesTabContainer.GetChild(i).gameObject);
             }
         }
         #endregion

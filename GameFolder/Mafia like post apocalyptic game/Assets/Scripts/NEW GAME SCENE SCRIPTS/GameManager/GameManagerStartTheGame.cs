@@ -40,7 +40,7 @@ public class GameManagerStartTheGame : MonoBehaviourPun
 
             if(!_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet) _GameManagerSetPlayersRoles.SetPlayersRoles();
 
-            _GameManagerPlayerVotesController.TransferPlayersVotesToTheNewMaster();
+           // _GameManagerPlayerVotesController.TransferPlayersVotesToTheNewMaster();
 
             _GameStart.GameStarted = true;
         }

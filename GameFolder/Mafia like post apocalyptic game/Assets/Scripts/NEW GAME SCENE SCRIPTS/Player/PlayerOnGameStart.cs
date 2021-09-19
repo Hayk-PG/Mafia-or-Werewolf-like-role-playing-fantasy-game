@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -25,12 +26,12 @@ public class PlayerOnGameStart : MonoBehaviourPun
 
     void Start()
     {
-        UpdatePlayerStatsCoroutine = _PlayerUpdateStats.UpdatePlayerStatsCoroutine();
+        UpdatePlayerStatsCoroutine = _PlayerUpdateStats.UpdatePlayerStatsCoroutine();       
     }
 
     void Update()
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine && photonView.AmOwner)
         {
             if (IsPlayerFirstTimeInThisRoom)
             {
@@ -38,6 +39,7 @@ public class PlayerOnGameStart : MonoBehaviourPun
                 {
                     StartCoroutine(InformPlayerRolePopUp());
                     UpdatePlayedRolesStats();
+                    PlayerCustomPropertiesController.PCPC.SetPhotonPlayerLastRoomName(PhotonNetwork.CurrentRoom.Name);
                 }               
             }
         }
@@ -54,7 +56,8 @@ public class PlayerOnGameStart : MonoBehaviourPun
     IEnumerator InformPlayerRolePopUp()
     {
         yield return new WaitForSeconds(1);
-        _InformPlayerRole.OnPopUp("Your role is " + PlayerBaseConditions.PlayerRoleName(PhotonNetwork.LocalPlayer.ActorNumber) + "!");
+        _InformPlayerRole.OnPopUp("Your role is " + PlayerBaseConditions.PlayerRoleName(PhotonNetwork.LocalPlayer.ActorNumber) + "!",
+            Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == Photon.Pun.PhotonNetwork.LocalPlayer.ActorNumber)._UI.RoleImage);
     }
     #endregion
 }

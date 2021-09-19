@@ -3,7 +3,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using UnityEngine;
-using System.Collections;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -60,15 +59,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             PhotonNetwork.AuthValues = new AuthenticationValues();
             PhotonNetwork.AuthValues.UserId = playfabId;
         }
+    }
+    #endregion
 
-        #region ConnectionCheck
-        ConnectionUI.instance.ConnectionCheck(5, ConnectionUI.Connected.IsConnected, null, ()=> 
-        {
-            PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.AuthValues = new AuthenticationValues();
-            PhotonNetwork.AuthValues.UserId = playfabId;
-        });
-        #endregion
+    #region OnDisconnected
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        LoadingUI.LI._ConnectingScreen.EnableConnectionLostScreen();
     }
     #endregion
 
@@ -83,6 +80,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoggedOut();
         }
+
+        LoadingUI.LI._ConnectingScreen.DisableConnectionLostScreen();
     }
     #endregion
 
@@ -109,17 +108,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         options.CustomRoomPropertiesForLobby = new string[3] { RoomCustomProperties.IsPasswordSet, RoomCustomProperties.PinNumber, RoomCustomProperties.MinRequiredCount };
         options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable(3) { { RoomCustomProperties.IsPasswordSet, isPasswordSet }, { RoomCustomProperties.PinNumber, pinNumber }, { RoomCustomProperties.MinRequiredCount, minRequiredCount } };
 
-        ConnectionUI.instance.ConnectionCheck(0, ConnectionUI.Connected.IsConnectedAndReady, 
-            () => 
-            {
-                PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
-            }, 
-            () => 
-            {
-                if (PhotonNetwork.IsConnectedAndReady) PhotonNetwork.JoinLobby();
-                if (!PhotonNetwork.IsConnected) ConnectToPhoton(PlayerBaseConditions.LocalPlayer.UserId);
-                print(PhotonNetwork.IsConnectedAndReady + "/" + PhotonNetwork.IsConnected);
-            });       
+        PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
     }
     #endregion
 

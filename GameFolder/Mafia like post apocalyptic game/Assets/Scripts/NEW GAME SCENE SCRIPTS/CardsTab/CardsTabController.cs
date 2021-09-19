@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardsTabController : MonoBehaviour
 {
     [Serializable] class Death
     {
         [SerializeField] CanvasGroup deathTabCanvasGroup;
+        [SerializeField] Text nameText;
         [SerializeField] Animator deathCardAnim;
         [SerializeField] ParticleSystem FireEnchant;
         [SerializeField] ParticleSystem GodRaysSharp;
+
+        internal string DeathPlayerName
+        {
+            get => nameText.text;
+            set => nameText.text = value;
+        }
 
         internal void OpenDeathTab()
         {
@@ -29,12 +35,19 @@ public class CardsTabController : MonoBehaviour
 
     [SerializeField] Death _Death;
 
-
-    public void OnDeathTab(bool isActive)
+    [SerializeField] CanvasGroup cardsTabCanvasGroup;
+    public CanvasGroup CardsTabCanvasGroup
     {
-        if(GetComponent<CanvasGroup>().interactable != isActive)
+        get => cardsTabCanvasGroup;
+    }
+
+
+    public void OnDeathTab(bool isActive, string deathPlayerName)
+    {
+        if(CardsTabCanvasGroup.interactable != isActive)
         {
-            MyCanvasGroups.CanvasGroupActivity(GetComponent<CanvasGroup>(), isActive);
+            MyCanvasGroups.CanvasGroupActivity(CardsTabCanvasGroup, isActive);
+            _Death.DeathPlayerName = deathPlayerName;
 
             if (isActive) _Death.OpenDeathTab(); else _Death.CloseDeathTab();
         } 
