@@ -6,37 +6,43 @@ using UnityEngine.UI;
 
 public class ChatController : MonoBehaviourPun
 {
-    public static ChatController chat;
+    [Serializable] public class UI
+    {
+        [SerializeField] InputField inputField;
+        [SerializeField] Button button;
 
-    [Header("INPUT FIELD")]
-    [SerializeField] InputField chatInputField;
+        public string Text
+        {
+            get => inputField.text;
+            set => inputField.text = value;
+        }
+        public Button SendButton
+        {
+            get => button;
+        }
+    }
+    [Serializable] public class GameObjects
+    {
+        [SerializeField] Transform chatContainer;
+        [SerializeField] Text textPrefab;
 
-    [Header("TRANSFORM")]
-    [SerializeField] Transform chatContainer;
+        public Transform ChatContainer
+        {
+            get => chatContainer;
+        }
+        public Text TextPrefab
+        {
+            get => textPrefab;
+        }
 
-    [Header("PREFAB")]
-    [SerializeField] Text textPrefab;
+    }
 
-    [Header("SOUND")]
-    [SerializeField] AudioClip[] chatMessageSoundFX;
-    [SerializeField] AudioClip chatResizeSoundFX;
-
-    public InputField ChatInputField => chatInputField;
-    public Transform ChatContainer => chatContainer;
-    public Text TextPrefab => textPrefab;
-
-    /// <summary>
-    /// 0: Player message 1: AI message
-    /// </summary>
-    public AudioClip[] ChatMessageSoundFX => chatMessageSoundFX;
-    public AudioClip ChatResizeSoundFX => chatResizeSoundFX;
-
-    NetworkCallbacks _NetworkCallbacks { get; set; }
-
+    public UI _UI;
+    public GameObjects _GameObjects;
+    NetworkCallbacks _NetworkCallbacks;
 
     void Awake()
     {
-        chat = this;
         _NetworkCallbacks = FindObjectOfType<NetworkCallbacks>();
     }
 
@@ -68,7 +74,7 @@ public class ChatController : MonoBehaviourPun
     #region InstantiateChatText
     public void InstantiateChatText(string text, Color textColor, Color backgroundColor, int soundFXIndex)
     {
-        Text chatText = Instantiate(TextPrefab, ChatContainer);
+        Text chatText = Instantiate(_GameObjects.TextPrefab, _GameObjects.ChatContainer);
         chatText.color = textColor;
         chatText.GetComponentInChildren<Image>().color = backgroundColor;
         chatText.text = text;

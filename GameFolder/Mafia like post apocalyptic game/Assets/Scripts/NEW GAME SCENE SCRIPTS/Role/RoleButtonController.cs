@@ -117,6 +117,9 @@ public class RoleButtonController : MonoBehaviourPun
 
         [SerializeField] GameObject voteFX;
         [SerializeField] GameObject voteFxExplosion;
+        [SerializeField] GameObject witcherFX;
+        [SerializeField] GameObject medicFX;
+        [SerializeField] GameObject sheriffFX;
 
         [SerializeField] GameObject diedIcon;
         [SerializeField] GameObject diedIcon2;
@@ -129,6 +132,18 @@ public class RoleButtonController : MonoBehaviourPun
         public GameObject VoteFxExplosion
         {
             get => voteFxExplosion;
+        }
+        public GameObject WitcherFX
+        {
+            get => witcherFX;
+        }
+        public GameObject MedicFX
+        {
+            get => medicFX;
+        }
+        public GameObject SheriffFX
+        {
+            get => sheriffFX;
         }
         public GameObject DiedIcon
         {
@@ -250,6 +265,18 @@ public class RoleButtonController : MonoBehaviourPun
                 MyCanvasGroups.CanvasGroupActivity(_UI.RoleButtonCanvasGroup, true);
             }
         }
+    }
+    #endregion
+
+    #region OnNightVotesFXInLocalView
+    public void OnNightVotesFXInLocalView(string roleName)
+    {
+        switch (roleName)
+        {
+            case RoleNames.Lizard: _GameObjects.WitcherFX.gameObject.SetActive(true); break;
+            case RoleNames.Medic: _GameObjects.MedicFX.gameObject.SetActive(true); break;
+            case RoleNames.Sheriff: _GameObjects.SheriffFX.gameObject.SetActive(true); break;
+        }       
     }
     #endregion
 }

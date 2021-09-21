@@ -405,8 +405,8 @@ public class PlayerRPC : MonoBehaviourPun
     [PunRPC]
     void SendTextRPC(int localActorNumber, string text)
     {
-        string chatText = PlayerBaseConditions.Chat.ChatContainer.childCount + ") " + "<b>" + "<" + PhotonNetwork.CurrentRoom.GetPlayer(localActorNumber).NickName + ">" + "</b>" + "\n" + "<i>" + text + "</i>";
-        PlayerBaseConditions.Chat.InstantiateChatText(chatText, new Color32(255, 255, 255, 255), new Color32(0, 0, 0, 50), 0);
+        string chatText = FindObjectOfType<ChatController>()._GameObjects.ChatContainer.childCount + ") " + "<b>" + "<" + PhotonNetwork.CurrentRoom.GetPlayer(localActorNumber).NickName + ">" + "</b>" + "\n" + "<i>" + text + "</i>";
+        FindObjectOfType<ChatController>().InstantiateChatText(chatText, new Color32(255, 255, 255, 255), new Color32(0, 0, 0, 50), 0);
     }
     #endregion
 }

@@ -280,30 +280,6 @@ public class PlayerBaseConditions : MonoBehaviourPun
     }
     #endregion
 
-    #region Chat
-    public static ChatController Chat
-    {
-        get
-        {
-            if(ChatController.chat != null)
-            {
-                return ChatController.chat;
-            }
-            else
-            {
-                return null;
-            }
-        }
-    }
-    public static bool IsChatNotNull
-    {
-        get
-        {
-            return Chat;
-        }
-    }
-    #endregion
-
     #region Time && Vote
 
     /// <summary>

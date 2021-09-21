@@ -934,14 +934,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 529fa8caacf52bb42ab8433a1cd33e87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chatInputField: {fileID: 371871665}
-  chatContainer: {fileID: 167545996}
-  textPrefab: {fileID: 4040503618039905026, guid: 3bce5f803b1d204468a390dc2b6fc877,
-    type: 3}
-  chatMessageSoundFX:
-  - {fileID: 8300000, guid: 0ae55c1d106bc304d9df400736d37624, type: 3}
-  - {fileID: 8300000, guid: d6490d63f5b86ac408fdffd9f22e7272, type: 3}
-  chatResizeSoundFX: {fileID: 8300000, guid: b308076f23e952a43b60d53d2c02f53c, type: 3}
+  _UI:
+    inputField: {fileID: 371871665}
+    button: {fileID: 1912674743}
+  _GameObjects:
+    chatContainer: {fileID: 167545996}
+    textPrefab: {fileID: 4040503618039905026, guid: 3bce5f803b1d204468a390dc2b6fc877,
+      type: 3}
 --- !u!114 &145550903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -971,6 +970,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ddc3ce5dffae048953c5ba8f331a12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Conditions:
+    chatCanvasGroup: {fileID: 1328401646}
+  _ResizeButtons:
+    maximize: {fileID: 498217696}
+    minimize: {fileID: 1488279014}
   chatRectTransform: {fileID: 134938622}
 --- !u!4 &145550905
 Transform:
@@ -1139,6 +1143,7 @@ GameObject:
   - component: {fileID: 167545996}
   - component: {fileID: 167545998}
   - component: {fileID: 167545997}
+  - component: {fileID: 167545999}
   m_Layer: 5
   m_Name: ChatContainer
   m_TagString: Untagged
@@ -1204,6 +1209,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!225 &167545999
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167545995}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &239623584
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2030,7 +2047,7 @@ CanvasGroup:
   m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
+  m_IgnoreParentGroups: 1
 --- !u!114 &371871669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5720,6 +5737,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1328401645}
+  - component: {fileID: 1328401646}
   m_Layer: 5
   m_Name: Chat
   m_TagString: Untagged
@@ -5749,6 +5767,18 @@ RectTransform:
   m_AnchoredPosition: {x: -0.34423828, y: -0.2685547}
   m_SizeDelta: {x: 0.688324, y: -0.53733826}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &1328401646
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328401644}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1361774026
 PrefabInstance:
   m_ObjectHideFlags: 0

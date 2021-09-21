@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class ConnectionController : MonoBehaviourPun
 {
-    public bool Disconnect;
+    public bool disconnect;
+    public bool reconnect;
     public bool Connected
     {
         get
@@ -13,6 +14,7 @@ public class ConnectionController : MonoBehaviourPun
             else return PhotonNetwork.IsConnected;
         }
     }
+    public int connectingAttempts;
 
     delegate bool Connect();
     Connect _Reconnect;
@@ -22,10 +24,15 @@ public class ConnectionController : MonoBehaviourPun
     {
         if (_MySceneManager.CurrentScene().name == SceneNames.GameScene) _Reconnect = PhotonNetwork.ReconnectAndRejoin; else _Reconnect = PhotonNetwork.Reconnect;
 
-        if (Disconnect && PhotonNetwork.IsConnected)
+        if (disconnect && PhotonNetwork.IsConnected)
         {
             PhotonNetwork.Disconnect();
-            Disconnect = false;
+            reconnect = false;
+        }
+        if(reconnect && !PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Reconnect();
+            disconnect = false;
         }
     }
 
@@ -38,7 +45,9 @@ public class ConnectionController : MonoBehaviourPun
     {
         int attempts = 0;
 
-        while (attempts < 5 && !Connected)
+        yield return null;
+
+        while (attempts < connectingAttempts && !Connected)
         {
             _Reconnect();
 
@@ -48,7 +57,18 @@ public class ConnectionController : MonoBehaviourPun
 
             yield return new WaitForSeconds(5);           
         }
-
-        yield return null;
+     
+        if (!Connected)
+        {
+            if (_MySceneManager.CurrentScene().name != SceneNames.MenuScene)
+            {
+                _MySceneManager.ChangeToMenuScene();
+                StartCoroutine(ReconnectCoroutine());
+            }
+            else
+            {
+                StartCoroutine(ReconnectCoroutine());                
+            }
+        }
     }
 }

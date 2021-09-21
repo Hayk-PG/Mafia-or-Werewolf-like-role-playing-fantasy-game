@@ -6026,6 +6026,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Disconnect: 0
+  connectingAttempts: 3
 --- !u!1 &1404019177
 GameObject:
   m_ObjectHideFlags: 0
@@ -8919,7 +8920,7 @@ PrefabInstance:
     - target: {fileID: 6038401464246096601, guid: f0b3747088e15f04da526b1d68bff105,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.5
+      value: 0.5000305
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0b3747088e15f04da526b1d68bff105, type: 3}

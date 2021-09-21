@@ -449,8 +449,8 @@ public class PlayerLocalView : MonoBehaviourPun
     {
         if (PlayerBaseConditions._IsPhotonviewMine(GetComponent<PhotonView>().ViewID))
         {
-            string text = "<b>" + PlayerBaseConditions.Chat.ChatContainer.childCount + ") " + "<PAUTIK>" + "</b>" + "\n" + "Welcome! " + localPlayer.NickName;
-            PlayerBaseConditions.Chat.InstantiateChatText(text, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 50), 1);
+            string text = "<b>" + FindObjectOfType<ChatController>()._GameObjects.ChatContainer.childCount + ") " + "<PAUTIK>" + "</b>" + "\n" + "Welcome! " + localPlayer.NickName;
+            FindObjectOfType<ChatController>().InstantiateChatText(text, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 50), 1);
 
             UpdateOnlinePlayersList();
         }
@@ -459,8 +459,8 @@ public class PlayerLocalView : MonoBehaviourPun
     {
         if (PlayerBaseConditions._IsPhotonviewMine(GetComponent<PhotonView>().ViewID))
         {
-            string text = "<b>" + PlayerBaseConditions.Chat.ChatContainer.childCount + ") " + "<PAUTIK>" + "</b>" + "\n" + player.NickName + " left the game!";
-            PlayerBaseConditions.Chat.InstantiateChatText(text, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 50), 1);
+            string text = "<b>" + FindObjectOfType<ChatController>()._GameObjects.ChatContainer.childCount + ") " + "<PAUTIK>" + "</b>" + "\n" + player.NickName + " left the game!";
+            FindObjectOfType<ChatController>().InstantiateChatText(text, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 50), 1);
         }
 
         UpdateOnlinePlayersList();
@@ -470,8 +470,8 @@ public class PlayerLocalView : MonoBehaviourPun
     {
         if (PlayerBaseConditions._IsPhotonviewMine(GetComponent<PhotonView>().ViewID))
         {
-            string text = "<b>" + PlayerBaseConditions.Chat.ChatContainer.childCount + ") " + "<PAUTIK>" + "</b>" + "\n" + player.NickName + " joined the game!";
-            PlayerBaseConditions.Chat.InstantiateChatText(text, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 50), 1);
+            string text = "<b>" + FindObjectOfType<ChatController>()._GameObjects.ChatContainer.childCount + ") " + "<PAUTIK>" + "</b>" + "\n" + player.NickName + " joined the game!";
+            FindObjectOfType<ChatController>().InstantiateChatText(text, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 50), 1);
         }
 
         UpdateOnlinePlayersList();

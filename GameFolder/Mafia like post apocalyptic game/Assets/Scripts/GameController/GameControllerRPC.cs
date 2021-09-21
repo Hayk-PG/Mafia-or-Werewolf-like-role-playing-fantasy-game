@@ -26,8 +26,8 @@ public class GameControllerRPC : MonoBehaviourPun
 
         PlayerBaseConditions._MyGameControllerComponents.VFXHolder.CreateVFX(0);
 
-        string text = "<b>" + PlayerBaseConditions.Chat.ChatContainer.childCount + ") " + "<PAUTIK>" + "</b>" + "\n" + "Good luck!";
-        PlayerBaseConditions.Chat.InstantiateChatText(text, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 50), 1);
+        string text = "<b>" + FindObjectOfType<ChatController>()._GameObjects.ChatContainer.childCount + ") " + "<PAUTIK>" + "</b>" + "\n" + "Good luck!";
+        FindObjectOfType<ChatController>().InstantiateChatText(text, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 50), 1);
 
         //PlayerBaseConditions._MyGameControllerComponents.TextFX.LetsBeginTextObj.SetActive(true);
     }

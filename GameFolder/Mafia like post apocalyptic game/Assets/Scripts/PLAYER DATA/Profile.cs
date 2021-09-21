@@ -21,7 +21,9 @@ public class Profile : MonoBehaviour
     [SerializeField] FriendProfileTab _FriendProfileTab;
     [SerializeField] FirstTabMessageTab _FirstTabMessageTab;
     [SerializeField] Icons _Icons;
-   
+    [SerializeField] internal DatasDownloadCheck _DatasDownloadCheck;
+
+
     [Serializable] class Global
     {
         [SerializeField] internal Image bgImage;
@@ -41,6 +43,7 @@ public class Profile : MonoBehaviour
         [SerializeField] internal Button sendFriendRequestButton;
         [SerializeField] internal Button deleteFriendButton;
         [SerializeField] internal Button sendMessageButton;
+        [SerializeField] internal Image friendReuqestAlreadySentIcon;
     }
     [Serializable] class SecondTab
     {
@@ -133,6 +136,40 @@ public class Profile : MonoBehaviour
         [SerializeField] internal Sprite friendsIcon;
         [SerializeField] internal Sprite bellIcon;
      }
+    [Serializable] internal class DatasDownloadCheck
+    {
+        internal enum DatasDownloadStatus { PlayerStatsDownloaded, FriendCheckingDownloaded, FriendRequestDataDownloaded}
+        internal DatasDownloadStatus _DatasDownloadStatus;
+
+        [SerializeField] GameObject loadingScreen;
+
+        [SerializeField] bool hasPlayerStatsDownloaded;
+        [SerializeField] bool hasFriendCheckingDownloaded;
+        [SerializeField] bool hasFriendRequestDataDownloaded;
+        [SerializeField] bool hasProfilePicDownloaded;
+
+        internal IEnumerator Coroutine { get; set; }
+        internal GameObject LoadingScreen
+        {
+            get => loadingScreen;
+        }
+
+        internal bool HasPlayerStatsDownloaded
+        {
+            get => hasPlayerStatsDownloaded;
+            set => hasPlayerStatsDownloaded = value;
+        }
+        internal bool HasFriendCheckingDownloaded
+        {
+            get => hasFriendCheckingDownloaded;
+            set => hasFriendCheckingDownloaded = value;
+        }
+        internal bool HasFriendRequestDataDownloaded
+        {
+            get => hasFriendRequestDataDownloaded;
+            set => hasFriendRequestDataDownloaded = value;
+        }
+    }
 
     public Profile ProfileInstance
     {
@@ -326,6 +363,10 @@ public class Profile : MonoBehaviour
     {
         get => _NotificationTab._NotificationMessageTab.closeMessageTabButton;
     }
+    public Image FriendRequestAlreadySentIcon
+    {
+        get => _FirstTab.friendReuqestAlreadySentIcon;
+    }
 
     /// <summary>
     /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab 7:FriendMessageTab 8: NoticiationMessageTab 9:FriendMessageTab
@@ -485,6 +526,7 @@ public class Profile : MonoBehaviour
         button.onClick.AddListener(() => 
         {
             PlayerBaseConditions.PlayfabManager.PlayfabFriends.SendFriendRequest(button.name);
+            OnPlayerRequestAlreadySent();
         });
     }
     #endregion
@@ -618,6 +660,7 @@ public class Profile : MonoBehaviour
     #endregion
 
     #region ShowPlayerAvatar
+
     /// <summary>
     /// Get profile pic by player's actor number
     /// </summary>
@@ -635,6 +678,7 @@ public class Profile : MonoBehaviour
                 if (ProfilePicContainer.CachedProfilePics.ContainsKey(Player.CustomProperties[PlayerKeys.UserID].ToString()))
                 {
                     ProfileImage = ProfilePicContainer.CachedProfilePics[Player.CustomProperties[PlayerKeys.UserID].ToString()];
+                    ProfileImage.name = actorNumber.ToString();
                 }
                 else
                 {
@@ -642,6 +686,7 @@ public class Profile : MonoBehaviour
                         ProfilePic => 
                         {
                             ProfileImage = ProfilePic;
+                            ProfileImage.name = actorNumber.ToString();
                             ProfilePicContainer.CacheProfilePics(Player.CustomProperties[PlayerKeys.UserID].ToString(), ProfilePic);
                         }));
                 }
@@ -705,7 +750,45 @@ public class Profile : MonoBehaviour
             AsSoldierCount = Stats.countPlayedAsSoldier.ToString();
             AsInfectedCount = Stats.countPlayedAsInfected.ToString();
             AsLizardCount = Stats.countPlayedAsLizard.ToString();
+
+            ProfileDatasCompleteCheck(DatasDownloadCheck.DatasDownloadStatus.PlayerStatsDownloaded);
         });
+    }
+    #endregion
+
+    #region OnPlayerRequestAlreadySent
+    public void OnPlayerRequestAlreadySent()
+    {
+        SendFriendRequestButton.gameObject.SetActive(false);
+        FriendRequestAlreadySentIcon.gameObject.SetActive(true);
+    }
+    #endregion
+
+    #region ProfileDatasCompleteCheck + ResetProfileDatasCompleteCheck
+    internal void ProfileDatasCompleteCheck(DatasDownloadCheck.DatasDownloadStatus downloadStatus)
+    {
+        if (downloadStatus == DatasDownloadCheck.DatasDownloadStatus.PlayerStatsDownloaded) _DatasDownloadCheck.HasPlayerStatsDownloaded = true;
+        if (downloadStatus == DatasDownloadCheck.DatasDownloadStatus.FriendCheckingDownloaded) _DatasDownloadCheck.HasFriendCheckingDownloaded = true;
+        if (downloadStatus == DatasDownloadCheck.DatasDownloadStatus.FriendRequestDataDownloaded) _DatasDownloadCheck.HasFriendRequestDataDownloaded = true;
+    }
+
+    internal void ResetProfileDatasCompleteCheck()
+    {
+        _DatasDownloadCheck.HasPlayerStatsDownloaded = false;
+        _DatasDownloadCheck.HasFriendCheckingDownloaded = false;
+        _DatasDownloadCheck.HasFriendRequestDataDownloaded = false;
+    }
+
+    internal IEnumerator CheckIfAllDatasDownloadCompleted(int actorNumber)
+    {
+        _DatasDownloadCheck.LoadingScreen.SetActive(true);
+        PlayerBaseConditions.PlayerProfile.ResetProfileDatasCompleteCheck();
+
+        yield return new WaitUntil(() => _DatasDownloadCheck.HasFriendCheckingDownloaded && _DatasDownloadCheck.HasFriendRequestDataDownloaded && _DatasDownloadCheck.HasPlayerStatsDownloaded && ProfileImage.name == actorNumber.ToString());
+
+        _DatasDownloadCheck.LoadingScreen.SetActive(false);
+
+        _DatasDownloadCheck.Coroutine = null;
     }
     #endregion
 }

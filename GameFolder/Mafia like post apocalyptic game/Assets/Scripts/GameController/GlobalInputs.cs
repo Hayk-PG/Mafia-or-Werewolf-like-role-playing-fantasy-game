@@ -73,7 +73,7 @@ public class GlobalInputs : MonoBehaviour
                 }
                 if (index == 2)
                 {
-                    OnChat?.Invoke(PlayerBaseConditions.Chat?.ChatInputField);
+                    //OnChat?.Invoke(PlayerBaseConditions.Chat?.ChatInputField);
                 }
             });
         }

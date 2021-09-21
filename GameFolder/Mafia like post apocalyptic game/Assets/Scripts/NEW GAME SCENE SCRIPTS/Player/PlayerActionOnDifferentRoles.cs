@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,7 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
             if (!HasPlayerVoted(PhotonNetwork.LocalPlayer.ActorNumber, true))
             {
                 photonView.RPC("NightRPC", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, true);
+                photonView.RPC("NightInLocalViewRPC", PhotonNetwork.CurrentRoom.GetPlayer(_RoleButtonController._OwnerInfo.OwnerActorNumber), PhotonNetwork.LocalPlayer.ActorNumber);
 
                 _RoleButtonController.VoteFXActivity(false, true);
                 _RoleButtonController.VoteFXActivityForAllRoleButton(false);
@@ -83,6 +85,18 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
         SendPlayerVoteResultToMasterClient(votedAgainstActorNumber, senderActorNumber);
         PlayerVoted(votedAgainstActorNumber, senderActorNumber, isNightPhase);
         InformMasterClientAgainstWhomPlayerVoted(votedAgainstActorNumber, senderActorNumber);
+    }
+
+    [PunRPC]
+    void NightInLocalViewRPC(int senderActorNumber)
+    {
+        if (photonView.IsMine && photonView.AmOwner)
+        {
+            Player localPlayer = PhotonNetwork.LocalPlayer;
+            string roleName = PlayerBaseConditions.PlayerRoleName(senderActorNumber);
+
+            PlayerBaseConditions.GetRoleButton(localPlayer.ActorNumber).OnNightVotesFXInLocalView(roleName);
+        }
     }
 
     int RoleIndex()

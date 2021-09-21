@@ -1,16 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class ProfileForGameScene : MonoBehaviour
 {
-    int previousActorNumber;
-    bool isResetPhase;
-
-    GameManagerTimer _GameManagerTimer;
-
+    GameManagerTimer _GameManagerTimer { get; set; }
+    Profile _Profile { get; set; }
+    bool IsResetPhase { get; set;}
+    
 
     void Awake()
     {
         _GameManagerTimer = FindObjectOfType<GameManagerTimer>();
+        _Profile = FindObjectOfType<Profile>();
     }
 
     void OnEnable()
@@ -25,7 +26,7 @@ public class ProfileForGameScene : MonoBehaviour
 
     void Update()
     {
-        if (!isResetPhase)
+        if (!IsResetPhase)
         {
             MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[0], false);
         }
@@ -33,7 +34,7 @@ public class ProfileForGameScene : MonoBehaviour
 
     void CanViewTheProfile(bool isResetPhase)
     {       
-        this.isResetPhase = isResetPhase;
+        this.IsResetPhase = isResetPhase;
     }
 
     #region OnClickRoleButton
@@ -48,7 +49,16 @@ public class ProfileForGameScene : MonoBehaviour
             UpdatePlaterStats(playfabId);
             CheckPlayerVotes(actorNumber);
             IfPlayerIsFriend(playfabId);
+            IfFriendRequestAlreadySent(playfabId);
             ShowPlayerProfilePicture(actorNumber);
+
+            if (_Profile._DatasDownloadCheck.Coroutine != null)
+            {
+                StopCoroutine(_Profile._DatasDownloadCheck.Coroutine);
+            }
+
+            _Profile._DatasDownloadCheck.Coroutine = _Profile.CheckIfAllDatasDownloadCompleted(actorNumber);
+            StartCoroutine(_Profile._DatasDownloadCheck.Coroutine);
         }
     }
     #endregion
@@ -72,7 +82,7 @@ public class ProfileForGameScene : MonoBehaviour
     }
     #endregion
 
-    #region CheckPlayerProfile + SetDefaultPage
+    #region UpdatePlayerProfile
     void UpdatePlayerProfile(int actorNumber)
     {        
         PlayerBaseConditions.PlayerProfile.Name = PlayerBaseConditions.GetRoleButton(actorNumber)._OwnerInfo.OwnerName;
@@ -134,6 +144,7 @@ public class ProfileForGameScene : MonoBehaviour
                         PlayerBaseConditions.PlayerProfile.SendFriendRequestButton.gameObject.SetActive(false);
                         PlayerBaseConditions.PlayerProfile.SendMessageButton.gameObject.SetActive(true);
                         PlayerBaseConditions.PlayerProfile.DeleteFriendButton.gameObject.SetActive(true);
+                        PlayerBaseConditions.PlayerProfile.FriendRequestAlreadySentIcon.gameObject.SetActive(false);
                         SetMessageButtonName(playfabId);
                         SetDeleteFriendButtonName(playfabId);
                     }
@@ -145,6 +156,27 @@ public class ProfileForGameScene : MonoBehaviour
             PlayerBaseConditions.PlayerProfile.SendMessageButton.gameObject.SetActive(false);
             PlayerBaseConditions.PlayerProfile.DeleteFriendButton.gameObject.SetActive(false);
         }
+
+        PlayerBaseConditions.PlayerProfile.ProfileDatasCompleteCheck(Profile.DatasDownloadCheck.DatasDownloadStatus.FriendCheckingDownloaded);
+    }
+    #endregion
+
+    #region IfFriendRequestAlreadySent
+    void IfFriendRequestAlreadySent(string playfabId)
+    {
+        PlayerBaseConditions.PlayfabManager.PlayfabInternalData.GetPlayerUserInternalData(playfabId, InternalDataDict => 
+        {
+            if(InternalDataDict.ContainsKey(PlayerKeys.FriendRequest.FR + PlayerBaseConditions.OwnPlayfabId))
+            {
+                PlayerBaseConditions.PlayerProfile.OnPlayerRequestAlreadySent();
+            }
+            else
+            {
+                IfPlayerIsFriend(playfabId);
+            }
+
+            PlayerBaseConditions.PlayerProfile.ProfileDatasCompleteCheck(Profile.DatasDownloadCheck.DatasDownloadStatus.FriendRequestDataDownloaded);
+        });
     }
     #endregion
 
@@ -172,13 +204,11 @@ public class ProfileForGameScene : MonoBehaviour
     #region ShowPlayerProfilePicture
     void ShowPlayerProfilePicture(int actorNumber)
     {
-        if(previousActorNumber != actorNumber)
+        if(PlayerBaseConditions.PlayerProfile.ProfileImage.name != actorNumber.ToString())
         {
             PlayerBaseConditions.PlayerProfile.ProfileImage = PlayerBaseConditions.PlayerProfile.LoadingProfilePic;
             PlayerBaseConditions.PlayerProfile.ShowPlayerProfilePic(false, actorNumber);
         }
-
-        previousActorNumber = actorNumber;
     }
     #endregion
 }
