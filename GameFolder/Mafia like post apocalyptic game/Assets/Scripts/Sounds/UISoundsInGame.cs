@@ -1,25 +1,27 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class UISoundsInGame : UISounds
+public class UISoundsInGame : UiSoundsBaseScript
 {
-    [Serializable] public struct Sounds
+    /// <summary>
+    /// 0: Music 1: Audio
+    /// </summary>
+    public override AudioSource[] AudioSRC { get => audioSRC; }
+    public override AudioClip[] SoundFX { get => soundFX; }
+
+    [SerializeField] AudioClip[] GameSoundFX;
+
+    
+    public override void PlaySoundFX(int index)
     {
-       [SerializeField] AudioClip[] soundFX;      
-        
-        /// <summary>
-        /// 0: Timer Pop up 
-        /// </summary>
-        public AudioClip[] SoundFX
-        {
-            get => soundFX;
-        }
+        AudioSRC[1].PlayOneShot(SoundFX[index]);
     }
 
-    public Sounds _Sounds;
-
-    public void PlaySoundFX(int index)
+    /// <summary>
+    /// 0: ALert 1:Votes 2:Cards rotate 3: Impact 2 soundFX used in Cards rotate 4: End debris 
+    /// </summary>
+    /// <param name="index"></param>
+    public void PlaySoundFXinGame(int index)
     {
-        uiSRC.PlayOneShot(_Sounds.SoundFX[index]);
+        AudioSRC[1].PlayOneShot(GameSoundFX[index]);
     }
 }

@@ -61,7 +61,9 @@ public class FriendRequestMessageScript : MonoBehaviour
                             PlayerBaseConditions.PlayfabManager.PlayfabFriends.DeleteData(Addressee, PlayerKeys.FriendRequest.FR + PlayerBaseConditions.OwnPlayfabId);
                             Destroy(gameObject);
                         }
-                    });                
+                    });
+
+                PlayerBaseConditions.UiSounds.PlaySoundFX(0);
             });            
         }
         if(button = denyButton)
@@ -71,6 +73,7 @@ public class FriendRequestMessageScript : MonoBehaviour
             {
                 PlayerBaseConditions.PlayfabManager.PlayfabFriends.DeleteData(PlayerBaseConditions.OwnPlayfabId, PlayerKeys.FriendRequest.FR + Addressee);
                 PlayerBaseConditions.PlayfabManager.PlayfabFriends.DeleteData(Addressee, PlayerKeys.FriendRequest.FR + PlayerBaseConditions.OwnPlayfabId);
+                PlayerBaseConditions.UiSounds.PlaySoundFX(5);
                 Destroy(gameObject);
             });            
         }

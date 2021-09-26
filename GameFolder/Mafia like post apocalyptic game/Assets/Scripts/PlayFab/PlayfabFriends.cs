@@ -232,6 +232,8 @@ public class PlayfabFriends : MonoBehaviourPunCallbacks
                 if (PlayerBaseConditions.PlayerProfile.FriendsListContainer.GetChild(i).GetComponent<FriendButtonScript>()?.Name == friend.UserId)
                 {
                     PlayerBaseConditions.PlayerProfile.FriendsListContainer.GetChild(i).GetComponent<FriendButtonScript>().StatusImageColor = friend.IsOnline ? PlayerBaseConditions.PlayerProfile.clickedTabButtonColor : new Color32(255, 0, 64, 255);
+                    PlayerBaseConditions.PlayerProfile.FriendsListContainer.GetChild(i).GetComponent<FriendButtonScript>()._Room.IsInRoom = friend.IsInRoom;
+                    PlayerBaseConditions.PlayerProfile.FriendsListContainer.GetChild(i).GetComponent<FriendButtonScript>()._Room.RoomName = friend.Room;
                 }
             }
         }

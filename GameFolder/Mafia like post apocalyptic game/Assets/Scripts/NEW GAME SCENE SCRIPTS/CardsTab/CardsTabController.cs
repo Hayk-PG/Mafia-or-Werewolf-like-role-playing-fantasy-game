@@ -11,6 +11,7 @@ public class CardsTabController : MonoBehaviour
         [SerializeField] Animator deathCardAnim;
         [SerializeField] ParticleSystem FireEnchant;
         [SerializeField] ParticleSystem GodRaysSharp;
+        [SerializeField] ParticleSystem SpikeVolcanicWall;
 
         internal string DeathPlayerName
         {
@@ -24,6 +25,7 @@ public class CardsTabController : MonoBehaviour
             deathCardAnim.SetTrigger("play");
             FireEnchant.Play();
             GodRaysSharp.Play();
+            SpikeVolcanicWall.Play();
         }
         internal void CloseDeathTab()
         {
@@ -49,7 +51,17 @@ public class CardsTabController : MonoBehaviour
             MyCanvasGroups.CanvasGroupActivity(CardsTabCanvasGroup, isActive);
             _Death.DeathPlayerName = deathPlayerName;
 
-            if (isActive) _Death.OpenDeathTab(); else _Death.CloseDeathTab();
+            if (isActive)
+            {
+                _Death.OpenDeathTab();
+                UISoundsInGame Sounds = FindObjectOfType<UISoundsInGame>();
+                Sounds.PlaySoundFXinGame(2);
+                Sounds.PlaySoundFXinGame(3);
+            }
+            else
+            {
+                _Death.CloseDeathTab();
+            }
         } 
     }
 }

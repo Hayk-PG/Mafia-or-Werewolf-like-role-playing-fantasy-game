@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5758292081525187840}
   - component: {fileID: 7553998355118096645}
   - component: {fileID: 8032799268804099683}
-  - component: {fileID: 1884917848616554923}
   - component: {fileID: 7460395448693988467}
   m_Layer: 0
   m_Name: EnergyExplosionRed
@@ -4826,23 +4825,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &1884917848616554923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5444629627614787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5aa5c1e37409a9344a344c0468db383d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabSound: {fileID: 1297775994297274, guid: a3f8b7224da733e4e8347fe662a1be55,
-    type: 3}
-  destroyWhenDone: 1
-  soundPrefabIsChild: 0
-  pitchRandomMultiplier: 1.2
 --- !u!114 &7460395448693988467
 MonoBehaviour:
   m_ObjectHideFlags: 0

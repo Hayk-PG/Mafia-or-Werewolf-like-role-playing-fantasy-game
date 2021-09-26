@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
-using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.Networking;
+using Photon.Pun;
 
-public class Profile : MonoBehaviour
+public class Profile : MonoBehaviourPun
 {
     public static Profile instance;
    
@@ -108,6 +108,7 @@ public class Profile : MonoBehaviour
         [SerializeField] internal Image friendProfilePic;
         [SerializeField] internal Image friendRankImage;
         [SerializeField] internal Button friendMessageButton;
+        [SerializeField] internal Button joinRoomButton;
         [SerializeField] internal Text friendNameText;
         [SerializeField] internal Text friendRankNumberText;
         [SerializeField] internal FriendMessageTab _FriendMessageTab;
@@ -351,6 +352,10 @@ public class Profile : MonoBehaviour
     {
         get => _FriendProfileTab.friendMessageButton;
     }
+    public Button JoinFriendsRoomButton
+    {
+        get => _FriendProfileTab.joinRoomButton;
+    }
     public Button SendFriendMessageButton
     {
         get => _FriendProfileTab._FriendMessageTab.sendMessageButton;
@@ -451,6 +456,7 @@ public class Profile : MonoBehaviour
         OnClickFriendProfileButtons(FriendProfileFriendMessageButton);
         OnClickFriendProfileButtons(SendFriendMessageButton);
         OnClickFriendProfileButtons(CloseFriendMessageButton);
+        OnClickToJoinFriendsRoomButton(JoinFriendsRoomButton);
 
         OnNotificationButtons(CloseNotificationMessageButton);
     }
@@ -473,6 +479,8 @@ public class Profile : MonoBehaviour
             {
                 PlayerBaseConditions.PlayfabManager.PlayfabLogOut.LogOut(() => PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoginToAnotherAccount());
             }
+
+            PlayerBaseConditions.UiSounds.PlaySoundFX(0);
         });
     }
     #endregion
@@ -515,6 +523,8 @@ public class Profile : MonoBehaviour
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[5], true);
                 BgImage = BellIcon;
             }
+
+            PlayerBaseConditions.UiSounds.PlaySoundFX(2);
         });       
     }
     #endregion
@@ -527,6 +537,7 @@ public class Profile : MonoBehaviour
         {
             PlayerBaseConditions.PlayfabManager.PlayfabFriends.SendFriendRequest(button.name);
             OnPlayerRequestAlreadySent();
+            PlayerBaseConditions.UiSounds.PlaySoundFX(5);
         });
     }
     #endregion
@@ -539,6 +550,7 @@ public class Profile : MonoBehaviour
         {
             PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(PlayerBaseConditions.OwnPlayfabId, button.name);
             PlayerBaseConditions.PlayfabManager.PlayfabFriends.UnFriend(button.name, PlayerBaseConditions.OwnPlayfabId);
+            PlayerBaseConditions.UiSounds.PlaySoundFX(5);
         });
     }
     #endregion
@@ -550,6 +562,7 @@ public class Profile : MonoBehaviour
         button.onClick.AddListener(() =>
         {
             MyCanvasGroups.CanvasGroupActivity(CanvasGroups[9], true);
+            PlayerBaseConditions.UiSounds.PlaySoundFX(0);
         });
     }
     #endregion
@@ -573,7 +586,9 @@ public class Profile : MonoBehaviour
             if (button == _FirstTabMessageTab.closeMessageTabButton)
             {
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[9], false);
-            }          
+            }
+
+            PlayerBaseConditions.UiSounds.PlaySoundFX(0);
         });
     }
     #endregion
@@ -588,6 +603,7 @@ public class Profile : MonoBehaviour
             {
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[7], true);
                 SendFriendMessageButton.name = button.name;
+                PlayerBaseConditions.UiSounds.PlaySoundFX(0);
             }
             if(button == SendFriendMessageButton)
             {
@@ -597,12 +613,30 @@ public class Profile : MonoBehaviour
                         PlayerKeys.InternalData.MessageKey + PlayerBaseConditions.LocalPlayer.NickName, _FriendProfileTab._FriendMessageTab.friendMessageInputField.text);
 
                     FriendMessageText = null;
+                    PlayerBaseConditions.UiSounds.PlaySoundFX(5);
                 }                
             }
             if(button == CloseFriendMessageButton)
             {
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[7], false);
+                PlayerBaseConditions.UiSounds.PlaySoundFX(0);
+            }         
+        });
+    }
+    #endregion
+
+    #region OnClickToJoinFriendsRoomButton
+    void OnClickToJoinFriendsRoomButton(Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => 
+        {
+            if (!PhotonNetwork.InRoom || PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom.Name != button.gameObject.name)
+            {
+                PhotonNetwork.JoinRoom(button.gameObject.name);
             }
+
+            PlayerBaseConditions.UiSounds.PlaySoundFX(5);
         });
     }
     #endregion
@@ -617,6 +651,8 @@ public class Profile : MonoBehaviour
             {
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[8], false);
             }
+
+            PlayerBaseConditions.UiSounds.PlaySoundFX(0);
         });
     }
     #endregion
@@ -744,12 +780,12 @@ public class Profile : MonoBehaviour
         {
             TimePlayed = Stats.totalTimePlayed.ToString();
             RankNumber = Stats.rank.ToString();
-            AsSurvivorCount = Stats.countPlayedAsSurvivor.ToString();
-            AsDoctorCount = Stats.countPlayedAsDoctor.ToString();
-            AsSheriffCount = Stats.countPlayedAsSheriff.ToString();
-            AsSoldierCount = Stats.countPlayedAsSoldier.ToString();
-            AsInfectedCount = Stats.countPlayedAsInfected.ToString();
-            AsLizardCount = Stats.countPlayedAsLizard.ToString();
+            AsSurvivorCount = Stats.asSurvivor.ToString();
+            AsDoctorCount = Stats.asDoctor.ToString();
+            AsSheriffCount = Stats.asSheriff.ToString();
+            AsSoldierCount = Stats.asSoldier.ToString();
+            AsInfectedCount = Stats.asInfected.ToString();
+            AsLizardCount = Stats.asLizard.ToString();
 
             ProfileDatasCompleteCheck(DatasDownloadCheck.DatasDownloadStatus.PlayerStatsDownloaded);
         });

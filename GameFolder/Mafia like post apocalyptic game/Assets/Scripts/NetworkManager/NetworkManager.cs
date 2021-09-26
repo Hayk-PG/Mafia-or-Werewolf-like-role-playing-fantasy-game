@@ -50,7 +50,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region Connect
+    #region ConnectToPhoton
     public void ConnectToPhoton(string playfabId)
     {
         if (!PhotonNetwork.IsConnected)
@@ -58,6 +58,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.AuthValues = new AuthenticationValues();
             PhotonNetwork.AuthValues.UserId = playfabId;
+        }
+        else
+        {
+            PhotonNetwork.JoinLobby();
         }
     }
     #endregion
@@ -158,6 +162,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             FindObjectOfType<JoinRoomErrorTab>().OnError("Unable to join: The room is currently not available,please try again later!");
         }
+
+        PlayerBaseConditions.UiSounds.PlaySoundFX(7);
     }
     #endregion
 

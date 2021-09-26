@@ -32,12 +32,14 @@ public class MessageScript : MonoBehaviour
                 MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[8], true);
                 PlayerBaseConditions.PlayerProfile.NotificationMessageText = InternalDataValue;
                 PlayerBaseConditions.PlayfabManager.PlayfabInternalData.DeleteData(PlayerBaseConditions.OwnPlayfabId, InternalDataKey, InternalDataValue);
+                PlayerBaseConditions.UiSounds.PlaySoundFX(0);
                 Destroy(gameObject);
             }
 
             if(button == deleteMessageButton)
             {
                 PlayerBaseConditions.PlayfabManager.PlayfabInternalData.DeleteData(PlayerBaseConditions.OwnPlayfabId, InternalDataKey, InternalDataValue);
+                PlayerBaseConditions.UiSounds.PlaySoundFX(5);
                 Destroy(gameObject);
             }
         });

@@ -8,5 +8,6 @@ public class PlayerBadgeButton : MonoBehaviour
     public void OnPlayerLoggedIn()
     {
         GameObject vfxPrefabCopy = Instantiate(vfxPrefab, vfxSpawnPoint.position, Quaternion.identity);
+        PlayerBaseConditions.UiSounds.PlaySoundFX(6);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
+using System;
 using UnityEngine;
 
 public class PlayerBaseConditions : MonoBehaviourPun
@@ -633,4 +634,19 @@ public class PlayerBaseConditions : MonoBehaviourPun
     }
     #endregion
 
+    #region UISounds
+    public static UiSoundsBaseScript UiSounds
+    {
+        get
+        {
+            if(_MySceneManager.CurrentScene().name == SceneNames.MenuScene)
+                return FindObjectOfType<UISounds>();
+
+            if (_MySceneManager.CurrentScene().name == SceneNames.GameScene)
+                return FindObjectOfType<UISoundsInGame>();
+
+            else return null;
+        }
+    }
+    #endregion
 }

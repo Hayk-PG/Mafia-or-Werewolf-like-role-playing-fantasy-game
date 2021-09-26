@@ -30,11 +30,13 @@ public class ExitConfirmation : OptionButtonsBaseScript
 
     void OnConfirmExit()
     {
+        PlayerBaseConditions.UiSounds.PlaySoundFX(0);
         Application.Quit();
     }
 
     void OnDenyExit()
     {
+        PlayerBaseConditions.UiSounds.PlaySoundFX(0);
         Options.instance.OnPressedExitButton(false);
     }
 

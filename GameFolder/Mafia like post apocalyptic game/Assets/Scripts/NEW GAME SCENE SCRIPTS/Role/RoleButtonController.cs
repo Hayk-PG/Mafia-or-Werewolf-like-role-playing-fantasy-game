@@ -225,7 +225,7 @@ public class RoleButtonController : MonoBehaviourPun
         if (isActive == true && !String.IsNullOrEmpty(votedName) && _GameObjects.votedNameIconObj.activeInHierarchy != true)
         {
             _GameObjects.votedNameIconObj.SetActive(true);
-            FindObjectOfType<UISoundsInGame>().PlaySoundFX(1);
+            FindObjectOfType<UISoundsInGame>().PlaySoundFXinGame(1);
         }
         if (isActive == false)
         {

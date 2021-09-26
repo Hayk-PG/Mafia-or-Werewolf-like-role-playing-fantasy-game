@@ -36,7 +36,11 @@ public class InformPlayerRole : MonoBehaviour
     void Update()
     {
         _UI.GotItButton.onClick.RemoveAllListeners();
-        _UI.GotItButton.onClick.AddListener(() => { MyCanvasGroups.CanvasGroupActivity(_UI.CanvasGroup, false); PlayerBaseConditions.VFXCamera().enabled = true; }); 
+        _UI.GotItButton.onClick.AddListener(() => 
+        {
+            MyCanvasGroups.CanvasGroupActivity(_UI.CanvasGroup, false); PlayerBaseConditions.VFXCamera().enabled = true;
+            PlayerBaseConditions.UiSounds.PlaySoundFX(5);
+        }); 
     }
 
     public void OnPopUp(string text, Sprite roleImage)

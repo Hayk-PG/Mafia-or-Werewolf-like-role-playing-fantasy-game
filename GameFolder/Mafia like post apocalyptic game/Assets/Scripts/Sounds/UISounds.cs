@@ -1,114 +1,20 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
-public class UISounds : MonoBehaviour
+public class UISounds : UiSoundsBaseScript
 {
-    NetworkManagerComponents NetworkManagerComponents
+    /// <summary>
+    /// 0: Music 1: Audio
+    /// </summary>
+    public override AudioSource[] AudioSRC { get => audioSRC; }
+    public override AudioClip[] SoundFX { get => soundFX; }
+
+
+    /// <summary>
+    /// 0: Button click 1: Back button click 2: Click other UI 3: On InputField value changed
+    /// </summary>
+    /// <param name="index"></param>
+    public override void PlaySoundFX(int index)
     {
-        get
-        {
-            if(FindObjectOfType<NetworkManagerComponents>() != null)
-            {
-                return FindObjectOfType<NetworkManagerComponents>();
-            }
-            else
-            {
-                return null;
-            }
-        }
+        AudioSRC[1].PlayOneShot(SoundFX[index]);
     }
-
-    protected InputField[] AllInputFields { get; set; }
-    protected Toggle[] AllToggles { get; set; }
-    protected Button[] AllButtons { get; set; }
-    protected Slider[] AllSliders { get; set; }
- 
-
-    [Header("AUDIO SOURCES")]
-    [SerializeField] protected AudioSource uiSRC;
-    [SerializeField] protected AudioSource musicSRC;
-
-    [Header("UI SOUND FX")]
-    [SerializeField] protected AudioClip uiPanelPopUpSFX;
-    [SerializeField] protected AudioClip uiTypingSFX;
-    [SerializeField] protected AudioClip uiToggleSFX;
-    [SerializeField] protected AudioClip uiClickSFX;
-    [SerializeField] protected AudioClip uiSliderSFX;
-   
-
-    protected virtual void Awake()
-    {
-        AllInputFields = FindObjectsOfType<InputField>();
-        AllToggles = FindObjectsOfType<Toggle>();
-        AllButtons = FindObjectsOfType<Button>();
-        AllSliders = FindObjectsOfType<Slider>();
-    }
-
-    protected virtual void OnEnable()
-    {
-              
-    }
-
-    protected virtual void OnDisable()
-    {
-        
-    }
-
-    protected virtual void Update()
-    {
-        //OnInputFieldValueChanged();
-        //OnToggleValueChanged();
-        //OnButtonClicked();
-        //OnSliderValueChanged();
-    }
-
-    public void PlayUISoundFX(AudioClip soundFX)
-    {
-        uiSRC.PlayOneShot(soundFX);
-    }
-
-    void NetworkManager_OnConnectedToMasterServer(bool isNickNameSet)
-    {
-        if (!isNickNameSet)
-        {
-            PlayUISoundFX(uiPanelPopUpSFX);
-        }
-    }
-
-    void OnInputFieldValueChanged()
-    {
-        foreach (var inputField in AllInputFields)
-        {
-            inputField.onValueChanged.RemoveAllListeners();
-            inputField.onValueChanged.AddListener(delegate { PlayUISoundFX(uiTypingSFX); });
-        }
-    }
-
-    void OnToggleValueChanged()
-    {
-        foreach (var toggle in AllToggles)
-        {
-            toggle.onValueChanged.RemoveAllListeners();
-            toggle.onValueChanged.AddListener(delegate { PlayUISoundFX(uiToggleSFX); });
-        }
-    }
-
-    void OnButtonClicked()
-    {
-        foreach (var button in AllButtons)
-        {
-            button.onClick.RemoveListener(delegate { PlayUISoundFX(uiClickSFX); });
-            button.onClick.AddListener(delegate { PlayUISoundFX(uiClickSFX); });
-        }
-    }
-
-    void OnSliderValueChanged()
-    {
-        foreach (var slider in AllSliders)
-        {
-            slider.onValueChanged.RemoveAllListeners();
-            slider.onValueChanged.AddListener(delegate { PlayUISoundFX(uiSliderSFX); });
-        }
-    }
-
 }

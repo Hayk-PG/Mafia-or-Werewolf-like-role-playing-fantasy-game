@@ -119,12 +119,30 @@ MonoBehaviour:
   _StatsValue:
     rank: 0
     totalTimePlayed: 0
+    points: 0
     asSurvivor: 0
     asDoctor: 0
     asSheriff: 0
     asSoldier: 0
     asInfected: 0
     asLizard: 0
+    overallSkills: 0
+    survivorSkills: 0
+    doctorSkills: 0
+    sheriffSkills: 0
+    soldierSkills: 0
+    infectedSkills: 0
+    lizardSkills: 0
+    winAsSurvivor: 0
+    lostAsSurvivor: 0
+    winAsInfected: 0
+    lostAsInfected: 0
+    countPlayedAsSurvivor: 0
+    countPlayedAsDoctor: 0
+    countPlayedAsSheriff: 0
+    countPlayedAsSoldier: 0
+    countPlayedAsLizard: 0
+    countPlayedAsInfected: 0
   _Conditions:
     isPlayerRoleSet: 0
 --- !u!114 &3863192513754573222

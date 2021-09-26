@@ -58,12 +58,13 @@ public class PlayfabRegister : MonoBehaviour
                     });
                 #endregion
 
-                #region Update player stats and store in player custom properties
+                #region Create player stats
                 PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(result.PlayFabId, 
                     update =>
                     {
                         update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Rank, Value = 0 });
                         update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.TotalTimePlayed, Value = 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Points, Value = 0 });
 
                         update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsSurvivor, Value = 0 });
                         update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsDoctor, Value = 0 });
@@ -72,7 +73,13 @@ public class PlayfabRegister : MonoBehaviour
                         update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsInfected, Value = 0 });
                         update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsWitch, Value = 0 });
 
-                        PlayerBaseConditions.PlayerCustomPropertiesController.SetPhotonRankAndTotalTimePlayed(new List<int> { 0, 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.OverallSkills, Value = 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.SurvivorSkills, Value = 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.DoctorSkills, Value = 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.SheriffSkills, Value = 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.SoldierSkills, Value = 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.InfectedSkills, Value = 0 });
+                        update.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.LizardSkills, Value = 0 });
                     });
                 #endregion
 

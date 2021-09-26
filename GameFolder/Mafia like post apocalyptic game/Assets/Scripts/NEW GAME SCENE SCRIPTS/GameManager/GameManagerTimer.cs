@@ -169,7 +169,7 @@ public class GameManagerTimer : MonoBehaviourPun
         if (_Timer.Moon.activeInHierarchy != _Timer.NightTime) _Timer.Moon.SetActive(_Timer.NightTime);
         if (_Timer.Sun.activeInHierarchy != _Timer.DayTime) _Timer.Sun.SetActive(_Timer.DayTime);
 
-        RunNextPhaseUntilTimer(delegate { /*_CardsTabController.OnDeathTab(true, null);*/ });
+        RunNextPhaseUntilTimer(delegate { _CardsTabController.OnDeathTab(true, null); });
         StopRunNextPhaseUntilTimer(delegate{ _CardsTabController.OnDeathTab(false, null); });
 
         foreach (var item in _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted)

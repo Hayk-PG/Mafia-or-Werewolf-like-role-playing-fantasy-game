@@ -30,6 +30,7 @@ public class SignInTab : SignUpTab
         hasSaved = false;
 
         saveButton.GetComponent<ButtonLocalSprite>().OnClickSwitchButton(hasSaved);
+        PlayerBaseConditions.UiSounds.PlaySoundFX(7);
     }
     #endregion
 }

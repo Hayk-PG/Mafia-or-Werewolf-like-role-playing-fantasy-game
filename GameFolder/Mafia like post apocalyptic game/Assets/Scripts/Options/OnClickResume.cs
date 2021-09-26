@@ -19,6 +19,8 @@ public class OnClickResume : MonoBehaviour
         {
             Options.instance.OnPressedOptionsButtons();
             if (PlayerBaseConditions.VFXCamera() != null) PlayerBaseConditions.VFXCamera().enabled = true;
+
+            PlayerBaseConditions.UiSounds.PlaySoundFX(0);
         });
     }
 }

@@ -35,6 +35,7 @@ public class CreateRoomTab : MonoBehaviour
     {
         errorText.text = obj;
         MyCanvasGroups.CanvasGroupActivity(errorPanelCanvasGroup, true);
+        PlayerBaseConditions.UiSounds.PlaySoundFX(7);
     }
     #endregion
 

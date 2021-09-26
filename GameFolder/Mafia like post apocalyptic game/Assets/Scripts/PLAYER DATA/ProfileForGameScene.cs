@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using UnityEngine;
 
-public class ProfileForGameScene : MonoBehaviour
+public class ProfileForGameScene : MonoBehaviourPun
 {
     GameManagerTimer _GameManagerTimer { get; set; }
     Profile _Profile { get; set; }
@@ -45,6 +46,8 @@ public class ProfileForGameScene : MonoBehaviour
             MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[0], true);
 
             GameScene();
+            //EnableFriendsTab(actorNumber);
+            //UpdateFriendsList();
             UpdatePlayerProfile(actorNumber);
             UpdatePlaterStats(playfabId);
             CheckPlayerVotes(actorNumber);
@@ -81,6 +84,55 @@ public class ProfileForGameScene : MonoBehaviour
         }
     }
     #endregion
+
+    #region EnableFriendsTab
+    void EnableFriendsTab(int actorNumber)
+    {
+        if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
+        {
+            if (PhotonNetwork.LocalPlayer.TagObject != null)
+            {
+                GameObject localPlayerObj = PhotonNetwork.LocalPlayer.TagObject as GameObject;
+
+                if (localPlayerObj.GetComponent<PhotonView>().IsMine && localPlayerObj.GetComponent<PhotonView>().AmOwner)
+                {
+                    _Profile.TabButtons[3].gameObject.SetActive(true);
+                }
+            }
+        }
+        else
+        {
+            _Profile.TabButtons[3].gameObject.SetActive(false);
+        }     
+    }
+    #endregion
+
+    #region UpdateFriendsList
+    void UpdateFriendsList()
+    {
+        PlayerBaseConditions.PlayfabManager.PlayfabFriends.UpdateFriendsList(PlayerBaseConditions.OwnPlayfabId,
+            Friends =>
+            {
+                string[] friendsArray = new string[Friends.Count];
+                int index = 0;
+
+                foreach (var friend in Friends)
+                {
+                    if (PlayerBaseConditions.PlayerProfile.FriendsListContainer.Find(friend.Value.PlayerId) == null)
+                    {
+                        FriendButtonScript friendButton = Instantiate(PlayerBaseConditions.PlayerProfile.FriendButtonPrefab, PlayerBaseConditions.PlayerProfile.FriendsListContainer);
+                        friendButton.Name = friend.Value.PlayerId;
+                        friendButton.FriendName = friend.Key;
+                    }
+
+                    friendsArray[index] = friend.Value.PlayerId;
+                    index++;
+                }
+
+                PlayerBaseConditions.PlayfabManager.PlayfabFriends.PhotonNetworkFriends(friendsArray);
+            });
+    }
+    #endregion    
 
     #region UpdatePlayerProfile
     void UpdatePlayerProfile(int actorNumber)

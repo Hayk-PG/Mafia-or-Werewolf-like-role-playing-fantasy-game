@@ -15,7 +15,7 @@ public class TimerTickSound : MonoBehaviour
 
         if ((string)datas[1] == RaiseEventsStrings.PlayTimerTickingSoundFX)
         {
-            if (_Timer.Seconds <= 10) _UISoundsInGame.PlaySoundFX(0);
+            if (_Timer.Seconds <= 10) _UISoundsInGame.PlaySoundFXinGame(5);
         }
     }
 }
