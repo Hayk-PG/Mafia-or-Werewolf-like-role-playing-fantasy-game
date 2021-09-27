@@ -3,6 +3,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 
 public class PlayfabRegister : MonoBehaviour
 {
@@ -26,12 +27,13 @@ public class PlayfabRegister : MonoBehaviour
                 PlayerBaseConditions.PlayerCustomPropertiesController.SetPhotonPlayerID(result.PlayFabId);
                 PlayerBaseConditions.PlayerCustomPropertiesController.SetPhotonPlayerGender(gender.ToString());
 
-                #region Get entity info and store in player custom properties
+                #region Get entity info and store in player custom properties + Upload profile pic
                 PlayerBaseConditions.PlayfabManager.PlayfabEntity.GetEntityToken(
                     get => 
                     {
                         foreach (var info in get)
                         {
+                            StartCoroutine(UploadProfileImageCoroutine(info.Key, info.Value));
                             PlayerBaseConditions.PlayerCustomPropertiesController.SetPhotonPlayerEntity(info.Key, info.Value);
                         }
                     });
@@ -94,4 +96,10 @@ public class PlayfabRegister : MonoBehaviour
         );
     }
     #endregion
+
+    IEnumerator UploadProfileImageCoroutine(string entityId, string entityType)
+    {
+        yield return new WaitForSeconds(2);
+        PlayerBaseConditions.PlayfabManager.PlayfabUploadProfileImage.UploadProfileImage(entityId, entityType);
+    }
 }

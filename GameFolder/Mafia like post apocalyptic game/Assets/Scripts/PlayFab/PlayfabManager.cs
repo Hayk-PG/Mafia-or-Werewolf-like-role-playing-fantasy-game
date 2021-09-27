@@ -17,6 +17,7 @@ public class PlayfabManager : MonoBehaviour
     public PlayfabUserAccountInfo PlayfabUserAccountInfo { get; set; }
     public PlayfabInternalData PlayfabInternalData { get; set; }
     public PlayfabDeleteAccount PlayfabDeleteAccount { get; set; }
+    public PlayfabUploadProfileImage PlayfabUploadProfileImage { get; set; }
 
 
     void Awake()
@@ -47,6 +48,7 @@ public class PlayfabManager : MonoBehaviour
         PlayfabUserAccountInfo = GetComponent<PlayfabUserAccountInfo>();
         PlayfabInternalData = GetComponent<PlayfabInternalData>();
         PlayfabDeleteAccount = GetComponent<PlayfabDeleteAccount>();
+        PlayfabUploadProfileImage = GetComponent<PlayfabUploadProfileImage>();
     }
 
 

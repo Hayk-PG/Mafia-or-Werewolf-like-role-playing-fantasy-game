@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class SignUpTab : MonoBehaviour
 {
+    public event Action<string, string, Gender, bool> OnClickContinueButton;
+
     public enum Gender { Male, Female, None}
     public Gender gender;
 
@@ -121,10 +123,12 @@ public class SignUpTab : MonoBehaviour
         signUpButton.onClick.RemoveAllListeners();
         signUpButton.onClick.AddListener(delegate 
         {
-            PlayerBaseConditions.PlayfabManager.PlayfabSignUp.OnPlayfabRegister(usernameInputField.text, passwordInputField.text, gender);
+            OnClickContinueButton?.Invoke(usernameInputField.text, passwordInputField.text, gender, hasSaved);
 
-            if (hasSaved) PlayerBaseConditions.PlayerSavedData.SaveUsernameAndPassword(usernameInputField.text, passwordInputField.text);
-            else PlayerBaseConditions.PlayerSavedData.DeleteUsernameAndPassword();
+            //PlayerBaseConditions.PlayfabManager.PlayfabSignUp.OnPlayfabRegister(usernameInputField.text, passwordInputField.text, gender);
+
+            //if (hasSaved) PlayerBaseConditions.PlayerSavedData.SaveUsernameAndPassword(usernameInputField.text, passwordInputField.text);
+            //else PlayerBaseConditions.PlayerSavedData.DeleteUsernameAndPassword();
         });
     }
     #endregion
@@ -177,7 +181,4 @@ public class SignUpTab : MonoBehaviour
         PlayerBaseConditions.UiSounds.PlaySoundFX(7);
     }
     #endregion
-
-
-
 }
