@@ -11,6 +11,7 @@ public class PlayfabUserProfile : MonoBehaviour
         internal string countryCode;
         internal string regDate;
         internal string avatarURL;
+        internal string displayedName;
     }
 
     #region GetPlayerProfile
@@ -33,8 +34,9 @@ public class PlayfabUserProfile : MonoBehaviour
                 {
                     countryCode = result.PlayerProfile.Locations[result.PlayerProfile.Locations.Count - 1].CountryCode.ToString(),
                     regDate = result.PlayerProfile.Created.Value.ToLocalTime().ToString(),
-                    avatarURL = result.PlayerProfile.AvatarUrl
-                });
+                    avatarURL = result.PlayerProfile.AvatarUrl,
+                    displayedName = result.PlayerProfile.DisplayName
+                });;
             },
             error =>
             {

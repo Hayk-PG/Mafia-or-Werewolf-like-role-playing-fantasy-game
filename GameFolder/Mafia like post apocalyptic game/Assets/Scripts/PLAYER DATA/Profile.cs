@@ -76,7 +76,13 @@ public class Profile : MonoBehaviourPun
         [SerializeField] internal Button logTabButton;
         [SerializeField] internal Button loginToAnotherAccButton;
         [SerializeField] internal Button logOutButton;
+        [SerializeField] internal Button deleteAccountButton;
+        [SerializeField] internal Button confirmAccountDeletionButton;
+        [SerializeField] internal Button dontDeleteAccountButton;
         [SerializeField] internal CanvasGroup logCanvasGroup;
+
+        [SerializeField] internal CanvasGroup logTabButtonsCanvasGroup;
+        [SerializeField] internal CanvasGroup confirmDeletionButtonsCanvasGroup;
     }
     [Serializable] class FriendsTab
     {
@@ -336,6 +342,18 @@ public class Profile : MonoBehaviourPun
     {
         get => _LogTab.logOutButton;
     }
+    public Button DeleteAccountButton
+    {
+        get => _LogTab.deleteAccountButton;
+    }
+    public Button ConfirmAccountDeletionButton
+    {
+        get => _LogTab.confirmAccountDeletionButton;
+    }
+    public Button DontDeleteAccountButton
+    {
+        get => _LogTab.dontDeleteAccountButton;
+    }
     public Button SendFriendRequestButton
     {
         get => _FirstTab.sendFriendRequestButton;
@@ -376,7 +394,15 @@ public class Profile : MonoBehaviourPun
     /// <summary>
     /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab 7:FriendMessageTab 8: NoticiationMessageTab 9:FriendMessageTab
     /// </summary>
-    public CanvasGroup[] CanvasGroups;    
+    public CanvasGroup[] CanvasGroups;  
+    public CanvasGroup LogTabButtonsCanvasGroup
+    {
+        get => _LogTab.logTabButtonsCanvasGroup;
+    }
+    public CanvasGroup ConfirmAccountDeletionButtonsCanvasGroup
+    {
+        get => _LogTab.confirmDeletionButtonsCanvasGroup;
+    }
     public Transform PlayerVotesTabContainer
     {
         get => _PlayerVotesTab.playerVotesTabContainer;
@@ -439,6 +465,9 @@ public class Profile : MonoBehaviourPun
         OnClickButton(CloseButton);      
         OnClickButton(LogOutButton);
         OnClickButton(LoginToAnotherAccButton);
+        OnClickButton(DeleteAccountButton);
+        OnClickButton(ConfirmAccountDeletionButton);
+        OnClickButton(DontDeleteAccountButton);
 
         OnClickTabButtons(TabButtons[0]);
         OnClickTabButtons(TabButtons[1]);
@@ -478,6 +507,33 @@ public class Profile : MonoBehaviourPun
             if (button == LoginToAnotherAccButton)
             {
                 PlayerBaseConditions.PlayfabManager.PlayfabLogOut.LogOut(() => PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoginToAnotherAccount());
+            }
+            if (button == DeleteAccountButton)
+            {
+                MyCanvasGroups.CanvasGroupActivity(ConfirmAccountDeletionButtonsCanvasGroup, true);
+                MyCanvasGroups.CanvasGroupActivity(LogTabButtonsCanvasGroup, false);
+            }
+            if(button == ConfirmAccountDeletionButton)
+            {
+                PlayerBaseConditions.PlayfabManager.PlayfabDeleteAccount.DeleteAccount(PhotonNetwork.LocalPlayer.UserId, Delete =>
+                {
+                    if (Delete == true)
+                    {
+                        MyCanvasGroups.CanvasGroupActivity(ConfirmAccountDeletionButtonsCanvasGroup, false);
+                        MyCanvasGroups.CanvasGroupActivity(LogTabButtonsCanvasGroup, true);
+                        PlayerBaseConditions.PlayfabManager.PlayfabLogOut.LogOut(() => PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoggedOut());
+                    }
+                    else
+                    {
+                        MyCanvasGroups.CanvasGroupActivity(ConfirmAccountDeletionButtonsCanvasGroup, false);
+                        MyCanvasGroups.CanvasGroupActivity(LogTabButtonsCanvasGroup, true);
+                    }
+                });               
+            }
+            if(button == DontDeleteAccountButton)
+            {
+                MyCanvasGroups.CanvasGroupActivity(ConfirmAccountDeletionButtonsCanvasGroup, false);
+                MyCanvasGroups.CanvasGroupActivity(LogTabButtonsCanvasGroup, true);
             }
 
             PlayerBaseConditions.UiSounds.PlaySoundFX(0);

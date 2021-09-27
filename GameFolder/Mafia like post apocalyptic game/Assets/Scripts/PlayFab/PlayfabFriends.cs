@@ -220,7 +220,8 @@ public class PlayfabFriends : MonoBehaviourPunCallbacks
     #region PhotonNetworkFriends
     public void PhotonNetworkFriends(string[] friends)
     {
-        PhotonNetwork.FindFriends(friends);
+        if (friends.Length > 0)
+            PhotonNetwork.FindFriends(friends);
     }
 
     public override void OnFriendListUpdate(List<Photon.Realtime.FriendInfo> friendList)
