@@ -19,4 +19,12 @@ public class ProfilePicContainer : MonoBehaviour
             CachedProfilePics.Add(playfabId, profilePic);
         }
     }
+
+    public void DeleteCachedProfilePic(string playfabId)
+    {
+        if (CachedProfilePics.ContainsKey(playfabId))
+        {
+            CachedProfilePics.Remove(playfabId);
+        }
+    }
 }

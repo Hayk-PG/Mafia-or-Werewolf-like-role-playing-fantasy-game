@@ -9,6 +9,7 @@ TagManager:
   - OnlyNightTImeVFX
   - NightTimeVFX
   - VFXCamera
+  - ProfilePicFromGallery
   layers:
   - Default
   - TransparentFX

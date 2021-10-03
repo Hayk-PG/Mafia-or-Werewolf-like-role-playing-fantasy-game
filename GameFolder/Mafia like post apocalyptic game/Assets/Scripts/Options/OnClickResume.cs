@@ -18,8 +18,6 @@ public class OnClickResume : MonoBehaviour
         resumeButton.onClick.AddListener(() => 
         {
             Options.instance.OnPressedOptionsButtons();
-            if (PlayerBaseConditions.VFXCamera() != null) PlayerBaseConditions.VFXCamera().enabled = true;
-
             PlayerBaseConditions.UiSounds.PlaySoundFX(0);
         });
     }

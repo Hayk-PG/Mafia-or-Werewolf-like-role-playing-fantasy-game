@@ -38,7 +38,7 @@ public class InformPlayerRole : MonoBehaviour
         _UI.GotItButton.onClick.RemoveAllListeners();
         _UI.GotItButton.onClick.AddListener(() => 
         {
-            MyCanvasGroups.CanvasGroupActivity(_UI.CanvasGroup, false); PlayerBaseConditions.VFXCamera().enabled = true;
+            MyCanvasGroups.CanvasGroupActivity(_UI.CanvasGroup, false);
             PlayerBaseConditions.UiSounds.PlaySoundFX(5);
         }); 
     }
@@ -48,7 +48,6 @@ public class InformPlayerRole : MonoBehaviour
         _UI.Text = text;
         _UI.RoleImage = roleImage;
         MyCanvasGroups.CanvasGroupActivity(_UI.CanvasGroup, true);        
-        PlayerBaseConditions.VFXCamera().enabled = false;
     }
 
 }

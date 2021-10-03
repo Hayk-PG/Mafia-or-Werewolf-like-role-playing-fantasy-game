@@ -51,8 +51,8 @@ public class ProfileForGameScene : MonoBehaviourPun
             UpdatePlayerProfile(actorNumber);
             UpdatePlaterStats(playfabId);
             CheckPlayerVotes(actorNumber);
-            IfPlayerIsFriend(playfabId);
-            IfFriendRequestAlreadySent(playfabId);
+            IfPlayerIsFriend(playfabId, actorNumber);
+            IfFriendRequestAlreadySent(playfabId, actorNumber);
             ShowPlayerProfilePicture(actorNumber);
 
             if (_Profile._DatasDownloadCheck.Coroutine != null)
@@ -175,11 +175,11 @@ public class ProfileForGameScene : MonoBehaviourPun
     #endregion
 
     #region IfPlayerIsFriend
-    void IfPlayerIsFriend(string playfabId)
+    void IfPlayerIsFriend(string playfabId, int actorNumber)
     {
         PlayerBaseConditions.PlayerProfile.SendFriendRequestButton.gameObject.SetActive(false);
 
-        if (PlayerBaseConditions.OwnPlayfabId != playfabId)
+        if (PlayerBaseConditions.OwnPlayfabId != playfabId && PlayerBaseConditions.LocalPlayer.ActorNumber != actorNumber)
         {
             PlayerBaseConditions.PlayfabManager.PlayfabFriends.SearchPlayerInFriendsList(PlayerBaseConditions.OwnPlayfabId, playfabId,
                 friend =>
@@ -214,7 +214,7 @@ public class ProfileForGameScene : MonoBehaviourPun
     #endregion
 
     #region IfFriendRequestAlreadySent
-    void IfFriendRequestAlreadySent(string playfabId)
+    void IfFriendRequestAlreadySent(string playfabId, int actorNumber)
     {
         PlayerBaseConditions.PlayfabManager.PlayfabInternalData.GetPlayerUserInternalData(playfabId, InternalDataDict => 
         {
@@ -224,7 +224,7 @@ public class ProfileForGameScene : MonoBehaviourPun
             }
             else
             {
-                IfPlayerIsFriend(playfabId);
+                IfPlayerIsFriend(playfabId, actorNumber);
             }
 
             PlayerBaseConditions.PlayerProfile.ProfileDatasCompleteCheck(Profile.DatasDownloadCheck.DatasDownloadStatus.FriendRequestDataDownloaded);

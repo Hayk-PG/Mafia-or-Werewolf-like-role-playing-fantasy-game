@@ -102,4 +102,9 @@ public static class PlayerKeys
         public const string SetOwnedAvatarButtonSprite = "SetOwnedAvatarButtonSprite";
     }
     #endregion
+
+    #region Playfab JSon Object keys
+    public static string PlayfabObjectDefaultKey = "Data";
+    public static string PlayfabJsonDataKey_ProfilePictureOffset = "ProfilePictureOffset";
+    #endregion
 }

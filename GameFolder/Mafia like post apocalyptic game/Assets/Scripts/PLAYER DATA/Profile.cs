@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using UnityEngine.Networking;
 using Photon.Pun;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public class Profile : MonoBehaviourPun
 {
@@ -22,6 +24,7 @@ public class Profile : MonoBehaviourPun
     [SerializeField] FirstTabMessageTab _FirstTabMessageTab;
     [SerializeField] Icons _Icons;
     [SerializeField] internal DatasDownloadCheck _DatasDownloadCheck;
+    [SerializeField] internal EditProfilePicTab _EditProfilePicTab;
 
 
     [Serializable] class Global
@@ -43,6 +46,7 @@ public class Profile : MonoBehaviourPun
         [SerializeField] internal Button sendFriendRequestButton;
         [SerializeField] internal Button deleteFriendButton;
         [SerializeField] internal Button sendMessageButton;
+        [SerializeField] internal Button updateProfilePictureButton;
         [SerializeField] internal Image friendReuqestAlreadySentIcon;
     }
     [Serializable] class SecondTab
@@ -97,6 +101,8 @@ public class Profile : MonoBehaviourPun
         [SerializeField] internal Button notificationTabButton;
         [SerializeField] internal Transform notificationsContainer;
         [SerializeField] internal CanvasGroup notificationCanvasGroup;
+        [SerializeField] internal CanvasGroup notificationsCountCanvasGroup;
+        [SerializeField] internal Text notificationsCountText;
         [SerializeField] internal NotificationMessageTab _NotificationMessageTab;
 
         [Serializable]
@@ -175,6 +181,21 @@ public class Profile : MonoBehaviourPun
         {
             get => hasFriendRequestDataDownloaded;
             set => hasFriendRequestDataDownloaded = value;
+        }
+    }
+    [Serializable] internal class EditProfilePicTab
+    {
+        [SerializeField] Image profilePic;
+        [SerializeField] CanvasGroup editProfileTabCanvasGroups;
+
+        internal Sprite ProfilePicSprite
+        {
+            get => profilePic.sprite;
+            set => profilePic.sprite = value;
+        }
+        internal CanvasGroup EditProfileTabCanvasGroups
+        {
+            get => editProfileTabCanvasGroups;
         }
     }
 
@@ -325,6 +346,11 @@ public class Profile : MonoBehaviourPun
         get => _FirstTab.rankSlider.value;
         set => _FirstTab.rankSlider.value = value;
     }
+    public int NotificationsCount
+    {
+        get => int.Parse(_NotificationTab.notificationsCountText.text);
+        set => _NotificationTab.notificationsCountText.text = value.ToString();
+    }
 
     /// <summary>
     /// 0:PlayedAsTabButton 1:PlayerVotesTabButton 2:LogTabButton 3:FriendsTabButton 4:NotificationTabButton
@@ -386,6 +412,10 @@ public class Profile : MonoBehaviourPun
     {
         get => _NotificationTab._NotificationMessageTab.closeMessageTabButton;
     }
+    public Button EditProfilePictureButton
+    {
+        get => _FirstTab.updateProfilePictureButton;
+    }
     public Image FriendRequestAlreadySentIcon
     {
         get => _FirstTab.friendReuqestAlreadySentIcon;
@@ -403,6 +433,10 @@ public class Profile : MonoBehaviourPun
     {
         get => _LogTab.confirmDeletionButtonsCanvasGroup;
     }
+    public CanvasGroup NotifcationsCountCanvasgroup
+    {
+        get => _NotificationTab.notificationsCountCanvasGroup;
+    }
     public Transform PlayerVotesTabContainer
     {
         get => _PlayerVotesTab.playerVotesTabContainer;
@@ -415,7 +449,6 @@ public class Profile : MonoBehaviourPun
     {
         get => _NotificationTab.notificationsContainer;
     }
-
 
     public PlayerDisplayedVoteObj PlayerVotesPrefab
     {
@@ -438,7 +471,7 @@ public class Profile : MonoBehaviourPun
     public Color32 releasedTabButtonColor;
     public Color32 clickedTabButtonColor;
 
-    ProfilePicContainer ProfilePicContainer { get; set; }
+    public ProfilePicContainer ProfilePicContainer { get; set; }
 
 
     void Awake()
@@ -468,6 +501,7 @@ public class Profile : MonoBehaviourPun
         OnClickButton(DeleteAccountButton);
         OnClickButton(ConfirmAccountDeletionButton);
         OnClickButton(DontDeleteAccountButton);
+        OnClickButton(EditProfilePictureButton);
 
         OnClickTabButtons(TabButtons[0]);
         OnClickTabButtons(TabButtons[1]);
@@ -534,6 +568,12 @@ public class Profile : MonoBehaviourPun
             {
                 MyCanvasGroups.CanvasGroupActivity(ConfirmAccountDeletionButtonsCanvasGroup, false);
                 MyCanvasGroups.CanvasGroupActivity(LogTabButtonsCanvasGroup, true);
+            }
+            if(button == EditProfilePictureButton)
+            {
+                MyCanvasGroups.CanvasGroupActivity(_EditProfilePicTab.EditProfileTabCanvasGroups, true);
+                //AndroidGoodiesExamples.OtherGoodiesTest Android = FindObjectOfType<AndroidGoodiesExamples.OtherGoodiesTest>();
+                //Android.OnPickGalleryImage(Android.profilePictureUploadMethod = AndroidGoodiesExamples.OtherGoodiesTest.ProfilePictureUploadMethod.Profile);
             }
 
             PlayerBaseConditions.UiSounds.PlaySoundFX(0);

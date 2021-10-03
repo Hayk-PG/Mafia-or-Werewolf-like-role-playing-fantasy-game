@@ -100,6 +100,7 @@ public class PlayfabRegister : MonoBehaviour
     IEnumerator UploadProfileImageCoroutine(string entityId, string entityType)
     {
         yield return new WaitForSeconds(2);
-        PlayerBaseConditions.PlayfabManager.PlayfabUploadProfileImage.UploadProfileImage(entityId, entityType);
+        AndroidGoodiesExamples.OtherGoodiesTest AndroidGoodies = FindObjectOfType<AndroidGoodiesExamples.OtherGoodiesTest>();
+        PlayerBaseConditions.PlayfabManager.PlayfabUploadProfileImage.UploadProfileImage(entityId, entityType, AndroidGoodies.profilePic.sprite);
     }
 }

@@ -33,6 +33,8 @@ public class ChatSizeController : MonoBehaviour
 
     GameManagerTimer _GameManagerTimer;
 
+    public bool IsChatMaximized { get; set; }
+
     void Awake()
     {
         defaultAnchorMaxY = ChatRectTransform.anchorMax.y;
@@ -70,7 +72,7 @@ public class ChatSizeController : MonoBehaviour
     {
         _Conditions.CanUseTheChat = canUseTheChat;
 
-        if (!canUseTheChat) Resize(false);
+        if (!canUseTheChat) Resize(false);       
     }
     #endregion
 
@@ -81,14 +83,14 @@ public class ChatSizeController : MonoBehaviour
         {
             ChatRectTransform.anchorMax = new Vector2(ChatRectTransform.anchorMax.x, 1);
             ChatRectTransform.offsetMax = new Vector2(ChatRectTransform.offsetMax.x, 0);
-            PlayerBaseConditions.VFXCamera().enabled = false;
         }
         else
         {
             ChatRectTransform.anchorMax = new Vector2(ChatRectTransform.anchorMax.x, defaultAnchorMaxY);
             ChatRectTransform.offsetMax = new Vector2(ChatRectTransform.offsetMax.x, defaultOffsetMaxY);
-            PlayerBaseConditions.VFXCamera().enabled = true;
         }
+
+        IsChatMaximized = maximize;
     }
     #endregion
 }

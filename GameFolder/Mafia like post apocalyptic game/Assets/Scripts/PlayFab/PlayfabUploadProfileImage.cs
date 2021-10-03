@@ -9,7 +9,7 @@ public class PlayfabUploadProfileImage : MonoBehaviour
     List<string> FilesList = new List<string>() { PlayerKeys.ProfilePicture };
 
     #region UploadProfileImage
-    public void UploadProfileImage(string entityId, string entityType)
+    public void UploadProfileImage(string entityId, string entityType, Sprite profileImage)
     {
         InitiateFileUploadsRequest requestFileUpload = new InitiateFileUploadsRequest();
 
@@ -22,20 +22,25 @@ public class PlayfabUploadProfileImage : MonoBehaviour
         PlayFabDataAPI.InitiateFileUploads(requestFileUpload,
             upload =>
             {
-                Texture2D avatarTexture = FindObjectOfType<UploadImage>()._UI.ProfilePic.texture;
+                if (FindObjectOfType<AndroidGoodiesExamples.OtherGoodiesTest>() != null)
+                {
+                    AndroidGoodiesExamples.OtherGoodiesTest Android = FindObjectOfType<AndroidGoodiesExamples.OtherGoodiesTest>();
 
-                byte[] bytes = avatarTexture.EncodeToPNG();
+                    Texture2D avatarTexture = profileImage.texture;
 
-                PlayFabHttp.SimplePutCall(upload.UploadDetails[0].UploadUrl, bytes,
-                    succed =>
-                    {
-                        print(succed);
-                        FinalizeUploadFile(entityId, entityType);
-                    },
-                    error =>
-                    {
-                        print(error);
-                    });
+                    byte[] bytes = avatarTexture.EncodeToPNG();
+
+                    PlayFabHttp.SimplePutCall(upload.UploadDetails[0].UploadUrl, bytes,
+                        succed =>
+                        {
+                            print(succed);
+                            FinalizeUploadFile(entityId, entityType);
+                        },
+                        error =>
+                        {
+                            print(error);
+                        });
+                }
             },
             error =>
             {

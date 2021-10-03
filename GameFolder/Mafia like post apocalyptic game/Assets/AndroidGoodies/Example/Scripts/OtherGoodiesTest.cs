@@ -16,8 +16,10 @@ namespace AndroidGoodiesExamples
 
 	public class OtherGoodiesTest : MonoBehaviour
 	{
-		public Texture2D wallpaperTexture;
-		public Image image;
+        public event Action<Sprite> OnPickProfileImage;
+
+        public Texture2D wallpaperTexture;
+		public Image profilePic;
 		public InputField input;
 		public VideoPlayer videoPlayer;
 #if UNITY_ANDROID
@@ -404,7 +406,7 @@ namespace AndroidGoodiesExamples
 					if (!string.IsNullOrEmpty(pickedContact.PhotoUri)) // Not all contacts have image
 					{
 						var contactPicture = AGFileUtils.ImageUriToTexture2D(pickedContact.PhotoUri);
-						image.sprite = SpriteFromTex2D(contactPicture);
+						profilePic.sprite = SpriteFromTex2D(contactPicture);
 					}
 				},
 				failureReason => { AGUIMisc.ShowToast("Picking contact failed: " + failureReason); });
@@ -427,10 +429,12 @@ namespace AndroidGoodiesExamples
 						selectedImage.OriginalPath, imageTexture2D.width, imageTexture2D.height);
 					AGUIMisc.ShowToast(msg);
 					Debug.Log(msg);
-					image.sprite = SpriteFromTex2D(imageTexture2D);
 
-					// Clean up
-					Resources.UnloadUnusedAssets();
+                    profilePic.sprite = SpriteFromTex2D(imageTexture2D);
+                    OnPickProfileImage.Invoke(SpriteFromTex2D(imageTexture2D));
+                   
+                    // Clean up
+                    Resources.UnloadUnusedAssets();
 				},
 				errorMessage => AGUIMisc.ShowToast("Cancelled picking image from gallery: " + errorMessage),
 				imageResultSize, shouldGenerateThumbnails);
@@ -460,7 +464,7 @@ namespace AndroidGoodiesExamples
 						selectedImage.DisplayName, imageTexture2D.width, imageTexture2D.height);
 					AGUIMisc.ShowToast(msg);
 					Debug.Log(msg);
-					image.sprite = SpriteFromTex2D(imageTexture2D);
+					profilePic.sprite = SpriteFromTex2D(imageTexture2D);
 
 					// Clean up
 					File.Delete(selectedImage.OriginalPath);
@@ -548,7 +552,7 @@ namespace AndroidGoodiesExamples
 
 					if (videoFile.PreviewImagePath != null)
 					{
-						image.sprite = SpriteFromTex2D(videoFile.LoadPreviewImage());
+						profilePic.sprite = SpriteFromTex2D(videoFile.LoadPreviewImage());
 						PlayVideo(videoFile);
 					}
 				},
@@ -576,7 +580,7 @@ namespace AndroidGoodiesExamples
 					var msg = "Video file was recorded: " + videoFile;
 					Debug.Log(msg);
 					AGUIMisc.ShowToast(msg);
-					image.sprite = SpriteFromTex2D(videoFile.LoadPreviewImage());
+					profilePic.sprite = SpriteFromTex2D(videoFile.LoadPreviewImage());
 					PlayVideo(videoFile);
 				},
 				error => AGUIMisc.ShowToast("Cancelled recording video file: " + error), true);

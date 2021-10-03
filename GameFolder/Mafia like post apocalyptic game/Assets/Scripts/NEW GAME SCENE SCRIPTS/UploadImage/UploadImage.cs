@@ -93,12 +93,12 @@ public class UploadImage : MonoBehaviour
         OnClickButton(_UI.UploadButton);
         OnClickButton(_UI.SignUpButton);
 
-        _UI.SignUpButton.interactable = _UI.ProfilePic.texture != null && _UI.ProfilePic.name != "GalleryIcon" ? true : false;
+        _UI.SignUpButton.interactable = _UI.ProfilePic.name != "GalleryIcon" ? true : false;
     }
 
     void _SignUpTab_OnClickContinueButton(string arg1, string arg2, SignUpTab.Gender arg3, bool arg4)
     {
-        _RegInfo = new RegInfo {Username = arg1, Password = arg2, Gender = arg3, HasSaved = arg4 };
+        _RegInfo = new RegInfo { Username = arg1, Password = arg2, Gender = arg3, HasSaved = arg4 };
         MyCanvasGroups.CanvasGroupActivity(_UI.SignUpCanvasGroup, false);
         MyCanvasGroups.CanvasGroupActivity(_UI.UploadImageCanvasGroup, true);
     }
@@ -113,21 +113,19 @@ public class UploadImage : MonoBehaviour
                 MyCanvasGroups.CanvasGroupActivity(_UI.SignUpCanvasGroup, true);
                 MyCanvasGroups.CanvasGroupActivity(_UI.UploadImageCanvasGroup, false);
             }
-            if(button == _UI.UploadButton)
+            if (button == _UI.UploadButton)
             {
                 Android.OnPickGalleryImage();
+                _UI.ProfilePic.name = "NewPicture";
                 //_UI.ProfilePic = _UI.sprite;
             }
-            if(button == _UI.SignUpButton)
+            if (button == _UI.SignUpButton)
             {
                 PlayerBaseConditions.PlayfabManager.PlayfabSignUp.OnPlayfabRegister(_RegInfo.Username, _RegInfo.Password, _RegInfo.Gender);
 
                 if (_RegInfo.HasSaved) PlayerBaseConditions.PlayerSavedData.SaveUsernameAndPassword(_RegInfo.Username, _RegInfo.Password);
                 else PlayerBaseConditions.PlayerSavedData.DeleteUsernameAndPassword();
             }
-        });  
+        });
     }
-
-
-    
 }

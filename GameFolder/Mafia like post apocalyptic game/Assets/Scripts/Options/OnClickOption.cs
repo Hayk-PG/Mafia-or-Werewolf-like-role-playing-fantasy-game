@@ -15,8 +15,6 @@ public class OnClickOption : MonoBehaviour
         optionButton.onClick.RemoveAllListeners();
         optionButton.onClick.AddListener(() => {
             Options.instance.OnPressedOptionButton();
-            if (PlayerBaseConditions.VFXCamera() != null) PlayerBaseConditions.VFXCamera().enabled = false;
-
             PlayerBaseConditions.UiSounds.PlaySoundFX(0);
         });
     }
