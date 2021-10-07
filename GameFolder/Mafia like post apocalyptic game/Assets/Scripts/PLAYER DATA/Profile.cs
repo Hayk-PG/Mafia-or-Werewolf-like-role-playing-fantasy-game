@@ -39,8 +39,6 @@ public class Profile : MonoBehaviourPun
         [SerializeField] internal Image profileImage;
         [SerializeField] internal Image rankImage;
         [SerializeField] internal Text rankNumberText;
-        [SerializeField] internal Text rankSliderNumberText;
-        [SerializeField] internal Slider rankSlider;
         [SerializeField] internal Sprite loadingProfilePic;
         [SerializeField] internal Text nameText;
         [SerializeField] internal Button sendFriendRequestButton;
@@ -335,17 +333,7 @@ public class Profile : MonoBehaviourPun
     {
         get => _FriendProfileTab.friendRankNumberText.text;
         set => _FriendProfileTab.friendRankNumberText.text = value;
-    }
-    public string RankSliderNumber
-    {
-        get => _FirstTab.rankSliderNumberText.text;
-        set => _FirstTab.rankSliderNumberText.text = value;
-    }
-    public float RankSliderValue
-    {
-        get => _FirstTab.rankSlider.value;
-        set => _FirstTab.rankSlider.value = value;
-    }
+    }   
     public int NotificationsCount
     {
         get => int.Parse(_NotificationTab.notificationsCountText.text);

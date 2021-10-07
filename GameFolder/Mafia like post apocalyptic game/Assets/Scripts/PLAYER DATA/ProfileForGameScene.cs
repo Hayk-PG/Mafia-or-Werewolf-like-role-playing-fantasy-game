@@ -53,15 +53,11 @@ public class ProfileForGameScene : MonoBehaviourPun
             CheckPlayerVotes(actorNumber);
             IfPlayerIsFriend(playfabId, actorNumber);
             IfFriendRequestAlreadySent(playfabId, actorNumber);
+            SetSendFriendRequestButtonName(playfabId);
+            SetMessageButtonName(playfabId);
+            SetDeleteFriendButtonName(playfabId);
             ShowPlayerProfilePicture(actorNumber);
-
-            if (_Profile._DatasDownloadCheck.Coroutine != null)
-            {
-                StopCoroutine(_Profile._DatasDownloadCheck.Coroutine);
-            }
-
-            _Profile._DatasDownloadCheck.Coroutine = _Profile.CheckIfAllDatasDownloadCompleted(actorNumber);
-            StartCoroutine(_Profile._DatasDownloadCheck.Coroutine);
+            WaitUntilAllDatasIsDownloaded(actorNumber);
         }
     }
     #endregion
@@ -188,17 +184,14 @@ public class ProfileForGameScene : MonoBehaviourPun
                     {
                         PlayerBaseConditions.PlayerProfile.SendFriendRequestButton.gameObject.SetActive(true);
                         PlayerBaseConditions.PlayerProfile.SendMessageButton.gameObject.SetActive(false);
-                        PlayerBaseConditions.PlayerProfile.DeleteFriendButton.gameObject.SetActive(false);
-                        SetSendFriendRequestButtonName(playfabId);
+                        PlayerBaseConditions.PlayerProfile.DeleteFriendButton.gameObject.SetActive(false);                      
                     }
                     else
                     {
                         PlayerBaseConditions.PlayerProfile.SendFriendRequestButton.gameObject.SetActive(false);
                         PlayerBaseConditions.PlayerProfile.SendMessageButton.gameObject.SetActive(true);
                         PlayerBaseConditions.PlayerProfile.DeleteFriendButton.gameObject.SetActive(true);
-                        PlayerBaseConditions.PlayerProfile.FriendRequestAlreadySentIcon.gameObject.SetActive(false);
-                        SetMessageButtonName(playfabId);
-                        SetDeleteFriendButtonName(playfabId);
+                        PlayerBaseConditions.PlayerProfile.FriendRequestAlreadySentIcon.gameObject.SetActive(false); 
                     }
                 });
         }
@@ -242,7 +235,7 @@ public class ProfileForGameScene : MonoBehaviourPun
     #region SetMessageButtonName
     void SetMessageButtonName(string playfabId)
     {
-        PlayerBaseConditions.PlayerProfile.SendMessageButton.name = playfabId;
+        PlayerBaseConditions.PlayerProfile.SendFriendMessageButton.name = playfabId;
     }
     #endregion
 
@@ -261,6 +254,19 @@ public class ProfileForGameScene : MonoBehaviourPun
             PlayerBaseConditions.PlayerProfile.ProfileImage = PlayerBaseConditions.PlayerProfile.LoadingProfilePic;
             PlayerBaseConditions.PlayerProfile.ShowPlayerProfilePic(false, actorNumber);
         }
+    }
+    #endregion
+
+    #region WaitUntilAllDatasIsDownloaded
+    void WaitUntilAllDatasIsDownloaded(int actorNumber)
+    {
+        if (_Profile._DatasDownloadCheck.Coroutine != null)
+        {
+            StopCoroutine(_Profile._DatasDownloadCheck.Coroutine);
+        }
+
+        _Profile._DatasDownloadCheck.Coroutine = _Profile.CheckIfAllDatasDownloadCompleted(actorNumber);
+        StartCoroutine(_Profile._DatasDownloadCheck.Coroutine);
     }
     #endregion
 }

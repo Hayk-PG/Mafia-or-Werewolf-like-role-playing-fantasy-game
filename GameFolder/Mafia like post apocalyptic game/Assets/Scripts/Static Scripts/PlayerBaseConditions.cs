@@ -639,4 +639,11 @@ public class PlayerBaseConditions : MonoBehaviourPun
         }
     }
     #endregion
+
+    #region Stats
+    public static void StatsByRoles(Action<string> Roles)
+    {
+        Roles?.Invoke(PlayerRoleName(PhotonNetwork.LocalPlayer.ActorNumber));
+    }
+    #endregion
 }

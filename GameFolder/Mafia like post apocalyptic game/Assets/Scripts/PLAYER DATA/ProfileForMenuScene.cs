@@ -2,8 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
+
 
 public class ProfileForMenuScene : MonoBehaviour
 {
@@ -38,7 +37,7 @@ public class ProfileForMenuScene : MonoBehaviour
             MenuScene();
             UpdatePlayerProfile();
             UpdatePlayerStats();                      
-            UpdateNotificationTab();
+            //UpdateNotificationTab();
             UpdateFriendsList();
 
         }
@@ -70,13 +69,13 @@ public class ProfileForMenuScene : MonoBehaviour
     }
     #endregion
 
-    #region UpdateNotificationTab
+    #region UpdateNotificationTab OUTDATED
     void UpdateNotificationTab()
     {
-        //for (int i = 0; i < PlayerBaseConditions.PlayerProfile.NotificationsContainer.childCount; i++)
-        //{
-        //    Destroy(PlayerBaseConditions.PlayerProfile.NotificationsContainer.GetChild(i).gameObject);
-        //}
+        for (int i = 0; i < PlayerBaseConditions.PlayerProfile.NotificationsContainer.childCount; i++)
+        {
+            Destroy(PlayerBaseConditions.PlayerProfile.NotificationsContainer.GetChild(i).gameObject);
+        }
 
         PlayerBaseConditions.PlayfabManager.PlayfabInternalData.GetPlayerUserInternalData(PlayerBaseConditions.OwnPlayfabId,
             InternalDataDict =>
@@ -111,6 +110,7 @@ public class ProfileForMenuScene : MonoBehaviour
         if (isMessage)
         {
             MessageScript message = Instantiate(PlayerBaseConditions.PlayerProfile.MessagePrefab, PlayerBaseConditions.PlayerProfile.NotificationsContainer);
+            message.gameObject.name = key;
             message.InternalDataKey = key;
 
             message.MessageSentFrom = "Message from " + ConvertStrings.SubtractMessageDataFromPlayerInternalData(key, false) + ".";
@@ -152,63 +152,51 @@ public class ProfileForMenuScene : MonoBehaviour
     {       
         yield return new WaitUntil(() => PlayerBaseConditions.PlayfabManager.PlayfabIsLoggedIn.IsPlayfabLoggedIn() && PlayerBaseConditions.LocalPlayer.UserId != null);
 
-        List<string> Notifications = new List<string>();
-        List<string> UpdatedNotifications;
-        List<string> NotificationSound = new List<string>();
+        bool isSoundPlayed = false;
 
-        #region Only one time at the beginning
         LoopInternalDataDict(IsNotification,
-                Notification =>
+                UpdatedNotification =>
                 {
-                    Notifications.Add(Notification);
-                    MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.NotifcationsCountCanvasgroup, true);
-                    PlayerBaseConditions.PlayerProfile.NotificationsCount = Notifications.Count;
-                },
-                null);
-        #endregion
+                    if (PlayerBaseConditions.PlayerProfile.NotificationsContainer.Find(UpdatedNotification[0]) == null)
+                    {
+                        if (!isSoundPlayed) { PlayerBaseConditions.UiSounds.PlaySoundFX(8); isSoundPlayed = true; }                       
+                        MessageNotification(UpdatedNotification[0], UpdatedNotification[1], ConvertStrings.SubtractMessageDataFromPlayerInternalData(UpdatedNotification[0], true) == PlayerKeys.InternalData.MessageKey);
+                        FriendRequestNotification(UpdatedNotification[0], UpdatedNotification[1], ConvertStrings.SubtractFriendRequestKey(UpdatedNotification[0]) == PlayerKeys.FriendRequest.FR);
+                        MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.NotifcationsCountCanvasgroup, true);
+                        PlayerBaseConditions.PlayerProfile.NotificationsCount = PlayerBaseConditions.PlayerProfile.NotificationsContainer.childCount;
+                    } 
+                },null);
 
-        yield return null;       
+
+        yield return new WaitForSeconds(1);       
 
         while (PlayerBaseConditions.PlayfabManager.PlayfabIsLoggedIn.IsPlayfabLoggedIn())
         {
-            UpdatedNotifications = new List<string>();
-
-            LoopInternalDataDict(IsNotification, 
-                UpdatedNotification => 
+            LoopInternalDataDict(IsNotification,
+                UpdatedNotification =>
                 {
-                    //Updating notifications
-                    if (!UpdatedNotifications.Contains(UpdatedNotification))
+                    if (PlayerBaseConditions.PlayerProfile.NotificationsContainer.Find(UpdatedNotification[0]) == null)
                     {
-                        UpdatedNotifications.Add(UpdatedNotification);
-                    }
-
-                    //Play sound 
-                    if (!NotificationSound.Contains(UpdatedNotification))
-                    {
-                        NotificationSound.Add(UpdatedNotification);
                         PlayerBaseConditions.UiSounds.PlaySoundFX(8);
+                        MessageNotification(UpdatedNotification[0], UpdatedNotification[1], ConvertStrings.SubtractMessageDataFromPlayerInternalData(UpdatedNotification[0], true) == PlayerKeys.InternalData.MessageKey);
+                        FriendRequestNotification(UpdatedNotification[0], UpdatedNotification[1], ConvertStrings.SubtractFriendRequestKey(UpdatedNotification[0]) == PlayerKeys.FriendRequest.FR);
+                        MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.NotifcationsCountCanvasgroup, true);
+                        PlayerBaseConditions.PlayerProfile.NotificationsCount = PlayerBaseConditions.PlayerProfile.NotificationsContainer.childCount;
                     }
-
-                    MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.NotifcationsCountCanvasgroup, true);
-                    PlayerBaseConditions.PlayerProfile.NotificationsCount = UpdatedNotifications.Count;
-                    UpdateNotificationTab();
                 }, 
-                delegate
-                {
-                    if(UpdatedNotifications.Count < 1)
-                    {
-                        if (PlayerBaseConditions.PlayerProfile.NotifcationsCountCanvasgroup.interactable) MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.NotifcationsCountCanvasgroup, false);
-                        if (PlayerBaseConditions.PlayerProfile.NotificationsCount != UpdatedNotifications.Count) PlayerBaseConditions.PlayerProfile.NotificationsCount = 0;
-                    }
+                delegate 
+                {                   
+                    PlayerBaseConditions.PlayerProfile.NotificationsCount = PlayerBaseConditions.PlayerProfile.NotificationsContainer.childCount;
+                    if (PlayerBaseConditions.PlayerProfile.NotificationsCount < 1) MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.NotifcationsCountCanvasgroup, false);
                 });
-     
-            yield return new WaitForSeconds(1);
+
+            yield return new WaitForSeconds(3);
         }
-    }
+    }    
     #endregion
 
     #region LoopInternalDataDict
-    void LoopInternalDataDict(Filter filter, Action<string> DoInsideTheLoop, Action DoOutsideTheLoop)
+    void LoopInternalDataDict(Filter filter, Action<string[]> DoInsideTheLoop, Action DoOutsideTheLoop)
     {
         PlayerBaseConditions.PlayfabManager.PlayfabInternalData.GetPlayerUserInternalData(PlayerBaseConditions.OwnPlayfabId, InternalDataDict => 
         {
@@ -216,7 +204,7 @@ public class ProfileForMenuScene : MonoBehaviour
             {             
                 if (filter(data.Key) == true)
                 {
-                    DoInsideTheLoop.Invoke(data.Key);
+                    DoInsideTheLoop.Invoke(new string[] { data.Key, data.Value.Value});
                 }
             }
 

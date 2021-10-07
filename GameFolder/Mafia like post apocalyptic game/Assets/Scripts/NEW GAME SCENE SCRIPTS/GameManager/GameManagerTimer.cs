@@ -18,6 +18,7 @@ public class GameManagerTimer : MonoBehaviourPun
         [SerializeField] bool nightTime;
         [SerializeField] bool dayTime;
         [SerializeField] bool hasGameStartVFXInstantiated;
+        [SerializeField] bool canRunTimer;
         [SerializeField] Text timerText;
         [SerializeField] GameObject sun;
         [SerializeField] GameObject moon;
@@ -62,6 +63,11 @@ public class GameManagerTimer : MonoBehaviourPun
             get => hasGameStartVFXInstantiated;
             set => hasGameStartVFXInstantiated = value;
         }
+        public bool CanRunTimer
+        {
+            get => canRunTimer;
+            set => canRunTimer = value;
+        }
         public string TimerText
         {
             get => timerText.text;
@@ -75,6 +81,7 @@ public class GameManagerTimer : MonoBehaviourPun
         {
             get => moon;
         }        
+        public IEnumerator Coroutine { get; set; }
     }   
     [Serializable] public class LostPlayer
     {
@@ -132,6 +139,7 @@ public class GameManagerTimer : MonoBehaviourPun
     GameManagerPlayerVotesController _GameManagerPlayerVotesController { get; set; }
     TeamsController _TeamsController { get; set; }
     CardsTabController _CardsTabController { get; set; }
+    GameManagerEndOfTheGame _GameManagerEndOfTheGame { get; set; }
 
     public delegate void PhaseCallback(bool isResetPhase);
     public PhaseCallback IsResetPhaseActive;
@@ -145,16 +153,19 @@ public class GameManagerTimer : MonoBehaviourPun
         _TeamsController = GetComponent<TeamsController>();
         _TimerTickSound = FindObjectOfType<TimerTickSound>();
         _CardsTabController = FindObjectOfType<CardsTabController>();
+        _GameManagerEndOfTheGame = GetComponent<GameManagerEndOfTheGame>();
     }
 
     void OnEnable()
     {
         PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;
+        _GameManagerEndOfTheGame._OnRestartTheGame += _OnRestartTheGame;
     }
 
     void OnDisable()
     {
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
+        _GameManagerEndOfTheGame._OnRestartTheGame -= _OnRestartTheGame;
     }
 
     void Start()
@@ -181,7 +192,12 @@ public class GameManagerTimer : MonoBehaviourPun
     #region RunTimer
     internal void RunTimer()
     {
-        StartCoroutine(TimerCoroutine(_Timer.Seconds));
+        _Timer.Coroutine = null;
+        _Timer.Coroutine = TimerCoroutine(_Timer.Seconds, _Timer.CanRunTimer);
+        StartCoroutine(_Timer.Coroutine);
+
+
+        //StartCoroutine(TimerCoroutine(_Timer.Seconds, _Timer.CanRunTimer));
 
         _LostPlayer.LostPlayers = FindObjectOfType<GameManagerTimer>()._LostPlayer.LostPlayers;
         _Teams.IsTeamsCountUpdated = false;
@@ -189,7 +205,7 @@ public class GameManagerTimer : MonoBehaviourPun
     #endregion
 
     #region TimerCoroutine
-    IEnumerator TimerCoroutine(int currentSeconds)
+    IEnumerator TimerCoroutine(int currentSeconds, bool canRunTimer)
     {
         while (photonView.IsMine)
         {
@@ -199,7 +215,7 @@ public class GameManagerTimer : MonoBehaviourPun
 
             PhotonNetwork.RaiseEvent(RaiseEventsStrings.GameStartKey, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendReliable);
 
-            while (true && photonView.IsMine)
+            while (canRunTimer && photonView.IsMine)
             {
                 if (_Timer.NextPhaseWaitUntil <= 0)
                 {
@@ -814,6 +830,21 @@ public class GameManagerTimer : MonoBehaviourPun
         {
             _TeamsController.UpdateTeamsCount();
         }
+    }
+    #endregion
+
+    #region _OnRestartTheGame
+    void _OnRestartTheGame()
+    {
+        if(_Timer.Coroutine != null)
+        {
+            StopCoroutine(_Timer.Coroutine);
+        }
+        else
+        {
+            _Timer.CanRunTimer = false;
+            _Timer.Coroutine = TimerCoroutine(0, _Timer.CanRunTimer);
+        }        
     }
     #endregion
 }

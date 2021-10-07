@@ -45,6 +45,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 stream.SendNext(_GameManagerTimer._Timer.DaysCount);
                 stream.SendNext(_GameManagerTimer._Timer.DayTime);
                 stream.SendNext(_GameManagerTimer._Timer.HasGameStartVFXInstantiated);
+                stream.SendNext(_GameManagerTimer._Timer.CanRunTimer);
                 stream.SendNext(_GameManagerTimer._LostPlayer.HasLostPlayerSet);
                 stream.SendNext(_GameManagerTimer._LostPlayer.LostPlayers);
                 stream.SendNext(_GameManagerTimer._Teams.IsTeamsCountSet);
@@ -96,6 +97,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             _GameManagerTimer._Timer.DaysCount = (int)stream.ReceiveNext();
             _GameManagerTimer._Timer.DayTime = (bool)stream.ReceiveNext();
             _GameManagerTimer._Timer.HasGameStartVFXInstantiated = (bool)stream.ReceiveNext();
+            _GameManagerTimer._Timer.CanRunTimer = (bool)stream.ReceiveNext();
             _GameManagerTimer._LostPlayer.HasLostPlayerSet = (bool)stream.ReceiveNext();
             _GameManagerTimer._LostPlayer.LostPlayers = (Dictionary<int, bool>)stream.ReceiveNext();
             _GameManagerTimer._Teams.IsTeamsCountSet = (bool)stream.ReceiveNext();

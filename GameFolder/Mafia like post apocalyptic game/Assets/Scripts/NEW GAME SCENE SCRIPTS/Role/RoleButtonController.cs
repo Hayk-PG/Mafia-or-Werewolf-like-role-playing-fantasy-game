@@ -163,8 +163,9 @@ public class RoleButtonController : MonoBehaviourPun
     public UI _UI;
     public GameInfo _GameInfo;
     public GameObjects _GameObjects;
-
+   
     CardsTabController _CardsTabController { get; set; }
+    GameManagerEndOfTheGame _GameManagerEndOfTheGame { get; set; }
 
     public string ObjName
     {
@@ -175,6 +176,17 @@ public class RoleButtonController : MonoBehaviourPun
     void Awake()
     {
         _CardsTabController = FindObjectOfType<CardsTabController>();
+        _GameManagerEndOfTheGame = FindObjectOfType<GameManagerEndOfTheGame>();
+    }
+
+    void OnEnable()
+    {
+        _GameManagerEndOfTheGame._OnRestartTheGame += _OnRestartTheGame;
+    }
+
+    void OnDisable()
+    {
+        _GameManagerEndOfTheGame._OnRestartTheGame -= _OnRestartTheGame;
     }
 
     void Update()
@@ -277,6 +289,38 @@ public class RoleButtonController : MonoBehaviourPun
             case RoleNames.Medic: _GameObjects.MedicFX.gameObject.SetActive(true); break;
             case RoleNames.Sheriff: _GameObjects.SheriffFX.gameObject.SetActive(true); break;
         }       
+    }
+    #endregion
+
+    #region _OnRestartTheGame
+    void _OnRestartTheGame()
+    {
+        _OwnerInfo.OwenrUserId = null;
+        _OwnerInfo.OwnerActorNumber = 0;
+        _OwnerInfo.OwnerName = null;
+        _OwnerInfo.OwnerObj = null;
+
+        MyCanvasGroups.CanvasGroupActivity(_UI.VotesCountTextCanvasGroup, false);
+        _UI.Name = null;
+        _UI.RoleImage = null;
+        _UI.VisibleToEveryoneImage = null;
+        _UI.VoteName = null;
+        _UI.VotesCount = 0;
+        _UI.Button.name = "RoleButton";
+
+        _GameInfo.IsPlayerAlive = true;
+        _GameInfo.IsPlayerHealed = false;
+        _GameInfo.RoleIndex = 0;
+        _GameInfo.RoleName = null;
+        _GameObjects.DiedGoreExplosion.SetActive(false);
+        _GameObjects.DiedIcon.SetActive(false);
+        _GameObjects.DiedIcon2.SetActive(false);
+        _GameObjects.MedicFX.SetActive(false);
+        _GameObjects.SheriffFX.SetActive(false);
+        _GameObjects.votedNameIconObj.SetActive(false);
+        _GameObjects.VoteFX.SetActive(false);
+        _GameObjects.VoteFxExplosion.SetActive(false);
+        _GameObjects.WitcherFX.SetActive(false);
     }
     #endregion
 }

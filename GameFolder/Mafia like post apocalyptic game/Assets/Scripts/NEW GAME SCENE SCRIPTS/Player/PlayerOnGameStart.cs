@@ -15,18 +15,12 @@ public class PlayerOnGameStart : MonoBehaviourPun
     }
     PlayerUpdateStats _PlayerUpdateStats { get; set; }
     InformPlayerRole _InformPlayerRole { get; set; }
-    IEnumerator UpdatePlayerStatsCoroutine { get; set; }
 
 
     void Awake()
     {
         _PlayerUpdateStats = GetComponent<PlayerUpdateStats>();
         _InformPlayerRole = FindObjectOfType<InformPlayerRole>();
-    }
-
-    void Start()
-    {
-        UpdatePlayerStatsCoroutine = _PlayerUpdateStats.UpdatePlayerStatsCoroutine();       
     }
 
     void Update()
@@ -48,7 +42,71 @@ public class PlayerOnGameStart : MonoBehaviourPun
     #region UpdatePlayedRolesStats
     void UpdatePlayedRolesStats()
     {
-        _PlayerUpdateStats.GetPlayerStats(delegate { StartCoroutine(UpdatePlayerStatsCoroutine); });
+        _PlayerUpdateStats.GetAndUpdatePlayfabStats(
+            Stats => 
+            {
+                _PlayerUpdateStats._StatsValue.rank = Stats.rank < 1 ? 1 : Stats.rank;
+                _PlayerUpdateStats._StatsValue.totalTimePlayed = Stats.totalTimePlayed + 1;
+                _PlayerUpdateStats._StatsValue.points = Stats.points + 25;
+
+                PlayerBaseConditions.StatsByRoles(RoleName => 
+                {
+                    if (RoleName == RoleNames.Citizen)
+                    {
+                        _PlayerUpdateStats._StatsValue.asSurvivor = Stats.asSurvivor + 1;
+                        _PlayerUpdateStats._StatsValue.survivorSkills = Stats.survivorSkills + 5;
+                    }
+                    if (RoleName == RoleNames.Medic)
+                    {
+                        _PlayerUpdateStats._StatsValue.asDoctor = Stats.asDoctor + 1;
+                        _PlayerUpdateStats._StatsValue.doctorSkills = Stats.doctorSkills + 5;
+                    }
+                    if (RoleName == RoleNames.Sheriff)
+                    {
+                        _PlayerUpdateStats._StatsValue.asSheriff = Stats.asSheriff + 1;
+                        _PlayerUpdateStats._StatsValue.sheriffSkills = Stats.sheriffSkills + 5;
+                    }
+                    if (RoleName == RoleNames.Soldier)
+                    {
+                        _PlayerUpdateStats._StatsValue.asSoldier = Stats.asSoldier + 1;
+                        _PlayerUpdateStats._StatsValue.soldierSkills = Stats.soldierSkills + 5;
+                    }
+                    if (RoleName == RoleNames.Infected)
+                    {
+                        _PlayerUpdateStats._StatsValue.asInfected = Stats.asInfected + 1;
+                        _PlayerUpdateStats._StatsValue.infectedSkills = Stats.infectedSkills + 5;
+                    }
+                    if (RoleName == RoleNames.Lizard)
+                    {
+                        _PlayerUpdateStats._StatsValue.asLizard = Stats.asLizard + 1;
+                        _PlayerUpdateStats._StatsValue.lizardSkills = Stats.lizardSkills + 5;
+                    }
+                });
+            }, 
+            ()=> 
+            {
+                PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(PhotonNetwork.LocalPlayer.UserId, UpdatePlayerStats => 
+                {
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.Rank, _PlayerUpdateStats._StatsValue.rank); // Rank
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.TotalTimePlayed, _PlayerUpdateStats._StatsValue.totalTimePlayed); // TotalTimePlayed
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.Points, _PlayerUpdateStats._StatsValue.points); // Points
+
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.AsSurvivor, _PlayerUpdateStats._StatsValue.asSurvivor); // AsSurvivor 
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.AsDoctor, _PlayerUpdateStats._StatsValue.asDoctor); // AsDoctor 
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.AsSheriff, _PlayerUpdateStats._StatsValue.asSheriff); // AsSheriff
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.AsSoldier, _PlayerUpdateStats._StatsValue.asSoldier); // AsSoldier
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.AsInfected, _PlayerUpdateStats._StatsValue.asInfected); // AsInfected
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.AsWitch, _PlayerUpdateStats._StatsValue.asLizard); // AsWitch
+
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.OverallSkills, _PlayerUpdateStats._StatsValue.overallSkills); // OverallSkills
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.SurvivorSkills, _PlayerUpdateStats._StatsValue.survivorSkills); // SurvivorSkills
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.DoctorSkills, _PlayerUpdateStats._StatsValue.doctorSkills); // DoctorSkills
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.SheriffSkills, _PlayerUpdateStats._StatsValue.sheriffSkills); // SheriffSkills
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.SoldierSkills, _PlayerUpdateStats._StatsValue.soldierSkills); // SoldierSkills
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.InfectedSkills, _PlayerUpdateStats._StatsValue.infectedSkills); // InfectedSkills
+                    _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.LizardSkills, _PlayerUpdateStats._StatsValue.lizardSkills); // LizardSkills
+                });
+            });
     }
     #endregion
 
