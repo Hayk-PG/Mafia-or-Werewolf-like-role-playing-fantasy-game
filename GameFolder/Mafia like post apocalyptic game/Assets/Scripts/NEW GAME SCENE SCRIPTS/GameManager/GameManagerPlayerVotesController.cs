@@ -41,4 +41,16 @@ public class GameManagerPlayerVotesController : MonoBehaviourPun
         _Votes.PlayerVoteCondition = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition;
         _Votes.AgainstWhomPlayerVoted = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted;
     }
+
+    public void ResetDicts()
+    {
+        _Votes.AgainstWhomPlayerVoted = new Dictionary<int, string[]>();
+        _Votes.DiscoverTheRole = new Dictionary<int, bool>();
+        _Votes.HealedPlayers = new Dictionary<int, bool>();
+        _Votes.InfectedVotesAgainst = new Dictionary<int, int>();
+        _Votes.LizardVoteAgainst = new Dictionary<int, bool>();
+        _Votes.PlayersVotesAgainst = new Dictionary<int, int>();
+        _Votes.PlayerVoteCondition = new Dictionary<int, bool[]>();
+        _Votes.SoldierVoteAgainst = new Dictionary<int, int>();
+    }
 }

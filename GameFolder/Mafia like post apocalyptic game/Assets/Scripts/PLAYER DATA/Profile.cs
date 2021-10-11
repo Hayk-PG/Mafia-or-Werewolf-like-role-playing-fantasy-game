@@ -37,8 +37,6 @@ public class Profile : MonoBehaviourPun
     {
         [SerializeField] internal Image flagImage;
         [SerializeField] internal Image profileImage;
-        [SerializeField] internal Image rankImage;
-        [SerializeField] internal Text rankNumberText;
         [SerializeField] internal Sprite loadingProfilePic;
         [SerializeField] internal Text nameText;
         [SerializeField] internal Button sendFriendRequestButton;
@@ -59,12 +57,24 @@ public class Profile : MonoBehaviourPun
     }
     [Serializable] class PlayedAsTab
     {
+        [SerializeField] internal Text rankNumberText;
+        [SerializeField] internal Text points;
+        [SerializeField] internal Image rankImage;
+        [SerializeField] internal Image winImage;
+        [SerializeField] internal Slider rankSlider;
+
         [SerializeField] internal Text playedAsSurvivorCountText;
         [SerializeField] internal Text playedAsDoctorCountText;
         [SerializeField] internal Text playedAsSheriffCountText;
         [SerializeField] internal Text playedAsSoldierCountText;
         [SerializeField] internal Text playedAsLizardCountText;
         [SerializeField] internal Text playedAsWendigoCountText;
+
+        [SerializeField] internal Text winsPercentText;
+        [SerializeField] internal Text skillValueText;
+        [SerializeField] internal Text winsCountText;
+        [SerializeField] internal Text lossesCountText;
+
         [SerializeField] internal CanvasGroup playedAsCanvasGroup;
     }
     [Serializable] class PlayerVotesTab
@@ -227,8 +237,8 @@ public class Profile : MonoBehaviourPun
     }
     public Sprite RankImage
     {
-        get => _FirstTab.rankImage.sprite;
-        set => _FirstTab.rankImage.sprite = value;
+        get => _PlayedAsTab.rankImage.sprite;
+        set => _PlayedAsTab.rankImage.sprite = value;
     }
     public Sprite FriendRankImage
     {
@@ -321,8 +331,13 @@ public class Profile : MonoBehaviourPun
     }
     public string RankNumber
     {
-        get => _FirstTab.rankNumberText.text;
-        set => _FirstTab.rankNumberText.text = value;
+        get => _PlayedAsTab.rankNumberText.text;
+        set => _PlayedAsTab.rankNumberText.text = value;
+    }
+    public string Points
+    {
+        get => _PlayedAsTab.points.text;
+        set => _PlayedAsTab.points.text = value;
     }
     public string FriendProfileRankNumber
     {
@@ -338,6 +353,37 @@ public class Profile : MonoBehaviourPun
     {
         get => int.Parse(_NotificationTab.notificationsCountText.text);
         set => _NotificationTab.notificationsCountText.text = value.ToString();
+    }
+    public int PointsSliderValue
+    {
+        get => (int)_PlayedAsTab.rankSlider.value;
+        set => _PlayedAsTab.rankSlider.value = value;
+    }
+    public int WinsPercent
+    {
+        get => int.Parse(_PlayedAsTab.winsPercentText.text.Substring(0, _PlayedAsTab.winsPercentText.text.Length - 1));
+        set => _PlayedAsTab.winsPercentText.text = value.ToString() + "%";
+    }
+    public int SkillValue
+    {
+        get => int.Parse(_PlayedAsTab.skillValueText.text);
+        set => _PlayedAsTab.skillValueText.text = value.ToString();
+    }
+    public int WinsCount
+    {
+        get => int.Parse(_PlayedAsTab.winsCountText.text);
+        set => _PlayedAsTab.winsCountText.text = value.ToString();
+    }
+    public int LossesCount
+    {
+        get => int.Parse(_PlayedAsTab.lossesCountText.text);
+        set => _PlayedAsTab.lossesCountText.text = value.ToString();
+    }
+
+    public float WinImageAmountValue
+    {
+        get => _PlayedAsTab.winImage.fillAmount;
+        set => _PlayedAsTab.winImage.fillAmount = value;
     }
 
     /// <summary>
@@ -863,7 +909,17 @@ public class Profile : MonoBehaviourPun
         PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(playfabId, Stats => 
         {
             TimePlayed = Stats.totalTimePlayed.ToString();
-            RankNumber = Stats.rank.ToString();
+            RankNumber = RankNumberValueByPoints(Stats.points).ToString();
+            Points = Stats.points.ToString("N0") + "/550,000";
+            WinsPercent = 0 / int.Parse(TimePlayed) * 100;
+            WinImageAmountValue = WinsPercent;
+            WinsCount = 0;
+            LossesCount = 0;
+            SkillValue = Stats.overallSkills;
+            PointsSliderController(int.Parse(RankNumber));
+            PointsSliderValue = Stats.points;
+
+
             AsSurvivorCount = Stats.asSurvivor.ToString();
             AsDoctorCount = Stats.asDoctor.ToString();
             AsSheriffCount = Stats.asSheriff.ToString();
@@ -873,6 +929,114 @@ public class Profile : MonoBehaviourPun
 
             ProfileDatasCompleteCheck(DatasDownloadCheck.DatasDownloadStatus.PlayerStatsDownloaded);
         });
+    }
+
+    int RankNumberValueByPoints(int points)
+    {
+        return points <= 2500 ? 1 : points > 2500 && points <= 7250 ? 2 : points > 7250 && points <= 15100 ? 3 : points > 15100 && points <= 24725 ? 4 :
+               points > 24725 && points <= 37725 ? 5 : points > 37725 && points <= 53580 ? 6 : points > 53580 && points <= 74605 ? 7 : points > 74605 && points <= 100130 ? 8 :
+               points > 100130 && points <= 127185 ? 9 : points > 127185 && points <= 157185 ? 10 : points > 157185 && points <= 188435 ? 11 : points > 188435 && points <= 223185 ? 12 :
+               points > 223185 && points <= 263185 ? 13 : points > 263185 && points <= 305435 ? 14 : points > 305435 && points <= 348435 ? 15 : points > 348435 && points <= 392935 ? 16 :
+               points > 392935 && points <= 440760 ? 17 : points > 440760 && points <= 490760 ? 18 : points > 490760 && points <= 550000 ? 19 : 19;
+    }
+
+    void PointsSliderController(int rankNumber)
+    {
+        if(rankNumber == 1)
+        {
+            _PlayedAsTab.rankSlider.minValue = 0;
+            _PlayedAsTab.rankSlider.maxValue = 2500;
+        }
+        if (rankNumber == 2)
+        {
+            _PlayedAsTab.rankSlider.minValue = 2500;
+            _PlayedAsTab.rankSlider.maxValue = 7250;
+        }
+        if (rankNumber == 3)
+        {
+            _PlayedAsTab.rankSlider.minValue = 7250;
+            _PlayedAsTab.rankSlider.maxValue = 15100;
+        }
+        if (rankNumber == 4)
+        {
+            _PlayedAsTab.rankSlider.minValue = 15100;
+            _PlayedAsTab.rankSlider.maxValue = 24725;
+        }
+        if (rankNumber == 5)
+        {
+            _PlayedAsTab.rankSlider.minValue = 24725;
+            _PlayedAsTab.rankSlider.maxValue = 37725;
+        }
+        if (rankNumber == 6)
+        {
+            _PlayedAsTab.rankSlider.minValue = 37725;
+            _PlayedAsTab.rankSlider.maxValue = 53580;
+        }
+        if (rankNumber == 7)
+        {
+            _PlayedAsTab.rankSlider.minValue = 53580;
+            _PlayedAsTab.rankSlider.maxValue = 74605;
+        }
+        if (rankNumber == 8)
+        {
+            _PlayedAsTab.rankSlider.minValue = 74605;
+            _PlayedAsTab.rankSlider.maxValue = 100130;
+        }
+        if (rankNumber == 9)
+        {
+            _PlayedAsTab.rankSlider.minValue = 100130;
+            _PlayedAsTab.rankSlider.maxValue = 127185;
+        }
+        if (rankNumber == 10)
+        {
+            _PlayedAsTab.rankSlider.minValue = 127185;
+            _PlayedAsTab.rankSlider.maxValue = 157185;
+        }
+        if (rankNumber == 11)
+        {
+            _PlayedAsTab.rankSlider.minValue = 157185;
+            _PlayedAsTab.rankSlider.maxValue = 188435;
+        }
+        if (rankNumber == 12)
+        {
+            _PlayedAsTab.rankSlider.minValue = 188435;
+            _PlayedAsTab.rankSlider.maxValue = 223185;
+        }
+        if (rankNumber == 13)
+        {
+            _PlayedAsTab.rankSlider.minValue = 223185;
+            _PlayedAsTab.rankSlider.maxValue = 263185;
+        }
+        if (rankNumber == 14)
+        {
+            _PlayedAsTab.rankSlider.minValue = 263185;
+            _PlayedAsTab.rankSlider.maxValue = 305435;
+        }
+        if (rankNumber == 15)
+        {
+            _PlayedAsTab.rankSlider.minValue = 305435;
+            _PlayedAsTab.rankSlider.maxValue = 348435;
+        }
+        if (rankNumber == 16)
+        {
+            _PlayedAsTab.rankSlider.minValue = 348435;
+            _PlayedAsTab.rankSlider.maxValue = 392935;
+        }
+        if (rankNumber == 17)
+        {
+            _PlayedAsTab.rankSlider.minValue = 392935;
+            _PlayedAsTab.rankSlider.maxValue = 440760;
+        }
+        if (rankNumber == 18)
+        {
+            _PlayedAsTab.rankSlider.minValue = 440760;
+            _PlayedAsTab.rankSlider.maxValue = 490760;
+        }
+        if (rankNumber == 19)
+        {
+            _PlayedAsTab.rankSlider.minValue = 490760;
+            _PlayedAsTab.rankSlider.maxValue = 550000;
+        }
     }
     #endregion
 

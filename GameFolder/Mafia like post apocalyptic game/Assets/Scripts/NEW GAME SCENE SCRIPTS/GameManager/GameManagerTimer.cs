@@ -10,7 +10,8 @@ public class GameManagerTimer : MonoBehaviourPun
 {
     [Serializable] public class Timer
     {
-        [SerializeField] int seconds;       
+        [SerializeField] int seconds;
+        [SerializeField] int gameEndSeconds;
         [SerializeField] int nightsCount;
         [SerializeField] int daysCount;
         [SerializeField] float nextPhaseWaitUntil;
@@ -18,7 +19,7 @@ public class GameManagerTimer : MonoBehaviourPun
         [SerializeField] bool nightTime;
         [SerializeField] bool dayTime;
         [SerializeField] bool hasGameStartVFXInstantiated;
-        [SerializeField] bool canRunTimer;
+        [SerializeField] bool isGameFinished;
         [SerializeField] Text timerText;
         [SerializeField] GameObject sun;
         [SerializeField] GameObject moon;
@@ -27,6 +28,11 @@ public class GameManagerTimer : MonoBehaviourPun
         {
             get => seconds;
             set => seconds = value;
+        }
+        public int GameEndSeconds
+        {
+            get => gameEndSeconds;
+            set => gameEndSeconds = value;
         }
         public int NightsCount
         {
@@ -63,10 +69,10 @@ public class GameManagerTimer : MonoBehaviourPun
             get => hasGameStartVFXInstantiated;
             set => hasGameStartVFXInstantiated = value;
         }
-        public bool CanRunTimer
+        public bool IsGameFinished
         {
-            get => canRunTimer;
-            set => canRunTimer = value;
+            get => isGameFinished;
+            set => isGameFinished = value;
         }
         public string TimerText
         {
@@ -139,10 +145,13 @@ public class GameManagerTimer : MonoBehaviourPun
     GameManagerPlayerVotesController _GameManagerPlayerVotesController { get; set; }
     TeamsController _TeamsController { get; set; }
     CardsTabController _CardsTabController { get; set; }
-    GameManagerEndOfTheGame _GameManagerEndOfTheGame { get; set; }
+    EndTab _EndTab { get; set; }
+    GameStartAnnouncement _GameStartAnnouncement { get; set; }
 
     public delegate void PhaseCallback(bool isResetPhase);
     public PhaseCallback IsResetPhaseActive;
+
+    [SerializeField] bool test;
 
 
     void Awake()
@@ -153,19 +162,18 @@ public class GameManagerTimer : MonoBehaviourPun
         _TeamsController = GetComponent<TeamsController>();
         _TimerTickSound = FindObjectOfType<TimerTickSound>();
         _CardsTabController = FindObjectOfType<CardsTabController>();
-        _GameManagerEndOfTheGame = GetComponent<GameManagerEndOfTheGame>();
+        _EndTab = FindObjectOfType<EndTab>();
+        _GameStartAnnouncement = GetComponent<GameStartAnnouncement>();
     }
 
     void OnEnable()
     {
         PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;
-        _GameManagerEndOfTheGame._OnRestartTheGame += _OnRestartTheGame;
     }
 
     void OnDisable()
     {
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
-        _GameManagerEndOfTheGame._OnRestartTheGame -= _OnRestartTheGame;
     }
 
     void Start()
@@ -180,32 +188,35 @@ public class GameManagerTimer : MonoBehaviourPun
         if (_Timer.Moon.activeInHierarchy != _Timer.NightTime) _Timer.Moon.SetActive(_Timer.NightTime);
         if (_Timer.Sun.activeInHierarchy != _Timer.DayTime) _Timer.Sun.SetActive(_Timer.DayTime);
 
-        RunNextPhaseUntilTimer(delegate { _CardsTabController.OnDeathTab(true, null); });
+        RunNextPhaseUntilTimer(/*delegate { _CardsTabController.OnDeathTab(true, null); }*/ null);
         StopRunNextPhaseUntilTimer(delegate{ _CardsTabController.OnDeathTab(false, null); });
-
-        foreach (var item in _GameManagerPlayerVotesController._Votes.AgainstWhomPlayerVoted)
-        {
-            print(item.Key + "/" + item.Value.Length);
-        }
     }
 
     #region RunTimer
     internal void RunTimer()
     {
         _Timer.Coroutine = null;
-        _Timer.Coroutine = TimerCoroutine(_Timer.Seconds, _Timer.CanRunTimer);
-        StartCoroutine(_Timer.Coroutine);
+        _Timer.Coroutine = TimerCoroutine(_Timer.Seconds, _Timer.IsGameFinished);
 
+        if (!_Timer.IsGameFinished)
+        {
+            StartCoroutine(_Timer.Coroutine);
+            MyCanvasGroups.CanvasGroupActivity(_EndTab._UI.CanvasGroup, false);
+        }
+        else
+        {
+            StartCoroutine(GameEndTimerCoroutine(_Timer.GameEndSeconds, _Timer.IsGameFinished));
+        }
 
         //StartCoroutine(TimerCoroutine(_Timer.Seconds, _Timer.CanRunTimer));
 
         _LostPlayer.LostPlayers = FindObjectOfType<GameManagerTimer>()._LostPlayer.LostPlayers;
         _Teams.IsTeamsCountUpdated = false;
-    }
+    }   
     #endregion
 
     #region TimerCoroutine
-    IEnumerator TimerCoroutine(int currentSeconds, bool canRunTimer)
+    IEnumerator TimerCoroutine(int currentSeconds, bool isGameFinished)
     {
         while (photonView.IsMine)
         {
@@ -215,7 +226,7 @@ public class GameManagerTimer : MonoBehaviourPun
 
             PhotonNetwork.RaiseEvent(RaiseEventsStrings.GameStartKey, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendReliable);
 
-            while (canRunTimer && photonView.IsMine)
+            while (!isGameFinished && photonView.IsMine)
             {
                 if (_Timer.NextPhaseWaitUntil <= 0)
                 {
@@ -300,6 +311,14 @@ public class GameManagerTimer : MonoBehaviourPun
             });
 
             OnPlayersVotes(obj);
+        }
+        if (obj.Code == RaiseEventsStrings.GameEndKey)
+        {
+            OnGameEnd();
+        }
+        if (obj.Code == RaiseEventsStrings.StartNewRoundKey)
+        {
+            OnGameRestart(obj);
         }
     }
     #endregion
@@ -573,7 +592,7 @@ public class GameManagerTimer : MonoBehaviourPun
             }
             playerController.HasVotePhaseResetted = true;
 
-            if (PlayerBaseConditions.IsPhotonviewMine(playerController.PhotonView) && PlayerBaseConditions.AmOwner(playerController.PhotonView))
+            if (playerController.PhotonView.IsMine && playerController.PhotonView.AmOwner)
             {
                 DeactivateGameobjectActivityForAllRoleButtons();
                 RoleButtonsVoteCountTextVisibility(playerController, false, false, true);
@@ -582,6 +601,13 @@ public class GameManagerTimer : MonoBehaviourPun
             IsResetPhaseActive?.Invoke(true);
             GetLostPlayer();
             OnResetPlayersVotes();
+            GameEnd();
+            if (test)
+            {
+                GameEnd();
+                print("test");
+                test = false;
+            }
         }
 
         ResetLizardsVotes();
@@ -842,10 +868,117 @@ public class GameManagerTimer : MonoBehaviourPun
         }
         else
         {
-            _Timer.CanRunTimer = false;
-            _Timer.Coroutine = TimerCoroutine(0, _Timer.CanRunTimer);
+            _Timer.IsGameFinished = false;
+            _Timer.Coroutine = TimerCoroutine(0, _Timer.IsGameFinished);
         }        
     }
     #endregion
+
+    #region GameEnd
+    void GameEnd()
+    {
+        if (_Timer.NightsCount > 0 && !_CardsTabController.CardsTabCanvasGroup.interactable)
+        {
+            if (_TeamsController._TeamsCount.FirstTeamCount > _TeamsController._TeamsCount.SecondTeamCount + 3 || _TeamsController._TeamsCount.SecondTeamCount < 1)
+            {
+                MasterClientStoppedCoroutine();
+            }
+            if (_TeamsController._TeamsCount.FirstTeamCount < _TeamsController._TeamsCount.SecondTeamCount - 2 || _TeamsController._TeamsCount.FirstTeamCount < 1)
+            {
+                MasterClientStoppedCoroutine();
+            }
+        }
+    }
+
+    void MasterClientStoppedCoroutine()
+    {
+        if (photonView.IsMine)
+        {
+            _Timer.IsGameFinished = true;
+            StopCoroutine(_Timer.Coroutine);
+            StartCoroutine(GameEndTimerCoroutine(_Timer.GameEndSeconds, _Timer.IsGameFinished));
+        }
+    }  
+    
+    IEnumerator GameEndTimerCoroutine(int currentSeconds, bool isGameFinished)
+    {        
+        if (photonView.IsMine)
+        {
+            print(PhotonNetwork.MasterClient.NickName);
+            _Timer.GameEndSeconds = currentSeconds;
+            object[] datas = new object[] { RaiseEventsStrings.GameEnd };
+
+            while (isGameFinished && _Timer.GameEndSeconds < 60 && photonView.IsMine)
+            {
+                _Timer.GameEndSeconds++;
+                PhotonNetwork.RaiseEvent(RaiseEventsStrings.GameEndKey, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendUnreliable);
+                yield return new WaitForSeconds(1);
+            }
+
+            yield return null;
+
+            if (_Timer.GameEndSeconds >= 60)
+            {
+                isGameFinished = false;
+                object[] datas1 = new object[] { isGameFinished, 0 };
+                PhotonNetwork.RaiseEvent(RaiseEventsStrings.StartNewRoundKey, datas1, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendReliable);
+            }
+        } 
+    }
+    #endregion
+
+    void OnGameEnd()
+    {
+        if (!_EndTab._UI.CanvasGroup.interactable)
+        {
+            _EndTab.OpenEndTab();
+
+            if (photonView.IsMine)
+            {
+                _GameStartAnnouncement._Timer.Seconds = 60;              
+                _GameStartAnnouncement._Timer.Seconds = 60;
+
+                _Timer.Seconds = 60;             
+                _Timer.NightTime = true;
+                _Timer.DayTime = false;
+                _Timer.DaysCount = 0;
+                _Timer.NightsCount = 0;
+                _Timer.HasGameStartVFXInstantiated = false;
+
+                _LostPlayer.HasLostPlayerSet = false;
+                _LostPlayer.LostPlayers = new Dictionary<int, bool>();
+
+                _GameManagerPlayerVotesController.ResetDicts();
+
+                PlayerBaseConditions.LocalPlayer.CustomProperties.Remove(PlayerKeys.SetPlayersRoleKeys.RoomName);
+            }    
+        }
+    }
+
+    void OnGameRestart(ExitGames.Client.Photon.EventData obj)
+    {
+        object[] datas = (object[])obj.CustomData;
+        //_Timer.IsGameFinished = (bool)datas[0];
+        //_Timer.GameEndSeconds = (int)datas[1];
+
+        foreach (var roleButtons in _GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons)
+        {
+            roleButtons._OnRestartTheGame();
+        }
+
+        MyCanvasGroups.CanvasGroupActivity(_EndTab._UI.CanvasGroup, false);
+
+        if (photonView.IsMine)
+        {
+            _GameStartAnnouncement._Timer.IsTimeToStartTheGame = false;
+            _GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet = false;
+
+            _Timer.GameEndSeconds = 0;
+            _Timer.IsGameFinished = false;
+        }
+
+        _GameStartAnnouncement.OnMasterSwitchedOrRejoined(photonView.IsMine);
+    }
 }
 
+//TImery chi gnum,erevi NextPhaseWaitUntil-ic klini, vaghy dranic ksksenq, bayc mnacacy voncor ashkhatuma

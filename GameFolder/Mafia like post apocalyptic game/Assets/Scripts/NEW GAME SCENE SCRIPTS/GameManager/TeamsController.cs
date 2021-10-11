@@ -54,7 +54,7 @@ public class TeamsController : MonoBehaviour
         {
             RoleButtonController roleButton = Array.Find(FindObjectsOfType<RoleButtonController>(), _roleButton => _roleButton._OwnerInfo.OwnerActorNumber == teams.Key);
 
-            if (roleButton._GameInfo.IsPlayerAlive)
+            if (roleButton != null && roleButton._GameInfo.IsPlayerAlive)
             {
                 if (roleButton._GameInfo.RoleName == RoleNames.Infected || roleButton._GameInfo.RoleName == RoleNames.Lizard) _TeamsCount.SecondTeamCount++;
                 else _TeamsCount.FirstTeamCount++;

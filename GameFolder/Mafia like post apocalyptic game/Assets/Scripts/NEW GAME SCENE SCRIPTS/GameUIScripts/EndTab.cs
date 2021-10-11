@@ -14,24 +14,8 @@ public class EndTab : MonoBehaviour
     }
     public UI _UI;
 
-    GameManagerEndOfTheGame _GameManagerEndOfTheGame;
 
-    void Awake()
-    {
-        _GameManagerEndOfTheGame = FindObjectOfType<GameManagerEndOfTheGame>();
-    }
-
-    void OnEnable()
-    {
-        _GameManagerEndOfTheGame._OnRestartTheGame += _OnRestartTheGame;
-    }
-
-    void OnDisable()
-    {
-        _GameManagerEndOfTheGame._OnRestartTheGame -= _OnRestartTheGame;
-    }
-
-    void _OnRestartTheGame()
+    public void OpenEndTab()
     {
         MyCanvasGroups.CanvasGroupActivity(_UI.CanvasGroup, true);
     }

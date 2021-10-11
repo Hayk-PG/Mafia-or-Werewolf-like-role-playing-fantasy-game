@@ -7237,7 +7237,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disconnect: 0
   reconnect: 0
-  connectingAttempts: 3
+  connectingAttempts: 10
 --- !u!1 &1404019177
 GameObject:
   m_ObjectHideFlags: 0

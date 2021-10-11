@@ -20,7 +20,7 @@ public class UISoundsInGame : UiSoundsBaseScript
     /// 0: ALert 1:Votes 2:Cards rotate 3: Impact 2 soundFX used in Cards rotate 4: End debris 
     /// </summary>
     /// <param name="index"></param>
-    public void PlaySoundFXinGame(int index)
+    public override void PlaySoundFXinGame(int index)
     {
         AudioSRC[1].PlayOneShot(GameSoundFX[index]);
     }

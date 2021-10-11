@@ -165,7 +165,7 @@ public class RoleButtonController : MonoBehaviourPun
     public GameObjects _GameObjects;
    
     CardsTabController _CardsTabController { get; set; }
-    GameManagerEndOfTheGame _GameManagerEndOfTheGame { get; set; }
+    GameManagerTimer _GameManagerTimer { get; set; }
 
     public string ObjName
     {
@@ -176,17 +176,17 @@ public class RoleButtonController : MonoBehaviourPun
     void Awake()
     {
         _CardsTabController = FindObjectOfType<CardsTabController>();
-        _GameManagerEndOfTheGame = FindObjectOfType<GameManagerEndOfTheGame>();
+        _GameManagerTimer = FindObjectOfType<GameManagerTimer>();
     }
 
     void OnEnable()
     {
-        _GameManagerEndOfTheGame._OnRestartTheGame += _OnRestartTheGame;
+       
     }
 
     void OnDisable()
     {
-        _GameManagerEndOfTheGame._OnRestartTheGame -= _OnRestartTheGame;
+        
     }
 
     void Update()
@@ -249,7 +249,7 @@ public class RoleButtonController : MonoBehaviourPun
     #region OnPlayerLost
     void OnPlayerLost()
     {
-        if(!_GameInfo.IsPlayerAlive && _GameObjects.DiedIcon.activeInHierarchy == false)
+        if(!_GameInfo.IsPlayerAlive && _GameObjects.DiedIcon.activeInHierarchy == false && !_GameManagerTimer._Timer.IsGameFinished)
         {
             _UI.VisibleToEveryoneImage = _UI.RoleImage;
             _GameObjects.DiedIcon.SetActive(true);
@@ -293,7 +293,7 @@ public class RoleButtonController : MonoBehaviourPun
     #endregion
 
     #region _OnRestartTheGame
-    void _OnRestartTheGame()
+    public void _OnRestartTheGame()
     {
         _OwnerInfo.OwenrUserId = null;
         _OwnerInfo.OwnerActorNumber = 0;

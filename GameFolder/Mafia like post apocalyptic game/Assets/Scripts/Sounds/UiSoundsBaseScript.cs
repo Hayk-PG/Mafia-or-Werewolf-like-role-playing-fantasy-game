@@ -10,4 +10,9 @@ public abstract class UiSoundsBaseScript : MonoBehaviour
     public abstract AudioClip[] SoundFX { get; }
 
     public abstract void PlaySoundFX(int index);
+
+    public virtual void PlaySoundFXinGame(int index)
+    {
+
+    }
 }

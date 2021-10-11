@@ -37,6 +37,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
 
                 #region GameManagerTimer
                 stream.SendNext(_GameManagerTimer._Timer.Seconds);
+                stream.SendNext(_GameManagerTimer._Timer.GameEndSeconds);
                 stream.SendNext(_GameManagerTimer._Timer.TimerText);
                 stream.SendNext(_GameManagerTimer._Timer.NightsCount);
                 stream.SendNext(_GameManagerTimer._Timer.NextPhaseWaitUntil);
@@ -45,7 +46,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 stream.SendNext(_GameManagerTimer._Timer.DaysCount);
                 stream.SendNext(_GameManagerTimer._Timer.DayTime);
                 stream.SendNext(_GameManagerTimer._Timer.HasGameStartVFXInstantiated);
-                stream.SendNext(_GameManagerTimer._Timer.CanRunTimer);
+                stream.SendNext(_GameManagerTimer._Timer.IsGameFinished);
                 stream.SendNext(_GameManagerTimer._LostPlayer.HasLostPlayerSet);
                 stream.SendNext(_GameManagerTimer._LostPlayer.LostPlayers);
                 stream.SendNext(_GameManagerTimer._Teams.IsTeamsCountSet);
@@ -89,6 +90,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
 
             #region GameManagerTimer
             _GameManagerTimer._Timer.Seconds = (int)stream.ReceiveNext();
+            _GameManagerTimer._Timer.GameEndSeconds = (int)stream.ReceiveNext();
             _GameManagerTimer._Timer.TimerText = (string)stream.ReceiveNext();
             _GameManagerTimer._Timer.NightsCount = (int)stream.ReceiveNext();
             _GameManagerTimer._Timer.NextPhaseWaitUntil = (float)stream.ReceiveNext();
@@ -97,7 +99,7 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             _GameManagerTimer._Timer.DaysCount = (int)stream.ReceiveNext();
             _GameManagerTimer._Timer.DayTime = (bool)stream.ReceiveNext();
             _GameManagerTimer._Timer.HasGameStartVFXInstantiated = (bool)stream.ReceiveNext();
-            _GameManagerTimer._Timer.CanRunTimer = (bool)stream.ReceiveNext();
+            _GameManagerTimer._Timer.IsGameFinished = (bool)stream.ReceiveNext();
             _GameManagerTimer._LostPlayer.HasLostPlayerSet = (bool)stream.ReceiveNext();
             _GameManagerTimer._LostPlayer.LostPlayers = (Dictionary<int, bool>)stream.ReceiveNext();
             _GameManagerTimer._Teams.IsTeamsCountSet = (bool)stream.ReceiveNext();
