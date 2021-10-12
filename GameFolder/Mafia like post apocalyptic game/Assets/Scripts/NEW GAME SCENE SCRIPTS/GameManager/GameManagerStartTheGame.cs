@@ -34,13 +34,16 @@ public class GameManagerStartTheGame : MonoBehaviourPun
 
     public void StartTheGame()
     {
-        if (_GameStartAnnouncement._Timer.IsTimeToStartTheGame && photonView.IsMine)
+        if (_GameManagerTimer._Timer.IsGameFinished)
+        {
+            _GameManagerTimer.RunGameEndTimer();
+        }
+
+        if (_GameStartAnnouncement._Timer.IsTimeToStartTheGame && !_GameManagerTimer._Timer.IsGameFinished && photonView.IsMine)
         {
             _GameManagerTimer.RunTimer();
 
             if(!_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet) _GameManagerSetPlayersRoles.SetPlayersRoles();
-
-           // _GameManagerPlayerVotesController.TransferPlayersVotesToTheNewMaster();
 
             _GameStart.GameStarted = true;
         }

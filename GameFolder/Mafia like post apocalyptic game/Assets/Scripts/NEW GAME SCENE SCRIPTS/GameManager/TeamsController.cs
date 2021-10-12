@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class TeamsController : MonoBehaviour
+public class TeamsController : MonoBehaviour,IReset
 {
     [Serializable] public class TeamsCount
     {
@@ -61,4 +61,18 @@ public class TeamsController : MonoBehaviour
             }
         }
     }
+
+    #region IReset
+    public void ResetWhileGameEndCoroutineIsRunning()
+    {
+        _TeamsCount.FirstTeamCount = 0;
+        _TeamsCount.SecondTeamCount = 0;
+    }
+
+    public void ResetAtTheEndOfTheGameEndCoroutine()
+    {
+        _TeamsCount.FirstTeamCount = 0;
+        _TeamsCount.SecondTeamCount = 0;
+    }
+    #endregion
 }

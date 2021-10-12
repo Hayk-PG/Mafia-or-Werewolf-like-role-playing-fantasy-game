@@ -6,7 +6,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 
-public class GameManagerTimer : MonoBehaviourPun
+public class GameManagerTimer : MonoBehaviourPun,IReset
 {
     [Serializable] public class Timer
     {
@@ -203,16 +203,18 @@ public class GameManagerTimer : MonoBehaviourPun
             StartCoroutine(_Timer.Coroutine);
             MyCanvasGroups.CanvasGroupActivity(_EndTab._UI.CanvasGroup, false);
         }
-        else
+       
+        _LostPlayer.LostPlayers = FindObjectOfType<GameManagerTimer>()._LostPlayer.LostPlayers;
+        _Teams.IsTeamsCountUpdated = false;
+    } 
+    
+    internal void RunGameEndTimer()
+    {
+        if (_Timer.IsGameFinished)
         {
             StartCoroutine(GameEndTimerCoroutine(_Timer.GameEndSeconds, _Timer.IsGameFinished));
         }
-
-        //StartCoroutine(TimerCoroutine(_Timer.Seconds, _Timer.CanRunTimer));
-
-        _LostPlayer.LostPlayers = FindObjectOfType<GameManagerTimer>()._LostPlayer.LostPlayers;
-        _Teams.IsTeamsCountUpdated = false;
-    }   
+    }
     #endregion
 
     #region TimerCoroutine
@@ -346,7 +348,7 @@ public class GameManagerTimer : MonoBehaviourPun
         if ((string)datas[0] == RaiseEventsStrings.CreateGameStartVFX)
         {
             if (!_Timer.HasGameStartVFXInstantiated)
-            {
+            {               
                 _VfxHolder.CreateVFX(0);
                 _Timer.HasGameStartVFXInstantiated = true;
             }
@@ -901,8 +903,8 @@ public class GameManagerTimer : MonoBehaviourPun
     }  
     
     IEnumerator GameEndTimerCoroutine(int currentSeconds, bool isGameFinished)
-    {        
-        if (photonView.IsMine)
+    {
+        while (isGameFinished && photonView.IsMine)
         {
             print(PhotonNetwork.MasterClient.NickName);
             _Timer.GameEndSeconds = currentSeconds;
@@ -923,62 +925,81 @@ public class GameManagerTimer : MonoBehaviourPun
                 object[] datas1 = new object[] { isGameFinished, 0 };
                 PhotonNetwork.RaiseEvent(RaiseEventsStrings.StartNewRoundKey, datas1, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendReliable);
             }
-        } 
+
+            yield return null;
+            print("GameEndTimerCoroutine");
+        }
     }
     #endregion
 
+    #region OnGameEnd
     void OnGameEnd()
     {
         if (!_EndTab._UI.CanvasGroup.interactable)
         {
-            _EndTab.OpenEndTab();
-
-            if (photonView.IsMine)
-            {
-                _GameStartAnnouncement._Timer.Seconds = 60;              
-                _GameStartAnnouncement._Timer.Seconds = 60;
-
-                _Timer.Seconds = 60;             
-                _Timer.NightTime = true;
-                _Timer.DayTime = false;
-                _Timer.DaysCount = 0;
-                _Timer.NightsCount = 0;
-                _Timer.HasGameStartVFXInstantiated = false;
-
-                _LostPlayer.HasLostPlayerSet = false;
-                _LostPlayer.LostPlayers = new Dictionary<int, bool>();
-
-                _GameManagerPlayerVotesController.ResetDicts();
-
-                PlayerBaseConditions.LocalPlayer.CustomProperties.Remove(PlayerKeys.SetPlayersRoleKeys.RoomName);
-            }    
+            _EndTab.OpenEndTab();            
         }
-    }
 
-    void OnGameRestart(ExitGames.Client.Photon.EventData obj)
-    {
-        object[] datas = (object[])obj.CustomData;
-        //_Timer.IsGameFinished = (bool)datas[0];
-        //_Timer.GameEndSeconds = (int)datas[1];
+        if (photonView.IsMine)
+        {
+            foreach (var iReset in GetComponents<IReset>())
+            {
+                iReset?.ResetWhileGameEndCoroutineIsRunning();
+            }
+        }
 
         foreach (var roleButtons in _GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons)
         {
-            roleButtons._OnRestartTheGame();
+            roleButtons?.ResetWhileGameEndCoroutineIsRunning();
         }
+
+        foreach (var iReset in PlayerBaseConditions._LocalPlayerTagObject.GetComponents<IReset>())
+        {
+            iReset?.ResetWhileGameEndCoroutineIsRunning();
+        }
+    }
+    #endregion
+
+    #region OnGameRestart
+    void OnGameRestart(ExitGames.Client.Photon.EventData obj)
+    {
+        object[] datas = (object[])obj.CustomData;
 
         MyCanvasGroups.CanvasGroupActivity(_EndTab._UI.CanvasGroup, false);
 
         if (photonView.IsMine)
         {
-            _GameStartAnnouncement._Timer.IsTimeToStartTheGame = false;
-            _GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet = false;
+            //_Timer.GameEndSeconds = 0;
+            //_Timer.IsGameFinished = false;
 
-            _Timer.GameEndSeconds = 0;
-            _Timer.IsGameFinished = false;
+            foreach (var iReset in GetComponents<IReset>())
+            {
+                iReset?.ResetAtTheEndOfTheGameEndCoroutine();
+            }
         }
-
-        _GameStartAnnouncement.OnMasterSwitchedOrRejoined(photonView.IsMine);
     }
-}
+    #endregion
 
-//TImery chi gnum,erevi NextPhaseWaitUntil-ic klini, vaghy dranic ksksenq, bayc mnacacy voncor ashkhatuma
+    #region IReset
+    public void ResetWhileGameEndCoroutineIsRunning()
+    {
+        _Timer.Seconds = 60;
+        _Timer.NightTime = true;
+        _Timer.NextPhaseWaitUntil = 0;
+        _Timer.WasNextWaitUntilRunning = false;
+        _Timer.DayTime = false;
+        _Timer.DaysCount = 0;
+        _Timer.NightsCount = 0;
+        _Timer.HasGameStartVFXInstantiated = false;
+
+        _LostPlayer.HasLostPlayerSet = false;
+        _LostPlayer.LostPlayers = new Dictionary<int, bool>();
+    }
+
+    public void ResetAtTheEndOfTheGameEndCoroutine()
+    {
+        _Timer.GameEndSeconds = 0;
+        _Timer.IsGameFinished = false;
+    }
+    #endregion
+}

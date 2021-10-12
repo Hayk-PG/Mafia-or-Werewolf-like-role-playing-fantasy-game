@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManagerSetPlayersRoles : MonoBehaviourPun
+public class GameManagerSetPlayersRoles : MonoBehaviourPun,IReset
 {
     [Serializable] public class RoleButtonControllers
     {
@@ -87,11 +87,14 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun
     public Condition _Condition;
 
 
+    #region SetPlayersRoles
     public void SetPlayersRoles()
     {
         StartCoroutine(SetPlayersRolesCoroutine());
     }
+    #endregion
 
+    #region SetPlayersRolesCoroutine
     IEnumerator SetPlayersRolesCoroutine()
     {
         while(photonView.IsMine && !_Condition.HasPlayersRolesBeenSet)
@@ -120,8 +123,10 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun
             _Condition.HasPlayersRolesBeenSet = true;
             PhotonNetwork.CurrentRoom.IsOpen = !_Condition.HasPlayersRolesBeenSet;
         }
-    } 
+    }
+    #endregion
 
+    #region PlayersRolesRPC
     [PunRPC]
     public void PlayersRolesRPC(int actorNumber, int roleIndex, int roleButtonIndex)
     {
@@ -188,7 +193,9 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun
             }
         });
     }
+    #endregion
 
+    #region RoleSprite
     Sprite RoleSprite(int gender, string roleName)
     {
         Sprite roleImage = null;
@@ -205,13 +212,19 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun
 
         return roleImage;
     }
+    #endregion
 
+    #region IReset
+    public void ResetWhileGameEndCoroutineIsRunning()
+    {
+        _Condition.HasPlayersRolesBeenSet = false;
+    }
 
-
-
-
-
-
+    public void ResetAtTheEndOfTheGameEndCoroutine()
+    {
+        
+    }
+    #endregion
 }
 
 

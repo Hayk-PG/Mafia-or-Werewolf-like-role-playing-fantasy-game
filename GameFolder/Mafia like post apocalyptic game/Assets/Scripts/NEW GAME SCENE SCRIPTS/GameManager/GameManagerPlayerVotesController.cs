@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-public class GameManagerPlayerVotesController : MonoBehaviourPun
+public class GameManagerPlayerVotesController : MonoBehaviourPun,IReset
 {
     [Serializable] public class Votes
     {
@@ -30,6 +30,7 @@ public class GameManagerPlayerVotesController : MonoBehaviourPun
         _Votes.AgainstWhomPlayerVoted = new Dictionary<int, string[]>();
     }
 
+    #region TransferPlayersVotesToTheNewMaster
     public void TransferPlayersVotesToTheNewMaster()
     {
         _Votes.PlayersVotesAgainst = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayersVotesAgainst;
@@ -41,8 +42,10 @@ public class GameManagerPlayerVotesController : MonoBehaviourPun
         _Votes.PlayerVoteCondition = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.PlayerVoteCondition;
         _Votes.AgainstWhomPlayerVoted = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted;
     }
+    #endregion
 
-    public void ResetDicts()
+    #region IReset
+    public void ResetWhileGameEndCoroutineIsRunning()
     {
         _Votes.AgainstWhomPlayerVoted = new Dictionary<int, string[]>();
         _Votes.DiscoverTheRole = new Dictionary<int, bool>();
@@ -53,4 +56,10 @@ public class GameManagerPlayerVotesController : MonoBehaviourPun
         _Votes.PlayerVoteCondition = new Dictionary<int, bool[]>();
         _Votes.SoldierVoteAgainst = new Dictionary<int, int>();
     }
+
+    public void ResetAtTheEndOfTheGameEndCoroutine()
+    {
+        
+    }
+    #endregion
 }

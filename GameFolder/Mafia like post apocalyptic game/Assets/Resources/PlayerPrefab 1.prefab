@@ -144,8 +144,6 @@ MonoBehaviour:
     countPlayedAsSoldier: 0
     countPlayedAsLizard: 0
     countPlayedAsInfected: 0
-  _Conditions:
-    isPlayerRoleSet: 0
 --- !u!114 &3863192513754573222
 MonoBehaviour:
   m_ObjectHideFlags: 0

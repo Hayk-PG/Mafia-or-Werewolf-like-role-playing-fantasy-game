@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class PlayerOnGameStart : MonoBehaviourPun
+public class PlayerOnGameStart : MonoBehaviourPun,IReset
 {   
     internal bool IsPlayerFirstTimeInThisRoom
     {
@@ -116,6 +116,18 @@ public class PlayerOnGameStart : MonoBehaviourPun
         yield return new WaitForSeconds(1);
         _InformPlayerRole.OnPopUp("Your role is " + PlayerBaseConditions.PlayerRoleName(PhotonNetwork.LocalPlayer.ActorNumber) + "!",
             Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == Photon.Pun.PhotonNetwork.LocalPlayer.ActorNumber)._UI.RoleImage);
+    }
+    #endregion
+
+    #region IReset
+    public void ResetWhileGameEndCoroutineIsRunning()
+    {
+        PlayerBaseConditions.LocalPlayer.CustomProperties.Remove(PlayerKeys.SetPlayersRoleKeys.RoomName);
+    }
+
+    public void ResetAtTheEndOfTheGameEndCoroutine()
+    {
+        throw new NotImplementedException();
     }
     #endregion
 }

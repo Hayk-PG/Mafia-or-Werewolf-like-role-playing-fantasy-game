@@ -3,7 +3,7 @@ using System;
 using Photon.Pun;
 using System.Collections;
 
-public class PlayerUpdateStats : MonoBehaviourPun
+public class PlayerUpdateStats : MonoBehaviourPun, IReset
 {
     [SerializeField] public StatsValue _StatsValue;
     [SerializeField] public Conditions _Conditions;
@@ -42,7 +42,7 @@ public class PlayerUpdateStats : MonoBehaviourPun
     }
     [Serializable] public struct Conditions
     {
-        [SerializeField] public bool isPlayerRoleSet;
+        public bool isPlayerRoleSet { get; set; }
     }
 
 
@@ -76,6 +76,18 @@ public class PlayerUpdateStats : MonoBehaviourPun
         yield return new WaitForSeconds(1);
         UpdatePlayfabStats?.Invoke();
         _Conditions.isPlayerRoleSet = true;
+    }
+    #endregion
+
+    #region IReset
+    public void ResetWhileGameEndCoroutineIsRunning()
+    {
+        _Conditions.isPlayerRoleSet = false;       
+    }
+
+    public void ResetAtTheEndOfTheGameEndCoroutine()
+    {
+        
     }
     #endregion
 }

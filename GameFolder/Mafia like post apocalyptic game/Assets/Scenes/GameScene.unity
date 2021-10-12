@@ -702,6 +702,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _Timer:
     seconds: 59
+    gameEndSeconds: 0
     nightsCount: 0
     daysCount: 0
     nextPhaseWaitUntil: 0
@@ -709,7 +710,7 @@ MonoBehaviour:
     nightTime: 0
     dayTime: 0
     hasGameStartVFXInstantiated: 0
-    canRunTimer: 1
+    isGameFinished: 0
     timerText: {fileID: 1656060455}
     sun: {fileID: 2137149076}
     moon: {fileID: 617658652}
@@ -718,6 +719,7 @@ MonoBehaviour:
   _Teams:
     isTeamsCountSet: 0
     isTeamsCountUpdated: 0
+  test: 0
 --- !u!114 &129607994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8340,10 +8342,10 @@ RectTransform:
   m_Father: {fileID: 1410659907}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.293, y: 0.335}
-  m_AnchorMax: {x: 0.708, y: 0.462}
-  m_AnchoredPosition: {x: 0, y: 0.5}
-  m_SizeDelta: {x: 0, y: 0.29956055}
+  m_AnchorMin: {x: 0.1352082, y: 0.335}
+  m_AnchorMax: {x: 0.8678613, y: 0.46300003}
+  m_AnchoredPosition: {x: -0.5, y: 0}
+  m_SizeDelta: {x: 0.5002136, y: -0.70043945}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1670166591
 MonoBehaviour:
@@ -8364,12 +8366,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 2a6918f28c7896342b29d3769cef4d8a, type: 3}
+    m_Font: {fileID: 12800000, guid: e8a215c44b09b15428949d041633a99a, type: 3}
     m_FontSize: 14
-    m_FontStyle: 1
+    m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 30
     m_Alignment: 4
     m_AlignByGeometry: 1
     m_RichText: 1

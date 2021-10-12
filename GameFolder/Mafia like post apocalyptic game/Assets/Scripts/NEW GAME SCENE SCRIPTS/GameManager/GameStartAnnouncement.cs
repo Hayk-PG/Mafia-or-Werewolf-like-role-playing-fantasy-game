@@ -4,7 +4,7 @@ using System;
 using Photon.Pun;
 using System.Collections;
 
-public class GameStartAnnouncement : MonoBehaviourPun
+public class GameStartAnnouncement : MonoBehaviourPun,IReset
 {
     static GameStartAnnouncement Master;
 
@@ -89,6 +89,7 @@ public class GameStartAnnouncement : MonoBehaviourPun
         if (_Timer.GameStartAnnouncementTextObj.activeInHierarchy != !_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet) _Timer.GameStartAnnouncementTextObj.SetActive(!_GameManagerSetPlayersRoles._Condition.HasPlayersRolesBeenSet);
     }
 
+    #region TimerCoroutine
     IEnumerator TimerCoroutine(int currentSecond)
     {
         _Timer.Seconds = currentSecond;
@@ -101,12 +102,14 @@ public class GameStartAnnouncement : MonoBehaviourPun
         {
             _Timer.Seconds--;
             _Timer.IsTimeToStartTheGame = _Timer.Seconds <= 0 ? true : false;
-            _Timer.GameStartAnnouncementText = "Will start in " + _Timer.Seconds.ToString("D2") + " seconds";
+            _Timer.GameStartAnnouncementText = "Will start in " + "<color=red>" + "<b>"  + "\n" + _Timer.Seconds.ToString("D2") + "</b>" + "</color>" + " seconds";
             if (_Timer.IsTimeToStartTheGame) _GameManagerStartTheGame.StartTheGame();
             yield return new WaitForSeconds(1);
         }
     }
+    #endregion
 
+    #region OnUpdateOnlinePlayersList
     void OnUpdateOnlinePlayersList()
     {
         if (!_Timer.IsTimeToStartTheGame)
@@ -119,11 +122,28 @@ public class GameStartAnnouncement : MonoBehaviourPun
             }
         }
     }
+    #endregion
 
+    #region OnMasterSwitchedOrRejoined
     public void OnMasterSwitchedOrRejoined(bool isPhotonViewMine)
     {
         if(isPhotonViewMine) Master = this;
 
         if(Master != null) StartCoroutine(TimerCoroutine(_Timer.Seconds));
     }
+    #endregion
+
+    #region IReset
+    public void ResetWhileGameEndCoroutineIsRunning()
+    {
+        
+    }
+
+    public void ResetAtTheEndOfTheGameEndCoroutine()
+    {
+        _Timer.Seconds = 60;
+        _Timer.IsTimeToStartTheGame = false;
+        OnMasterSwitchedOrRejoined(photonView.IsMine);
+    }
+    #endregion
 }

@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoleButtonController : MonoBehaviourPun
+public class RoleButtonController : MonoBehaviourPun,IReset
 {   
     [Serializable] public struct OwnerInfo
     {
@@ -292,8 +292,8 @@ public class RoleButtonController : MonoBehaviourPun
     }
     #endregion
 
-    #region _OnRestartTheGame
-    public void _OnRestartTheGame()
+    #region IReset
+    public void ResetWhileGameEndCoroutineIsRunning()
     {
         _OwnerInfo.OwenrUserId = null;
         _OwnerInfo.OwnerActorNumber = 0;
@@ -321,6 +321,11 @@ public class RoleButtonController : MonoBehaviourPun
         _GameObjects.VoteFX.SetActive(false);
         _GameObjects.VoteFxExplosion.SetActive(false);
         _GameObjects.WitcherFX.SetActive(false);
+    }
+
+    public void ResetAtTheEndOfTheGameEndCoroutine()
+    {
+        
     }
     #endregion
 }
