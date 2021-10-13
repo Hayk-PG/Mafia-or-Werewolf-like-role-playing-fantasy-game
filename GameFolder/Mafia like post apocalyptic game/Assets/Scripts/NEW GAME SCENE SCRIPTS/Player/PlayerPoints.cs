@@ -78,7 +78,7 @@ public class PlayerPoints : MonoBehaviourPun
                 _PlayerUpdateStats.GetAndUpdatePlayfabStats(
                     GetPlayfabStats =>
                     {
-                        _PlayerUpdateStats._StatsValue.points = GetPlayfabStats.points + 25;
+                        _PlayerUpdateStats._StatsValue.Points = GetPlayfabStats.Points + 25;
                         InstantiatePointsText("+" + 25, PlayerBaseConditions.GetRoleButton(PhotonNetwork.LocalPlayer.ActorNumber).transform.position);
                     },
                     () =>
@@ -86,7 +86,7 @@ public class PlayerPoints : MonoBehaviourPun
                         PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(PhotonNetwork.LocalPlayer.UserId,
                             UpdatePlayerStats =>
                             {
-                                _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.Points, _PlayerUpdateStats._StatsValue.points);
+                                _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.Points, _PlayerUpdateStats._StatsValue.Points);
                             });
                     });
 
@@ -107,7 +107,7 @@ public class PlayerPoints : MonoBehaviourPun
                 _PlayerUpdateStats.GetAndUpdatePlayfabStats(
                     GetPlayfabStats =>
                     {
-                        _PlayerUpdateStats._StatsValue.points = GetPlayfabStats.points + 25;
+                        _PlayerUpdateStats._StatsValue.Points = GetPlayfabStats.Points + 25;
                         InstantiatePointsText("+" + 25, PlayerBaseConditions.GetRoleButton(PhotonNetwork.LocalPlayer.ActorNumber).transform.position);
                     },
                     () =>
@@ -115,7 +115,7 @@ public class PlayerPoints : MonoBehaviourPun
                         PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(PhotonNetwork.LocalPlayer.UserId,
                             UpdatePlayerStats =>
                             {
-                                _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.Points, _PlayerUpdateStats._StatsValue.points);
+                                _PlayerUpdateStats.PlayerStats(UpdatePlayerStats, PlayerKeys.StatisticKeys.Points, _PlayerUpdateStats._StatsValue.Points);
                             });
                     });
 

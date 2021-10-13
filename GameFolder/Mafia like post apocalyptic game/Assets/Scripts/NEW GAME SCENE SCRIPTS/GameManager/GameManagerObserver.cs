@@ -51,6 +51,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 stream.SendNext(_GameManagerTimer._LostPlayer.LostPlayers);
                 stream.SendNext(_GameManagerTimer._Teams.IsTeamsCountSet);
                 stream.SendNext(_GameManagerTimer._Teams.IsTeamsCountUpdated);
+                stream.SendNext(_GameManagerTimer._GameEndData.HumansWin);
+                stream.SendNext(_GameManagerTimer._GameEndData.PlayersRolesInLastRound);
                 #endregion
 
                 #region GameManagerStartTheGame
@@ -104,6 +106,8 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             _GameManagerTimer._LostPlayer.LostPlayers = (Dictionary<int, bool>)stream.ReceiveNext();
             _GameManagerTimer._Teams.IsTeamsCountSet = (bool)stream.ReceiveNext();
             _GameManagerTimer._Teams.IsTeamsCountUpdated = (bool)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.HumansWin = (bool)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.PlayersRolesInLastRound = (Dictionary<string, string>)stream.ReceiveNext();
             #endregion
 
             #region GameManagerStartTheGame

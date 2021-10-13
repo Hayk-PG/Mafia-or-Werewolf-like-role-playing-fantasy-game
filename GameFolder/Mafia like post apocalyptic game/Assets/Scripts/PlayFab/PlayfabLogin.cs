@@ -55,8 +55,8 @@ public class PlayfabLogin : MonoBehaviour
                             {
                                 PlayerBaseConditions.PlayerCustomPropertiesController.SetPhotonRankAndTotalTimePlayed(new List<int>
                                 {
-                                get.rank,
-                                get.totalTimePlayed
+                                get.Rank,
+                                get.TotalTimePlayed
                                 });
                             });
                         #endregion

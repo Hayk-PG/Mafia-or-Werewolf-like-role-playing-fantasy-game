@@ -53,10 +53,8 @@ public static class PlayerKeys
         public static string AsInfected => "As infected";
         public static string AsWitch => "As lizard";
 
-        public static string WinAsSurvivor => "Win as survivor";
-        public static string WinAsInfected => "Win as infected";
-        public static string LostAsSurvivor => "Lost as survivor";
-        public static string LostAsInfected => "Lost as infected";
+        public static string Win => "Win";
+        public static string Lost => "Lost";
     }
     #endregion
 

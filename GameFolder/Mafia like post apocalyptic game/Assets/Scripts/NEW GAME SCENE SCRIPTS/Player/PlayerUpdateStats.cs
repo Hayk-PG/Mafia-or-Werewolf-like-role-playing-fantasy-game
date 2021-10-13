@@ -5,59 +5,40 @@ using System.Collections;
 
 public class PlayerUpdateStats : MonoBehaviourPun, IReset
 {
-    [SerializeField] public StatsValue _StatsValue;
-    [SerializeField] public Conditions _Conditions;
-    [Serializable] public struct StatsValue
+    public class StatsValue
     {
-        [SerializeField] internal int rank;
-        [SerializeField] internal int totalTimePlayed;
-        [SerializeField] internal int points;
+        internal int Rank { get; set; }
+        internal int TotalTimePlayed { get; set; }
+        internal int Points { get; set; }
 
-        [SerializeField] internal int asSurvivor;
-        [SerializeField] internal int asDoctor;
-        [SerializeField] internal int asSheriff;
-        [SerializeField] internal int asSoldier;
-        [SerializeField] internal int asInfected;
-        [SerializeField] internal int asLizard;
-        
-        [SerializeField] internal int overallSkills;
-        [SerializeField] internal int survivorSkills;
-        [SerializeField] internal int doctorSkills;
-        [SerializeField] internal int sheriffSkills;
-        [SerializeField] internal int soldierSkills;
-        [SerializeField] internal int infectedSkills;
-        [SerializeField] internal int lizardSkills;
+        /// <summary>
+        /// 0: asSurvivor 1: asDoctor 2: asSheriff 3: asSoldier 4: asInfected 5: asLizard
+        /// </summary>
+        internal int[] RolesPlayedCount { get; set; } = new int[6];
 
-        [SerializeField] internal int winAsSurvivor;
-        [SerializeField] internal int lostAsSurvivor;
-        [SerializeField] internal int winAsInfected;
-        [SerializeField] internal int lostAsInfected;
-
-        [SerializeField] internal int countPlayedAsSurvivor;
-        [SerializeField] internal int countPlayedAsDoctor;
-        [SerializeField] internal int countPlayedAsSheriff;
-        [SerializeField] internal int countPlayedAsSoldier;
-        [SerializeField] internal int countPlayedAsLizard;
-        [SerializeField] internal int countPlayedAsInfected;
+        public StatsValue(int rank, int totalTimePlayed, int points, int[] rolesPlayedCount)
+        {
+            Rank = rank;
+            TotalTimePlayed = totalTimePlayed;
+            Points = points;
+            RolesPlayedCount = rolesPlayedCount;
+        }
     }
-    [Serializable] public struct Conditions
+    public struct Conditions
     {
         public bool isPlayerRoleSet { get; set; }
     }
 
+    public StatsValue _StatsValue;
+    public Conditions _Conditions;
 
-    void Awake()
-    {
-        _StatsValue = new StatsValue();
-    }
 
     #region GetAndUpdatePlayfabStats
     internal void GetAndUpdatePlayfabStats(Action<PlayfabStats.StatsValue> GetPlayfabStats, Action UpdatePlayfabStats)
     {
         PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.UserID].ToString(), getPlayerStats =>
         {
-            GetPlayfabStats?.Invoke(getPlayerStats);
-
+            StartCoroutine(GetPlayfabStatsCoroutine(()=> GetPlayfabStats?.Invoke(getPlayerStats)));
             StartCoroutine(UpdatePlayerStatsCoroutine(UpdatePlayfabStats));
         });
     }
@@ -70,15 +51,23 @@ public class PlayerUpdateStats : MonoBehaviourPun, IReset
     }
     #endregion
 
+    #region GetPlayfabStatsCoroutine
+    IEnumerator GetPlayfabStatsCoroutine(Action action)
+    {
+        yield return new WaitForSeconds(1);
+        action();
+    }
+    #endregion
+
     #region UpdatePlayerStatsCoroutine
     internal IEnumerator UpdatePlayerStatsCoroutine(Action UpdatePlayfabStats)
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
         UpdatePlayfabStats?.Invoke();
         _Conditions.isPlayerRoleSet = true;
     }
     #endregion
-
+   
     #region IReset
     public void ResetWhileGameEndCoroutineIsRunning()
     {

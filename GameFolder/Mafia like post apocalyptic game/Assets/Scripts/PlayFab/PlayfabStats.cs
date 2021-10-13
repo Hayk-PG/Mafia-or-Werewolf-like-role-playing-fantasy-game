@@ -5,33 +5,30 @@ using PlayFab.ServerModels;
 using System;
 
 public class PlayfabStats : MonoBehaviour
-{
-    public StatsValue _StatsValue;  
-    public struct StatsValue
+{   
+    public class StatsValue
     {
-        internal int rank;
-        internal int totalTimePlayed;
-        internal int points;
+        internal int Rank { get; set; }
+        internal int TotalTimePlayed { get; set; }
+        internal int Points { get; set; }
 
-        internal int asSurvivor;
-        internal int asDoctor;
-        internal int asSheriff;
-        internal int asSoldier;
-        internal int asInfected;
-        internal int asLizard;
+        /// <summary>
+        /// 0: asSurvivor 1: asDoctor 2: asSheriff 3: asSoldier 4: asInfected 5: asLizard
+        /// </summary>
+        internal int[] RolesPlayedCount { get; set; } = new int[6];
 
-        internal int overallSkills;
-        internal int survivorSkills;
-        internal int doctorSkills;
-        internal int sheriffSkills;
-        internal int soldierSkills;
-        internal int infectedSkills;
-        internal int lizardSkills;
+        public int Win { get; set; }
+        public int Lost { get; set; }
 
-        internal int winAsSurvivor;
-        internal int lostAsSurvivor;
-        internal int winAsInfected;
-        internal int lostAsInfected;
+        public StatsValue(int rank, int totalTimePlayed, int points, int win, int lost, int[] rolesPlayedCount)
+        {
+            Rank = rank;
+            TotalTimePlayed = totalTimePlayed;
+            Points = points;
+            Win = win;
+            Lost = lost;
+            RolesPlayedCount = rolesPlayedCount;
+        }
     }
 
     #region UpdatePlayerStats
@@ -61,36 +58,29 @@ public class PlayfabStats : MonoBehaviour
         GetPlayerStatisticsRequest getPlayerStats = new GetPlayerStatisticsRequest();
         getPlayerStats.PlayFabId = playfabId;
 
+
+
         PlayFabServerAPI.GetPlayerStatistics(getPlayerStats,
 
             result =>
             {
                 GetPlayerStats(new StatsValue
-                {
-                    rank = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Rank) != null? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Rank).Value: 0,
-                    totalTimePlayed = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.TotalTimePlayed) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.TotalTimePlayed).Value : 0,
-                    points = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Points) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Points).Value : 0,
+                    (
+                    result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Rank) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Rank).Value : 0,
+                    result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.TotalTimePlayed) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.TotalTimePlayed).Value : 0,
+                    result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Points) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Points).Value : 0,
+                    result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Win) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Win).Value : 0,
+                    result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Lost) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.Lost).Value : 0,
 
-                    asSurvivor = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSurvivor) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSurvivor).Value : 0,
-                    asDoctor = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsDoctor) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsDoctor).Value : 0,
-                    asSheriff = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSheriff) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSheriff).Value : 0,
-                    asSoldier = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSoldier) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSoldier).Value : 0,
-                    asInfected = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsInfected) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsInfected).Value : 0,
-                    asLizard = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsWitch) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsWitch).Value : 0,
-
-                    overallSkills = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.OverallSkills) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.OverallSkills).Value : 0,
-                    survivorSkills = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.SurvivorSkills) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.SurvivorSkills).Value : 0,
-                    doctorSkills = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.DoctorSkills) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.DoctorSkills).Value : 0,
-                    sheriffSkills = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.SheriffSkills) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.SheriffSkills).Value : 0,
-                    soldierSkills = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.SoldierSkills) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.SoldierSkills).Value : 0,
-                    infectedSkills = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.InfectedSkills) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.InfectedSkills).Value : 0,
-                    lizardSkills = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.LizardSkills) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.LizardSkills).Value : 0,
-
-                    winAsSurvivor = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.WinAsSurvivor) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.WinAsSurvivor).Value : 0,
-                    lostAsSurvivor = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.LostAsSurvivor) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.LostAsSurvivor).Value : 0,
-                    winAsInfected = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.WinAsInfected) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.WinAsInfected).Value : 0,
-                    lostAsInfected = result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.LostAsInfected) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.LostAsInfected).Value : 0,
-                }); 
+                    new int[] 
+                    {
+                        result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSurvivor) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSurvivor).Value : 0,
+                        result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsDoctor) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsDoctor).Value : 0,
+                        result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSheriff) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSheriff).Value : 0,
+                        result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSoldier) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsSoldier).Value : 0,
+                        result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsInfected) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsInfected).Value : 0,
+                        result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsWitch) != null ? result.Statistics.Find(stats => stats.StatisticName == PlayerKeys.StatisticKeys.AsWitch).Value : 0,
+                    }));
             },
             error =>
             {

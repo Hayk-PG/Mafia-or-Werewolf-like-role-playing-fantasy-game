@@ -69,7 +69,7 @@ public class FriendButtonScript : MonoBehaviour
         PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(friend.Name,
             GetFriendStats => 
             {
-                PlayerBaseConditions.PlayerProfile.FriendProfileRankNumber = GetFriendStats.rank.ToString();
+                PlayerBaseConditions.PlayerProfile.FriendProfileRankNumber = GetFriendStats.Rank.ToString();
             });
 
         MyCanvasGroups.CanvasGroupActivity(PlayerBaseConditions.PlayerProfile.CanvasGroups[6], true);

@@ -117,6 +117,11 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
             set => isTeamsCountUpdated = value;
         }
     }
+    public class GameEndData
+    {
+        public bool HumansWin { get; set; }
+        public Dictionary<string, string> PlayersRolesInLastRound { get; set; }
+    }
     struct PhasesIcons
     {
         [SerializeField] bool isNightPhaseIconsActive;
@@ -137,6 +142,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     public Timer _Timer;
     public LostPlayer _LostPlayer;
     public Teams _Teams;
+    public GameEndData _GameEndData;
     PhasesIcons _PhasesIcons;
 
     TimerTickSound _TimerTickSound { get; set; }
@@ -883,20 +889,33 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
         {
             if (_TeamsController._TeamsCount.FirstTeamCount > _TeamsController._TeamsCount.SecondTeamCount + 3 || _TeamsController._TeamsCount.SecondTeamCount < 1)
             {
-                MasterClientStoppedCoroutine();
+                MasterClientStoppedCoroutine(true);               
             }
             if (_TeamsController._TeamsCount.FirstTeamCount < _TeamsController._TeamsCount.SecondTeamCount - 2 || _TeamsController._TeamsCount.FirstTeamCount < 1)
             {
-                MasterClientStoppedCoroutine();
+                MasterClientStoppedCoroutine(false);
             }
         }
     }
 
-    void MasterClientStoppedCoroutine()
+    void MasterClientStoppedCoroutine(bool humansWin)
     {
         if (photonView.IsMine)
         {
             _Timer.IsGameFinished = true;
+            _GameEndData = new GameEndData();
+            _GameEndData.HumansWin = humansWin;
+
+            _GameEndData.PlayersRolesInLastRound = new Dictionary<string, string>();
+
+            LoopRoleButtonsCallback(RoleButton => 
+            {
+                if (!String.IsNullOrEmpty(RoleButton._GameInfo.RoleName))
+                {
+                    _GameEndData.PlayersRolesInLastRound.Add(RoleButton._OwnerInfo.OwenrUserId, RoleButton._GameInfo.RoleName);
+                }
+            });
+
             StopCoroutine(_Timer.Coroutine);
             StartCoroutine(GameEndTimerCoroutine(_Timer.GameEndSeconds, _Timer.IsGameFinished));
         }
@@ -946,6 +965,8 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
             {
                 iReset?.ResetWhileGameEndCoroutineIsRunning();
             }
+
+            UpdatePlayersStatsByMasterClient();
         }
 
         foreach (var roleButtons in _GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons)
@@ -958,6 +979,39 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
             iReset?.ResetWhileGameEndCoroutineIsRunning();
         }
     }
+
+    #region UpdatePlayersStatsByMasterClient
+    void UpdatePlayersStatsByMasterClient()
+    {
+        foreach (var data in _GameEndData.PlayersRolesInLastRound)
+        {
+            int win = 0;
+            int lost = 0;
+
+            PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(data.Key,
+                GetPlayerStats =>
+                {
+                    if (_GameEndData.HumansWin)
+                    {
+                        win = data.Value != RoleNames.Infected || data.Value != RoleNames.Infected ? 1 : 0;
+                        lost = data.Value == RoleNames.Infected || data.Value == RoleNames.Infected ? 1 : 0;
+                    }
+                    else
+                    {
+                        win = data.Value != RoleNames.Infected || data.Value != RoleNames.Infected ? 0 : 1;
+                        lost = data.Value == RoleNames.Infected || data.Value == RoleNames.Infected ? 0 : 1;
+                    }
+
+                    PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(data.Key, UpdatePlayerStats =>
+                    {
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Win, Value = win });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Lost, Value = lost });
+                    });
+                });
+        }
+    }
+    #endregion
+
     #endregion
 
     #region OnGameRestart

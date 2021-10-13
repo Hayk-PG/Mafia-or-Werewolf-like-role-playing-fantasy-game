@@ -359,9 +359,9 @@ public class Profile : MonoBehaviourPun
         get => (int)_PlayedAsTab.rankSlider.value;
         set => _PlayedAsTab.rankSlider.value = value;
     }
-    public int WinsPercent
+    public float WinsPercent
     {
-        get => int.Parse(_PlayedAsTab.winsPercentText.text.Substring(0, _PlayedAsTab.winsPercentText.text.Length - 1));
+        get => float.Parse(_PlayedAsTab.winsPercentText.text.Substring(0, _PlayedAsTab.winsPercentText.text.Length - 1));
         set => _PlayedAsTab.winsPercentText.text = value.ToString() + "%";
     }
     public int SkillValue
@@ -908,24 +908,24 @@ public class Profile : MonoBehaviourPun
     {
         PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(playfabId, Stats => 
         {
-            TimePlayed = Stats.totalTimePlayed.ToString();
-            RankNumber = RankNumberValueByPoints(Stats.points).ToString();
-            Points = Stats.points.ToString("N0") + "/550,000";
-            WinsPercent = 0 / int.Parse(TimePlayed) * 100;
+            TimePlayed = Stats.TotalTimePlayed.ToString();
+            RankNumber = RankNumberValueByPoints(Stats.Points).ToString();
+            Points = Stats.Points.ToString("N0") + "/550,000";
+            WinsPercent = float.Parse(TimePlayed) < 1 ? 0: Mathf.Abs((Stats.Win / float.Parse(TimePlayed)) * 100);
             WinImageAmountValue = WinsPercent;
-            WinsCount = 0;
-            LossesCount = 0;
-            SkillValue = Stats.overallSkills;
+            WinsCount = Stats.Win;
+            LossesCount = Stats.Lost;
+            //SkillValue = Stats.overallSkills;
             PointsSliderController(int.Parse(RankNumber));
-            PointsSliderValue = Stats.points;
+            PointsSliderValue = Stats.Points;
 
 
-            AsSurvivorCount = Stats.asSurvivor.ToString();
-            AsDoctorCount = Stats.asDoctor.ToString();
-            AsSheriffCount = Stats.asSheriff.ToString();
-            AsSoldierCount = Stats.asSoldier.ToString();
-            AsInfectedCount = Stats.asInfected.ToString();
-            AsLizardCount = Stats.asLizard.ToString();
+            AsSurvivorCount = Stats.RolesPlayedCount[0].ToString();
+            AsDoctorCount = Stats.RolesPlayedCount[1].ToString();
+            AsSheriffCount = Stats.RolesPlayedCount[2].ToString();
+            AsSoldierCount = Stats.RolesPlayedCount[3].ToString();
+            AsInfectedCount = Stats.RolesPlayedCount[4].ToString();
+            AsLizardCount = Stats.RolesPlayedCount[5].ToString();
 
             ProfileDatasCompleteCheck(DatasDownloadCheck.DatasDownloadStatus.PlayerStatsDownloaded);
         });
