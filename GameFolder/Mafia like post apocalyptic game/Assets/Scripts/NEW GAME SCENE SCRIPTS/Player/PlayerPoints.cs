@@ -50,8 +50,8 @@ public class PlayerPoints : MonoBehaviourPun
 
     void Update()
     {
-        GetPointsForStayingAliveInNightPhase(() => _GameManagerTimer._Timer.NightTime && _GameManagerTimer._Timer.Seconds <= 55 && _GameManagerTimer._Timer.NightsCount > 0);
-        GetPointsForStayingAliveInDayPhase(() => _GameManagerTimer._Timer.DayTime && _GameManagerTimer._Timer.Seconds <= 85);
+        //GetPointsForStayingAliveInNightPhase(() => _GameManagerTimer._Timer.NightTime && _GameManagerTimer._Timer.Seconds <= 55 && _GameManagerTimer._Timer.NightsCount > 0);
+        //GetPointsForStayingAliveInDayPhase(() => _GameManagerTimer._Timer.DayTime && _GameManagerTimer._Timer.Seconds <= 85);
     }
 
     #region HasNightAlivePointReceived

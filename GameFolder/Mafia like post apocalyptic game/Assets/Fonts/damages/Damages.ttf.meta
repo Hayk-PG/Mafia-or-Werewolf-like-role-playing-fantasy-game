@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 1d04dadc66083ee4c9ab1d6c25339a7a
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Damages
+  fontNames:
+  - Damages
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 0a2d7dc6d30c73844b960e3a39d25505, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

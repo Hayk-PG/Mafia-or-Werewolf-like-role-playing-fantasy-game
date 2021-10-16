@@ -117,10 +117,18 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
             set => isTeamsCountUpdated = value;
         }
     }
-    public class GameEndData
+    [Serializable] public class GameEndData
     {
-        public bool HumansWin { get; set; }
+        public bool HumansWin;
+        public Dictionary<string, string> PlayersCachedNames { get; set; }
         public Dictionary<string, string> PlayersRolesInLastRound { get; set; }
+        public Dictionary<string, string> PlayersProfilePictureURL { get; set; }
+        public Dictionary<string, int> PointsOfTheDoctor { get; set; }
+        public Dictionary<string, int> PointsOfTheSheriff { get; set; }
+        public Dictionary<string, int> PointsOfTheSoldier { get; set; }
+        public Dictionary<string, int> PointsOfTheInfected { get; set; }
+        public Dictionary<string, int> PointsOfTheLizard { get; set; }
+        public Dictionary<string, int> PointsForEveryone { get; set; }
     }
     struct PhasesIcons
     {
@@ -187,6 +195,8 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
         _Timer.NightTime = true;
         _Timer.Moon.SetActive(true);
         _Timer.Sun.SetActive(false);
+
+        InitializeGameEndDataDictionaries();
     }
 
     void Update()
@@ -318,7 +328,9 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
                 ShareLostPlayers(PlayerGameController);
             });
 
+            CachePlayersData();
             OnPlayersVotes(obj);
+            DestroyAwardedCards();
         }
         if (obj.Code == RaiseEventsStrings.GameEndKey)
         {
@@ -867,21 +879,6 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     }
     #endregion
 
-    #region _OnRestartTheGame
-    void _OnRestartTheGame()
-    {
-        if(_Timer.Coroutine != null)
-        {
-            StopCoroutine(_Timer.Coroutine);
-        }
-        else
-        {
-            _Timer.IsGameFinished = false;
-            _Timer.Coroutine = TimerCoroutine(0, _Timer.IsGameFinished);
-        }        
-    }
-    #endregion
-
     #region GameEnd
     void GameEnd()
     {
@@ -889,35 +886,28 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
         {
             if (_TeamsController._TeamsCount.FirstTeamCount > _TeamsController._TeamsCount.SecondTeamCount + 3 || _TeamsController._TeamsCount.SecondTeamCount < 1)
             {
-                MasterClientStoppedCoroutine(true);               
+                GameEndControllerByMasterClient(true);               
             }
             if (_TeamsController._TeamsCount.FirstTeamCount < _TeamsController._TeamsCount.SecondTeamCount - 2 || _TeamsController._TeamsCount.FirstTeamCount < 1)
             {
-                MasterClientStoppedCoroutine(false);
+                GameEndControllerByMasterClient(false);
             }
         }
     }
 
-    void MasterClientStoppedCoroutine(bool humansWin)
+    void GameEndControllerByMasterClient(bool humansWin)
     {
         if (photonView.IsMine)
         {
-            _Timer.IsGameFinished = true;
-            _GameEndData = new GameEndData();
             _GameEndData.HumansWin = humansWin;
 
-            _GameEndData.PlayersRolesInLastRound = new Dictionary<string, string>();
-
-            LoopRoleButtonsCallback(RoleButton => 
-            {
-                if (!String.IsNullOrEmpty(RoleButton._GameInfo.RoleName))
-                {
-                    _GameEndData.PlayersRolesInLastRound.Add(RoleButton._OwnerInfo.OwenrUserId, RoleButton._GameInfo.RoleName);
-                }
-            });
-
             StopCoroutine(_Timer.Coroutine);
-            StartCoroutine(GameEndTimerCoroutine(_Timer.GameEndSeconds, _Timer.IsGameFinished));
+
+            if (!_Timer.IsGameFinished)
+            {
+                _Timer.IsGameFinished = true;
+                StartCoroutine(GameEndTimerCoroutine(_Timer.GameEndSeconds, _Timer.IsGameFinished));
+            }    
         }
     }  
     
@@ -925,15 +915,14 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     {
         while (isGameFinished && photonView.IsMine)
         {
-            print(PhotonNetwork.MasterClient.NickName);
             _Timer.GameEndSeconds = currentSeconds;
             object[] datas = new object[] { RaiseEventsStrings.GameEnd };
 
             while (isGameFinished && _Timer.GameEndSeconds < 60 && photonView.IsMine)
             {
-                _Timer.GameEndSeconds++;
-                PhotonNetwork.RaiseEvent(RaiseEventsStrings.GameEndKey, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendUnreliable);
+                _Timer.GameEndSeconds++;               
                 yield return new WaitForSeconds(1);
+                PhotonNetwork.RaiseEvent(RaiseEventsStrings.GameEndKey, datas, new RaiseEventOptions { Receivers = ReceiverGroup.All }, ExitGames.Client.Photon.SendOptions.SendUnreliable);
             }
 
             yield return null;
@@ -946,7 +935,6 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
             }
 
             yield return null;
-            print("GameEndTimerCoroutine");
         }
     }
     #endregion
@@ -956,7 +944,17 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     {
         if (!_EndTab._UI.CanvasGroup.interactable)
         {
-            _EndTab.OpenEndTab();            
+            _EndTab.OpenEndTab();
+
+            if (photonView.IsMine)
+            {
+                UpdatePlayersStatsByMasterClient();
+            }
+
+            foreach (var url in _GameEndData.PlayersProfilePictureURL)
+            {
+                PlayerBaseConditions._LocalPlayerTagObject.GetComponent<PlayerScreenOnGameEnd>().Screen(url.Key, url.Value, _GameEndData.HumansWin);
+            }
         }
 
         if (photonView.IsMine)
@@ -965,8 +963,6 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
             {
                 iReset?.ResetWhileGameEndCoroutineIsRunning();
             }
-
-            UpdatePlayersStatsByMasterClient();
         }
 
         foreach (var roleButtons in _GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons)
@@ -987,6 +983,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
         {
             int win = 0;
             int lost = 0;
+            int points = 0;
 
             PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(data.Key,
                 GetPlayerStats =>
@@ -995,17 +992,30 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
                     {
                         win = data.Value != RoleNames.Infected || data.Value != RoleNames.Infected ? 1 : 0;
                         lost = data.Value == RoleNames.Infected || data.Value == RoleNames.Infected ? 1 : 0;
+                        points = data.Value != RoleNames.Infected || data.Value != RoleNames.Infected ? UnityEngine.Random.Range(70, 90) : 0;
                     }
                     else
                     {
-                        win = data.Value != RoleNames.Infected || data.Value != RoleNames.Infected ? 0 : 1;
-                        lost = data.Value == RoleNames.Infected || data.Value == RoleNames.Infected ? 0 : 1;
+                        win = data.Value == RoleNames.Infected || data.Value == RoleNames.Infected ? 1 : 0;
+                        lost = data.Value != RoleNames.Infected || data.Value != RoleNames.Infected ? 1 : 0;
+                        points = data.Value == RoleNames.Infected || data.Value == RoleNames.Infected ? UnityEngine.Random.Range(70, 90) : 0;
                     }
 
                     PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(data.Key, UpdatePlayerStats =>
                     {
-                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Win, Value = win });
-                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Lost, Value = lost });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Rank, Value = GetPlayerStats.Rank < 1 ? 1: GetPlayerStats.Rank });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.TotalTimePlayed, Value = GetPlayerStats.TotalTimePlayed += 1 });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Points, Value = GetPlayerStats.Points += points });
+
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Win, Value = GetPlayerStats.Win += win });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Lost, Value = GetPlayerStats.Lost += lost });
+
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsSurvivor, Value = GetPlayerStats.RolesPlayedCount[0] += data.Value == RoleNames.Citizen ? 1: 0 });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsDoctor, Value = GetPlayerStats.RolesPlayedCount[1] += data.Value == RoleNames.Medic ? 1 : 0 });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsSheriff, Value = GetPlayerStats.RolesPlayedCount[2] += data.Value == RoleNames.Sheriff ? 1 : 0 });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsSoldier, Value = GetPlayerStats.RolesPlayedCount[3] += data.Value == RoleNames.Soldier ? 1 : 0 });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsInfected, Value = GetPlayerStats.RolesPlayedCount[4] += data.Value == RoleNames.Infected ? 1 : 0 });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsWitch, Value = GetPlayerStats.RolesPlayedCount[5] += data.Value == RoleNames.Lizard ? 1 : 0 });
                     });
                 });
         }
@@ -1054,6 +1064,101 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     {
         _Timer.GameEndSeconds = 0;
         _Timer.IsGameFinished = false;
+
+        ResetGameEndDictionaries();
+    }
+    #endregion
+
+    #region InitializeGameEndDataDictionaries
+    void InitializeGameEndDataDictionaries()
+    {
+        if (_GameEndData.PlayersCachedNames == null)
+            _GameEndData.PlayersCachedNames = new Dictionary<string, string>();
+        if (_GameEndData.PlayersProfilePictureURL == null)
+            _GameEndData.PlayersProfilePictureURL = new Dictionary<string, string>();
+        if (_GameEndData.PlayersRolesInLastRound == null)
+            _GameEndData.PlayersRolesInLastRound = new Dictionary<string, string>();
+        if (_GameEndData.PointsForEveryone == null)
+            _GameEndData.PointsForEveryone = new Dictionary<string, int>();
+        if (_GameEndData.PointsOfTheDoctor == null)
+            _GameEndData.PointsOfTheDoctor = new Dictionary<string, int>();
+        if (_GameEndData.PointsOfTheInfected == null)
+            _GameEndData.PointsOfTheInfected = new Dictionary<string, int>();
+        if (_GameEndData.PointsOfTheLizard == null)
+            _GameEndData.PointsOfTheLizard = new Dictionary<string, int>();
+        if (_GameEndData.PointsOfTheSheriff == null)
+            _GameEndData.PointsOfTheSheriff = new Dictionary<string, int>();
+        if (_GameEndData.PointsOfTheSoldier == null)
+            _GameEndData.PointsOfTheSoldier = new Dictionary<string, int>();
+
+    }
+    #endregion
+
+    #region ResetGameEndDictionaries
+    void ResetGameEndDictionaries()
+    {
+        _GameEndData.PlayersCachedNames = new Dictionary<string, string>();
+        _GameEndData.PlayersProfilePictureURL = new Dictionary<string, string>();
+        _GameEndData.PlayersRolesInLastRound = new Dictionary<string, string>();
+        _GameEndData.PointsForEveryone = new Dictionary<string, int>();
+        _GameEndData.PointsOfTheDoctor = new Dictionary<string, int>();
+        _GameEndData.PointsOfTheInfected = new Dictionary<string, int>();
+        _GameEndData.PointsOfTheLizard = new Dictionary<string, int>();
+        _GameEndData.PointsOfTheSheriff = new Dictionary<string, int>();
+        _GameEndData.PointsOfTheSoldier = new Dictionary<string, int>();
+    }
+    #endregion
+
+    #region CachePlayersData
+    void CachePlayersData()
+    {
+        if (photonView.IsMine)
+        {
+            LoopRoleButtonsCallback(RoleButtons =>
+            {
+                if (!String.IsNullOrEmpty(RoleButtons._OwnerInfo.OwenrUserId))
+                {
+                    CachePlayersNames(RoleButtons);
+                    CachePlayersProfilePicURL(RoleButtons);
+                    CachePlayersRoles(RoleButtons);
+                }
+            });
+        }
+    }
+
+    void CachePlayersNames(RoleButtonController RoleButtons)
+    {
+        if (!_GameEndData.PlayersCachedNames.ContainsKey(RoleButtons._OwnerInfo.OwenrUserId))
+        {
+            _GameEndData.PlayersCachedNames.Add(RoleButtons._OwnerInfo.OwenrUserId, RoleButtons._OwnerInfo.OwnerName);
+        }
+    }
+    void CachePlayersProfilePicURL(RoleButtonController RoleButtons)
+    {
+        if (!_GameEndData.PlayersProfilePictureURL.ContainsKey(RoleButtons._OwnerInfo.OwenrUserId))
+        {
+            PlayerBaseConditions.PlayerProfile.ProfilePictureURL(RoleButtons._OwnerInfo.OwenrUserId, URL =>
+            {
+                _GameEndData.PlayersProfilePictureURL.Add(RoleButtons._OwnerInfo.OwenrUserId, URL);
+            });
+        }
+    }
+    void CachePlayersRoles(RoleButtonController RoleButtons)
+    {
+        if (!String.IsNullOrEmpty(RoleButtons._GameInfo.RoleName) && !_GameEndData.PlayersRolesInLastRound.ContainsKey(RoleButtons._OwnerInfo.OwenrUserId))
+        {
+            _GameEndData.PlayersRolesInLastRound.Add(RoleButtons._OwnerInfo.OwenrUserId, RoleButtons._GameInfo.RoleName);
+        }
+    }
+    #endregion
+
+    #region DestroyAwardedCards
+    void DestroyAwardedCards()
+    {
+        if(FindObjectOfType<AwardedPlayerCardController>() != null)
+        {
+            Destroy(FindObjectOfType<AwardedPlayerCardController>().gameObject);
+        }
     }
     #endregion
 }

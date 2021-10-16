@@ -32,7 +32,7 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
                 if (IsPlayerRoleSet && !_PlayerUpdateStats._Conditions.isPlayerRoleSet)
                 {
                     StartCoroutine(InformPlayerRolePopUp());
-                    UpdatePlayedRolesStats();
+                    //UpdatePlayedRolesStats();
                     PlayerCustomPropertiesController.PCPC.SetPhotonPlayerLastRoomName(PhotonNetwork.CurrentRoom.Name);
                 }               
             }
@@ -92,11 +92,12 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
     public void ResetWhileGameEndCoroutineIsRunning()
     {
         PlayerBaseConditions.LocalPlayer.CustomProperties.Remove(PlayerKeys.SetPlayersRoleKeys.RoomName);
+        MyCanvasGroups.CanvasGroupActivity(_InformPlayerRole._UI.CanvasGroup, false);
     }
 
     public void ResetAtTheEndOfTheGameEndCoroutine()
     {
-        throw new NotImplementedException();
+        MyCanvasGroups.CanvasGroupActivity(_InformPlayerRole._UI.CanvasGroup, false);
     }
     #endregion
 }

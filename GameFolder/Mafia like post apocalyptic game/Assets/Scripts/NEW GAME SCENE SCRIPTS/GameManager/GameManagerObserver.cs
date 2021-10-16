@@ -52,7 +52,15 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
                 stream.SendNext(_GameManagerTimer._Teams.IsTeamsCountSet);
                 stream.SendNext(_GameManagerTimer._Teams.IsTeamsCountUpdated);
                 stream.SendNext(_GameManagerTimer._GameEndData.HumansWin);
+                stream.SendNext(_GameManagerTimer._GameEndData.PlayersCachedNames);
                 stream.SendNext(_GameManagerTimer._GameEndData.PlayersRolesInLastRound);
+                stream.SendNext(_GameManagerTimer._GameEndData.PlayersProfilePictureURL);
+                stream.SendNext(_GameManagerTimer._GameEndData.PointsOfTheDoctor);
+                stream.SendNext(_GameManagerTimer._GameEndData.PointsOfTheSheriff);
+                stream.SendNext(_GameManagerTimer._GameEndData.PointsOfTheSoldier);
+                stream.SendNext(_GameManagerTimer._GameEndData.PointsOfTheInfected);
+                stream.SendNext(_GameManagerTimer._GameEndData.PointsOfTheLizard);
+                stream.SendNext(_GameManagerTimer._GameEndData.PointsForEveryone);
                 #endregion
 
                 #region GameManagerStartTheGame
@@ -107,7 +115,15 @@ public class GameManagerObserver : MonoBehaviourPun, IPunObservable
             _GameManagerTimer._Teams.IsTeamsCountSet = (bool)stream.ReceiveNext();
             _GameManagerTimer._Teams.IsTeamsCountUpdated = (bool)stream.ReceiveNext();
             _GameManagerTimer._GameEndData.HumansWin = (bool)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.PlayersCachedNames = (Dictionary<string, string>)stream.ReceiveNext();
             _GameManagerTimer._GameEndData.PlayersRolesInLastRound = (Dictionary<string, string>)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.PlayersProfilePictureURL = (Dictionary<string, string>)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.PointsOfTheDoctor = (Dictionary<string, int>)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.PointsOfTheSheriff = (Dictionary<string, int>)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.PointsOfTheSoldier = (Dictionary<string, int>)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.PointsOfTheInfected = (Dictionary<string, int>)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.PointsOfTheLizard = (Dictionary<string, int>)stream.ReceiveNext();
+            _GameManagerTimer._GameEndData.PointsForEveryone = (Dictionary<string, int>)stream.ReceiveNext();
             #endregion
 
             #region GameManagerStartTheGame

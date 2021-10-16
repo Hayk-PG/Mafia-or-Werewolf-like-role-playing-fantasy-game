@@ -10,7 +10,7 @@ public class GameManagerVFXHolder : MonoBehaviour
         [SerializeField] internal GameObject[] vfx;
 
         /// <summary>
-        /// 0: GameStartVFX
+        /// 0: GameStartVFX 1: WinVFX
         /// </summary>
         public GameObject[] Vfx
         {

@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 3d1001711d19f7648a8408d14ae226d2
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Damages 3D Filled
+  fontNames:
+  - Damages 3D Filled
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 7cb33121954134d4f9b724a5fb61b81d, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

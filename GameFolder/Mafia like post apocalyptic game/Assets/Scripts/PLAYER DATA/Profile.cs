@@ -889,6 +889,27 @@ public class Profile : MonoBehaviourPun
             });
     }
 
+    #region ProfilePictureURL
+    public void ProfilePictureURL(string playfabID, Action<string> URL)
+    {
+        PlayerBaseConditions.PlayfabManager.PlayfabUserAccountInfo.GetUserAccountInfo(playfabID, PlayerAccount => 
+        {
+            PlayerBaseConditions.PlayfabManager.PlayfabFile.GetPlayfabFile(PlayerAccount.TitleInfo.TitlePlayerAccount.Id, PlayerAccount.TitleInfo.TitlePlayerAccount.Type, ProfilePictureURL => 
+            {
+                URL?.Invoke(ProfilePictureURL);
+            });
+        });
+    }
+
+    public void LoadProfilePicture(string url, Action<Sprite> DonwloadProfilePicture)
+    {
+        StartCoroutine(ShowPlayerProfilePicCoroutine(url, Sprite => 
+        {
+            DonwloadProfilePicture?.Invoke(Sprite);
+        }));
+    }
+    #endregion
+
     IEnumerator ShowPlayerProfilePicCoroutine(string url, Action<Sprite>ProfilePic)
     {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);

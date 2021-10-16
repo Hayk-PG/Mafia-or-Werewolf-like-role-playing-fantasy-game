@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: dc38c075973320a4b84ca43ca03c4c47
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Damages 3D
+  fontNames:
+  - Damages 3D
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 93df71dbdace72240b1c4e5870f63fce, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

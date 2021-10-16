@@ -7,31 +7,13 @@ using UnityEngine;
 
 public class PlayerActionOnDifferentRoles: MonoBehaviourPun
 {
-    //[SerializeField] bool test;
+    GameManagerTimer _GameManagerTimer { get; set; }
 
 
-    //void Update()
-    //{
-    //    if (test)
-    //    {
-    //        if (FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.ContainsKey(PhotonNetwork.LocalPlayer.ActorNumber))
-    //        {
-    //            List<string> names = FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted[PhotonNetwork.LocalPlayer.ActorNumber].ToList();
-    //            print(names.Count);
-    //            names.Add("Admin");
-
-    //            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted[PhotonNetwork.LocalPlayer.ActorNumber] = names.ToArray();
-    //            print("Contains");
-    //        }
-    //        else
-    //        {
-    //            FindObjectOfType<GameManagerPlayerVotesController>()._Votes.AgainstWhomPlayerVoted.Add(PhotonNetwork.LocalPlayer.ActorNumber, new string[] { "Admin" });
-    //            print("Empty");
-    //        }
-
-    //        test = false;
-    //    }
-    //}
+    void Awake()
+    {
+        _GameManagerTimer = FindObjectOfType<GameManagerTimer>();
+    }
 
     internal void PlayerActionInNightPhase(bool CanPlayerBeActiveInNightPhase, RoleButtonController _RoleButtonController)
     {
@@ -69,11 +51,11 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
     {
         switch (PlayerBaseConditions.PlayerRoleName(senderActorNumber))
         {
-            case RoleNames.Medic: OnMedic(votedAgainstActorNumber); break;
-            case RoleNames.Sheriff: OnSheriff(votedAgainstActorNumber); break;
-            case RoleNames.Infected: OnInfecteds(votedAgainstActorNumber); break;
-            case RoleNames.Soldier: OnSoldier(votedAgainstActorNumber); break;
-            case RoleNames.Lizard: OnLizard(votedAgainstActorNumber); break;
+            case RoleNames.Medic: OnMedic(votedAgainstActorNumber);  Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheDoctor, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
+            case RoleNames.Sheriff: OnSheriff(votedAgainstActorNumber); Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheSheriff, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
+            case RoleNames.Infected: OnInfecteds(votedAgainstActorNumber); Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheInfected, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
+            case RoleNames.Soldier: OnSoldier(votedAgainstActorNumber); Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheSoldier, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
+            case RoleNames.Lizard: OnLizard(votedAgainstActorNumber); Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheLizard, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
         }
         
         PlayerVoted(votedAgainstActorNumber, senderActorNumber, isNightPhase);
@@ -85,6 +67,7 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
         SendPlayerVoteResultToMasterClient(votedAgainstActorNumber, senderActorNumber);
         PlayerVoted(votedAgainstActorNumber, senderActorNumber, isNightPhase);
         InformMasterClientAgainstWhomPlayerVoted(votedAgainstActorNumber, senderActorNumber);
+        Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsForEveryone, IsInfected(senderActorNumber) != IsInfected(votedAgainstActorNumber) ? UnityEngine.Random.Range(75, 150) : -50);
     }
 
     [PunRPC]
@@ -240,5 +223,24 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
         {
             FindObjectOfType<GameManagerPlayerVotesController>()._Votes.LizardVoteAgainst.Add(votedAgainstActorNumber, true);
         }
+    }
+
+    void Points(int senderActorNumber, Dictionary<string, int> PointsDict, int point)
+    {
+        string dictKey = PlayerBaseConditions.GetRoleButton(senderActorNumber)._OwnerInfo.OwenrUserId;
+        
+        if (PointsDict.ContainsKey(dictKey))
+        {
+            PointsDict[dictKey] = PointsDict[dictKey] += point;
+        }
+        else
+        {
+            PointsDict.Add(dictKey, point);
+        }
+    }
+
+    bool IsInfected(int votedAgainstActorNumber)
+    {
+        return PlayerBaseConditions.GetRoleButton(votedAgainstActorNumber)._GameInfo.RoleName == RoleNames.Infected || PlayerBaseConditions.GetRoleButton(votedAgainstActorNumber)._GameInfo.RoleName == RoleNames.Lizard;
     }
 }
