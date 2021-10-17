@@ -26,6 +26,8 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
 
                 _RoleButtonController.VoteFXActivity(false, true);
                 _RoleButtonController.VoteFXActivityForAllRoleButton(false);
+                _RoleButtonController._UI.Selected.SetActive(true);
+                PlayerBaseConditions.UiSounds.PlaySoundFXinGame(11);
             }           
         }  
     }
@@ -42,6 +44,8 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
 
                 _RoleButtonController.VoteFXActivity(false, true);
                 _RoleButtonController.VoteFXActivityForAllRoleButton(false);
+                _RoleButtonController._UI.Selected.SetActive(true);
+                PlayerBaseConditions.UiSounds.PlaySoundFXinGame(11);
             }           
         }
     }

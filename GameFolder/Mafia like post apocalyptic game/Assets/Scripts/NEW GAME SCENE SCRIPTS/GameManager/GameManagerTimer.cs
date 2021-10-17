@@ -130,7 +130,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
         public Dictionary<string, int> PointsOfTheLizard { get; set; }
         public Dictionary<string, int> PointsForEveryone { get; set; }
     }
-    struct PhasesIcons
+    public struct PhasesIcons
     {
         [SerializeField] bool isNightPhaseIconsActive;
         [SerializeField] bool isDayPhaseIconsActive;
@@ -151,7 +151,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     public LostPlayer _LostPlayer;
     public Teams _Teams;
     public GameEndData _GameEndData;
-    PhasesIcons _PhasesIcons;
+    public PhasesIcons _PhasesIcons;
 
     TimerTickSound _TimerTickSound { get; set; }
     GameManagerVFXHolder _VfxHolder { get; set; }
@@ -425,12 +425,18 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
 
             if (playerController.CanPlayerBeActiveInNightPhase)
             {
-                if (PlayerBaseConditions.IsPhotonviewMine(playerController.PhotonView) && PlayerBaseConditions.AmOwner(playerController.PhotonView))
+                if (playerController.PhotonView.IsMine && playerController.PhotonView.AmOwner)
                 {
+                    print("Player can be active at night phase");
+
                     if (!_PhasesIcons.IsNightPhaseIconsActive)
                     {
+                        print("Phase icons not active");
+
                         if (PlayerHasntVotedYet(playerController, 0) && PlayerBaseConditions.PlayerRoleName(playerController.PhotonView.OwnerActorNr) != RoleNames.Citizen)
                         {
+                            print("Player has not voted yet");
+
                             ActivateGameobjectActivityForAllRoleButtons();
                         }
                         if (PlayerHasVoted(playerController, 0))
@@ -472,7 +478,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
 
             if (playerController.CanPlayerBeActiveInDayPhase)
             {
-                if (PlayerBaseConditions.IsPhotonviewMine(playerController.PhotonView) && PlayerBaseConditions.AmOwner(playerController.PhotonView))
+                if (playerController.PhotonView.IsMine && playerController.PhotonView.AmOwner)
                 {
                     if (!_PhasesIcons.IsDayPhaseIconsActive)
                     {
@@ -566,6 +572,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
             if (RoleButton._OwnerInfo.OwnerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber)
             {
                 RoleButton.VoteFXActivity(false, false);
+                RoleButton._UI.Selected.SetActive(false);
             }
         });
     }
@@ -894,7 +901,9 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
             }
         }
     }
+    #endregion
 
+    #region GameEndControllerByMasterClient
     void GameEndControllerByMasterClient(bool humansWin)
     {
         if (photonView.IsMine)
@@ -909,8 +918,10 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
                 StartCoroutine(GameEndTimerCoroutine(_Timer.GameEndSeconds, _Timer.IsGameFinished));
             }    
         }
-    }  
-    
+    }
+    #endregion
+
+    #region GameEndTimerCoroutine
     IEnumerator GameEndTimerCoroutine(int currentSeconds, bool isGameFinished)
     {
         while (isGameFinished && photonView.IsMine)
@@ -975,6 +986,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
             iReset?.ResetWhileGameEndCoroutineIsRunning();
         }
     }
+    #endregion
 
     #region UpdatePlayersStatsByMasterClient
     void UpdatePlayersStatsByMasterClient()
@@ -1003,14 +1015,14 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
 
                     PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(data.Key, UpdatePlayerStats =>
                     {
-                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Rank, Value = GetPlayerStats.Rank < 1 ? 1: GetPlayerStats.Rank });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Rank, Value = GetPlayerStats.Rank < 1 ? 1 : GetPlayerStats.Rank });
                         UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.TotalTimePlayed, Value = GetPlayerStats.TotalTimePlayed += 1 });
                         UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Points, Value = GetPlayerStats.Points += points });
 
                         UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Win, Value = GetPlayerStats.Win += win });
                         UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Lost, Value = GetPlayerStats.Lost += lost });
 
-                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsSurvivor, Value = GetPlayerStats.RolesPlayedCount[0] += data.Value == RoleNames.Citizen ? 1: 0 });
+                        UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsSurvivor, Value = GetPlayerStats.RolesPlayedCount[0] += data.Value == RoleNames.Citizen ? 1 : 0 });
                         UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsDoctor, Value = GetPlayerStats.RolesPlayedCount[1] += data.Value == RoleNames.Medic ? 1 : 0 });
                         UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsSheriff, Value = GetPlayerStats.RolesPlayedCount[2] += data.Value == RoleNames.Sheriff ? 1 : 0 });
                         UpdatePlayerStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.AsSoldier, Value = GetPlayerStats.RolesPlayedCount[3] += data.Value == RoleNames.Soldier ? 1 : 0 });
@@ -1020,8 +1032,6 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
                 });
         }
     }
-    #endregion
-
     #endregion
 
     #region OnGameRestart

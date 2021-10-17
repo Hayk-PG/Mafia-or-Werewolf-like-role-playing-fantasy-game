@@ -41,6 +41,7 @@ public class RoleButtonController : MonoBehaviourPun,IReset
         [SerializeField] Text voteName;
         [SerializeField] Sprite roleSprite;
         [SerializeField] Image visibleToEveryoneImage;
+        [SerializeField] Image selectedImage;
         [SerializeField] Button button;
         [SerializeField] CanvasGroup votesCountTextCanvasGroup;
         [SerializeField] CanvasGroup roleButtonCanvasGroup;
@@ -69,6 +70,11 @@ public class RoleButtonController : MonoBehaviourPun,IReset
         {
             get => visibleToEveryoneImage.sprite;
             set => visibleToEveryoneImage.sprite = value;
+        }
+        public GameObject Selected
+        {
+            get => selectedImage.gameObject;
+
         }
         public Button Button
         {
@@ -307,6 +313,7 @@ public class RoleButtonController : MonoBehaviourPun,IReset
         _UI.VoteName = null;
         _UI.VotesCount = 0;
         _UI.Button.name = "RoleButton";
+        _UI.Selected.SetActive(false);
 
         _GameInfo.IsPlayerAlive = true;
         _GameInfo.IsPlayerHealed = false;

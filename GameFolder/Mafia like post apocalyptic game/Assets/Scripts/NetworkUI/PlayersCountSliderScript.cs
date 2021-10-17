@@ -19,7 +19,7 @@ public class PlayersCountSliderScript : MonoBehaviour
 
     void Update()
     {
-        PlayersCountString = "Players count " + "(" + GetComponent<Slider>().value.ToString() + ")";
+        PlayersCountString = GetComponent<Slider>().value.ToString();
     }
 
 

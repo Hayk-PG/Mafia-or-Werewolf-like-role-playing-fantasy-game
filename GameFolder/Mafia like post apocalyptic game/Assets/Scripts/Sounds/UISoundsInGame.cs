@@ -17,7 +17,7 @@ public class UISoundsInGame : UiSoundsBaseScript
     }
 
     /// <summary>
-    /// 0: ALert 1:Votes 2:Cards rotate 3: Impact 2 soundFX used in Cards rotate 4: End debris 5: Timer 6: Points 7: Points expl 8: Lost 9: Win 10: Firework
+    /// 0: ALert 1:Votes 2:Cards rotate 3: Impact 2 soundFX used in Cards rotate 4: End debris 5: Timer 6: Points 7: Points expl 8: Lost 9: Win 10: Firework 11: Selected
     /// </summary>
     /// <param name="index"></param>
     public override void PlaySoundFXinGame(int index)

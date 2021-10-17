@@ -23,6 +23,9 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             int minHighestPoint = _GameManagerTimer._GameEndData.PlayersProfilePictureURL.Count * 10;
             string ownRoleName = _GameManagerTimer._GameEndData.PlayersRolesInLastRound[PhotonNetwork.LocalPlayer.UserId];
 
+            _GameManagerTimer._PhasesIcons.IsNightPhaseIconsActive = false;
+            _GameManagerTimer. _PhasesIcons.IsDayPhaseIconsActive = false;
+
             print(ownRoleName + "/" + humansWin);
 
             IfHumansWin(ownRoleName, humansWin);
@@ -93,6 +96,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
             {
                 _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Combat medic", 6, false);
+                UpdateLocalPlayerStats(playfabId, 150);
             });
         }
     }
@@ -106,6 +110,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
             {
                 _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Sherlock Holmes", 7, false);
+                UpdateLocalPlayerStats(playfabId, 150);
             });
         }
     }
@@ -119,6 +124,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
             {
                 _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Best soldier", 8, false);
+                UpdateLocalPlayerStats(playfabId, 150);
             });
         }
     }
@@ -132,6 +138,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
             {
                 _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Predator", 3, false);
+                UpdateLocalPlayerStats(playfabId, 150);
             });
         }
     }
@@ -145,6 +152,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
             {
                 _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Tricky bastard", 4, false);
+                UpdateLocalPlayerStats(playfabId, 150);
             });
         }
     }
@@ -158,6 +166,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
             {
                 _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "MVP", 9, false);
+                UpdateLocalPlayerStats(playfabId, 250);
             });
         }
     }
@@ -171,6 +180,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
             {
                 _EndTab.InstantiateAwarededPlayerCard(Picture, "You", "Survivor", 0, true);
+                UpdateLocalPlayerStats(playfabId, 25);
             });
         }
     }
@@ -179,5 +189,19 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     bool CheckDict<T1, T2>(Dictionary<T1, T2> Dict, T1 key)
     {
         return Dict != null && Dict.ContainsKey(key);
+    }
+
+    void UpdateLocalPlayerStats(string playfabId, int points)
+    {
+        if (playfabId == PlayerBaseConditions.LocalPlayer.UserId)
+        {
+            PlayerBaseConditions.PlayfabManager.PlayfabStats.GetPlayerStats(playfabId, GetStats =>
+            {
+                PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(playfabId, UpdateStats =>
+                {
+                    UpdateStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Points, Value = GetStats.Points += points });
+                });
+            });
+        }
     }
 }
