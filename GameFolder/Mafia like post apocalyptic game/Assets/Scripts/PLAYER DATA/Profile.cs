@@ -22,6 +22,7 @@ public class Profile : MonoBehaviourPun
     [SerializeField] NotificationTab _NotificationTab;
     [SerializeField] FriendProfileTab _FriendProfileTab;
     [SerializeField] FirstTabMessageTab _FirstTabMessageTab;
+    [SerializeField] LeaderboardTab _LeaderboardTab;
     [SerializeField] Icons _Icons;
     [SerializeField] internal DatasDownloadCheck _DatasDownloadCheck;
     [SerializeField] internal EditProfilePicTab _EditProfilePicTab;
@@ -148,6 +149,21 @@ public class Profile : MonoBehaviourPun
         [SerializeField] internal Button closeMessageTabButton;
         [SerializeField] internal InputField friendMessageInputField;
     }
+    [Serializable] class LeaderboardTab
+    {
+        [SerializeField] Transform container;
+        [SerializeField] ProfileLeaderboard profileLeaderboardPrefab;
+        [SerializeField] internal Button leaderboardTabButton;
+
+        internal Transform Container
+        {
+            get => container;
+        }
+        internal ProfileLeaderboard ProfileLeaderboardPrefab
+        {
+            get => profileLeaderboardPrefab;
+        }
+    }
     [Serializable] class Icons
     {
         [SerializeField] internal Sprite diagramIcon;
@@ -156,6 +172,7 @@ public class Profile : MonoBehaviourPun
         [SerializeField] internal Sprite doorIcon;
         [SerializeField] internal Sprite friendsIcon;
         [SerializeField] internal Sprite bellIcon;
+        [SerializeField] internal Sprite leaderboardIcon;
      }
     [Serializable] internal class DatasDownloadCheck
     {
@@ -268,6 +285,10 @@ public class Profile : MonoBehaviourPun
     public Sprite BellIcon
     {
         get => _Icons.bellIcon;
+    }
+    public Sprite LeaderboardIcon
+    {
+        get => _Icons.leaderboardIcon;
     }
     public string Name
     {
@@ -387,7 +408,7 @@ public class Profile : MonoBehaviourPun
     }
 
     /// <summary>
-    /// 0:PlayedAsTabButton 1:PlayerVotesTabButton 2:LogTabButton 3:FriendsTabButton 4:NotificationTabButton
+    /// 0:PlayedAsTabButton 1:PlayerVotesTabButton 2:LogTabButton 3:FriendsTabButton 4:NotificationTabButton 5: LeaderboardTabButton
     /// </summary>
     public Button[] TabButtons { get; set; }
     public Button CloseButton
@@ -456,7 +477,7 @@ public class Profile : MonoBehaviourPun
     }
 
     /// <summary>
-    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab 7:FriendMessageTab 8: NoticiationMessageTab 9:FriendMessageTab
+    /// 0: CanvasGroup 1: PlayedAsTab 2: PlayerVotesTab 3:PlayerLogTab 4:FriendsTab 5:NotificationTab 6:FriendProfileTab 7:FriendMessageTab 8: NoticiationMessageTab 9:FriendMessageTab 10: LeaderboardTab
     /// </summary>
     public CanvasGroup[] CanvasGroups;  
     public CanvasGroup LogTabButtonsCanvasGroup
@@ -515,13 +536,14 @@ public class Profile : MonoBehaviourPun
             instance = this;
         }
 
-        TabButtons = new Button[5] 
+        TabButtons = new Button[6] 
         {
          _ThirdTab.playedAsTabButton,
          _ThirdTab.playerVotesTabButton,
          _LogTab.logTabButton,
          _FriendsTab.friendsTabButton,
-         _NotificationTab.notificationTabButton
+         _NotificationTab.notificationTabButton,
+         _LeaderboardTab.leaderboardTabButton
         };
 
         ProfilePicContainer = GetComponent<ProfilePicContainer>();
@@ -542,6 +564,7 @@ public class Profile : MonoBehaviourPun
         OnClickTabButtons(TabButtons[2]);
         OnClickTabButtons(TabButtons[3]);
         OnClickTabButtons(TabButtons[4]);
+        OnClickTabButtons(TabButtons[5]);
 
         OnClickSendFriendRequestButton(SendFriendRequestButton);
         OnClickDeleteFriendButton(DeleteFriendButton);
@@ -652,6 +675,12 @@ public class Profile : MonoBehaviourPun
                 DisableCanvasGroups();
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[5], true);
                 BgImage = BellIcon;
+            }
+            if (button == TabButtons[5])
+            {
+                DisableCanvasGroups();
+                MyCanvasGroups.CanvasGroupActivity(CanvasGroups[10], true);
+                BgImage = LeaderboardIcon;
             }
 
             PlayerBaseConditions.UiSounds.PlaySoundFX(2);
@@ -1058,6 +1087,27 @@ public class Profile : MonoBehaviourPun
             _PlayedAsTab.rankSlider.minValue = 490760;
             _PlayedAsTab.rankSlider.maxValue = 550000;
         }
+    }
+    #endregion
+
+    #region ShowLeaderboard
+    public void ShowLeaderboard()
+    {
+        if(_LeaderboardTab.Container.childCount > 0)
+        {
+            for (int i = 0; i < _LeaderboardTab.Container.childCount; i++)
+            {
+                Destroy(_LeaderboardTab.Container.GetChild(0).gameObject);
+            }
+        }
+
+        PlayerBaseConditions.PlayfabManager.PlayfabLeaderboard.ShowLeaderboard(Get=> 
+        {
+            ProfileLeaderboard prefab = Instantiate(_LeaderboardTab.ProfileLeaderboardPrefab, _LeaderboardTab.Container);
+            prefab._UI.Position = "#" + (Get.Position + 1);
+            prefab._UI.Name = Get.DisplayName;
+            prefab._UI.Score = Get.StatValue.ToString();
+        });
     }
     #endregion
 

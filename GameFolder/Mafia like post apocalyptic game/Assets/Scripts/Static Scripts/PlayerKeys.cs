@@ -38,6 +38,7 @@ public static class PlayerKeys
         public static string TotalTimePlayed => "Total time played";
         public static string Rank => "Rank";
         public static string Points => "Points";
+        public static string Scores => "Scores";
         public static string OverallSkills => "OverallSkills";
         public static string SurvivorSkills => "SurvivorSkills";
         public static string DoctorSkills => "DoctorSkills";

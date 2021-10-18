@@ -1002,15 +1002,15 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
                 {
                     if (_GameEndData.HumansWin)
                     {
-                        win = data.Value != RoleNames.Infected || data.Value != RoleNames.Infected ? 1 : 0;
-                        lost = data.Value == RoleNames.Infected || data.Value == RoleNames.Infected ? 1 : 0;
-                        points = data.Value != RoleNames.Infected || data.Value != RoleNames.Infected ? UnityEngine.Random.Range(70, 90) : 0;
+                        win = data.Value != RoleNames.Infected && data.Value != RoleNames.Lizard ? 1 : 0;
+                        lost = data.Value == RoleNames.Infected || data.Value == RoleNames.Lizard ? 1 : 0;
+                        points = data.Value != RoleNames.Infected && data.Value != RoleNames.Lizard ? UnityEngine.Random.Range(70, 90) : 0;
                     }
                     else
                     {
-                        win = data.Value == RoleNames.Infected || data.Value == RoleNames.Infected ? 1 : 0;
-                        lost = data.Value != RoleNames.Infected || data.Value != RoleNames.Infected ? 1 : 0;
-                        points = data.Value == RoleNames.Infected || data.Value == RoleNames.Infected ? UnityEngine.Random.Range(70, 90) : 0;
+                        win = data.Value == RoleNames.Infected || data.Value == RoleNames.Lizard ? 1 : 0;
+                        lost = data.Value != RoleNames.Infected && data.Value != RoleNames.Lizard ? 1 : 0;
+                        points = data.Value == RoleNames.Infected || data.Value == RoleNames.Lizard ? UnityEngine.Random.Range(70, 90) : 0;
                     }
 
                     PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(data.Key, UpdatePlayerStats =>

@@ -199,7 +199,10 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             {
                 PlayerBaseConditions.PlayfabManager.PlayfabStats.UpdatePlayerStats(playfabId, UpdateStats =>
                 {
+                    int scoresForLeaderboard = Mathf.Abs(points + GetStats.Points + (GetStats.Win - GetStats.Lost));
+
                     UpdateStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Points, Value = GetStats.Points += points });
+                    UpdateStats.Statistics.Add(new PlayFab.ServerModels.StatisticUpdate { StatisticName = PlayerKeys.StatisticKeys.Scores, Value = scoresForLeaderboard });
                 });
             });
         }

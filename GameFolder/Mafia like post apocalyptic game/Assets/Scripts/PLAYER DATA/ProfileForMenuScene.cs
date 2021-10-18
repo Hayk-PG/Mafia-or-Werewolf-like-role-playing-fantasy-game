@@ -36,7 +36,8 @@ public class ProfileForMenuScene : MonoBehaviour
 
             MenuScene();
             UpdatePlayerProfile();
-            UpdatePlayerStats();                      
+            UpdatePlayerStats();
+            ShowLeaderboard();
             //UpdateNotificationTab();
             UpdateFriendsList();
 
@@ -66,6 +67,13 @@ public class ProfileForMenuScene : MonoBehaviour
     void UpdatePlayerStats()
     {
         PlayerBaseConditions.PlayerProfile.ShowPlayerStats(PlayerBaseConditions.OwnPlayfabId);
+    }
+    #endregion
+
+    #region ShowLeaderboard
+    void ShowLeaderboard()
+    {
+        PlayerBaseConditions.PlayerProfile.ShowLeaderboard();
     }
     #endregion
 
