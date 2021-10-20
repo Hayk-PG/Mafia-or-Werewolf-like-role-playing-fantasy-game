@@ -22,7 +22,10 @@ public class PlayersCountSliderScript : MonoBehaviour
         PlayersCountString = GetComponent<Slider>().value.ToString();
     }
 
-
+    public void OnValueChanged()
+    {
+        PlayerBaseConditions.UiSounds.PlaySoundFX(2);
+    }
 
 
 

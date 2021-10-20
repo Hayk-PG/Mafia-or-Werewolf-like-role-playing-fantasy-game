@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,15 +19,20 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
 
     public void Screen(string playfabId, string URL, bool humansWin)
     {
-        if(photonView.IsMine && photonView.AmOwner)
+        StartCoroutine(ScreenCoroutine(playfabId, URL, humansWin));
+    }
+
+    IEnumerator ScreenCoroutine(string playfabId, string URL, bool humansWin)
+    {
+        yield return new WaitUntil(IsScreenReady);
+
+        if (photonView.IsMine && photonView.AmOwner)
         {
             int minHighestPoint = _GameManagerTimer._GameEndData.PlayersProfilePictureURL.Count * 10;
             string ownRoleName = _GameManagerTimer._GameEndData.PlayersRolesInLastRound[PhotonNetwork.LocalPlayer.UserId];
 
             _GameManagerTimer._PhasesIcons.IsNightPhaseIconsActive = false;
-            _GameManagerTimer. _PhasesIcons.IsDayPhaseIconsActive = false;
-
-            print(ownRoleName + "/" + humansWin);
+            _GameManagerTimer._PhasesIcons.IsDayPhaseIconsActive = false;
 
             IfHumansWin(ownRoleName, humansWin);
             IfInfectedsWin(ownRoleName, humansWin);
@@ -38,6 +44,11 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             MVP(playfabId, URL, minHighestPoint);
             Survivor(playfabId, URL, minHighestPoint);
         }
+    }
+
+    bool IsScreenReady()
+    {
+        return _EndTab._UI.BackgroundColor == Color.white;
     }
 
     #region IfHumansWin
@@ -93,11 +104,8 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheDoctor, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheDoctor[playfabId] > minHighestPoint)
         {
-            PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
-            {
-                _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Combat medic", 6, false);
-                UpdateLocalPlayerStats(playfabId, 150);
-            });
+            UpdateLocalPlayerStats(playfabId, 150);
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "150");
         }
     }
     #endregion
@@ -107,11 +115,8 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheSheriff, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheSheriff[playfabId] > minHighestPoint)
         {
-            PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
-            {
-                _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Sherlock Holmes", 7, false);
-                UpdateLocalPlayerStats(playfabId, 150);
-            });
+            UpdateLocalPlayerStats(playfabId, 150);
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "150");
         }
     }
     #endregion
@@ -121,11 +126,8 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheSoldier, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheSoldier[playfabId] > minHighestPoint)
         {
-            PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
-            {
-                _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Best soldier", 8, false);
-                UpdateLocalPlayerStats(playfabId, 150);
-            });
+            UpdateLocalPlayerStats(playfabId, 150);
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "150");
         }
     }
     #endregion
@@ -135,11 +137,8 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheInfected, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheInfected[playfabId] > minHighestPoint)
         {
-            PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
-            {
-                _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Predator", 3, false);
-                UpdateLocalPlayerStats(playfabId, 150);
-            });
+            UpdateLocalPlayerStats(playfabId, 150);
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "150");
         }
     }
     #endregion
@@ -149,11 +148,8 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheLizard, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheLizard[playfabId] > minHighestPoint)
         {
-            PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
-            {
-                _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Tricky bastard", 4, false);
-                UpdateLocalPlayerStats(playfabId, 150);
-            });
+            UpdateLocalPlayerStats(playfabId, 150);
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "150");
         }
     }
     #endregion
@@ -163,11 +159,8 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsForEveryone, playfabId) && _GameManagerTimer._GameEndData.PointsForEveryone[playfabId] > minHighestPoint)
         {
-            PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
-            {
-                _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "MVP", 9, false);
-                UpdateLocalPlayerStats(playfabId, 250);
-            });
+            UpdateLocalPlayerStats(playfabId, 250);
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "250 (MVP)");
         }
     }
     #endregion
@@ -175,13 +168,13 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     #region Survivor
     void Survivor(string playfabId, string URL, int minHighestPoint)
     {
-        if (playfabId == PhotonNetwork.LocalPlayer.UserId/* && _GameManagerTimer._GameEndData.PointsForEveryone[playfabId] <= Mathf.Abs(minHighestPoint / 2)*/)
+        if (playfabId == PhotonNetwork.LocalPlayer.UserId)
         {
-            PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
+            if (playfabId == PhotonNetwork.LocalPlayer.UserId)
             {
-                _EndTab.InstantiateAwarededPlayerCard(Picture, "You", "Survivor", 0, true);
-                UpdateLocalPlayerStats(playfabId, 25);
-            });
+                UpdateLocalPlayerStats(playfabId, 50);
+                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "50");
+            }
         }
     }
     #endregion
@@ -207,4 +200,15 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             });
         }
     }
+
+    #region Deprecated
+    void LoadProfilePicture(string playfabId, string URL)
+    {
+        PlayerBaseConditions.PlayerProfile.LoadProfilePicture(URL, Picture =>
+        {
+            _EndTab.InstantiateAwarededPlayerCard(Picture, _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], "Combat medic", 6, false);
+            UpdateLocalPlayerStats(playfabId, 150);
+        });
+    }
+    #endregion
 }

@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4dd24637256a930418cb2545769143fb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2ad99b536069e5945a0065add9ee8f40, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2359,7 +2359,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.18900001, y: 0.28800002}
   m_AnchorMax: {x: 0.8095837, y: 0.36600003}
-  m_AnchoredPosition: {x: 0.5, y: 0.50219727}
+  m_AnchoredPosition: {x: 0.5, y: 0.50231934}
   m_SizeDelta: {x: -1, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &351391718
@@ -3938,7 +3938,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: de81d233eeefe4d45a9eca6dc9062190, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 71f24c345e097fc46a1607b2ebe57f34, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4601,6 +4601,36 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 297469433894101379, guid: 9836dfb6149357f4c99612956b22a2de,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297469433894101379, guid: 9836dfb6149357f4c99612956b22a2de,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297469433894101379, guid: 9836dfb6149357f4c99612956b22a2de,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297469433894101379, guid: 9836dfb6149357f4c99612956b22a2de,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297469433894101379, guid: 9836dfb6149357f4c99612956b22a2de,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297469433894101379, guid: 9836dfb6149357f4c99612956b22a2de,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 416362685322596223, guid: 9836dfb6149357f4c99612956b22a2de,
         type: 3}
       propertyPath: m_Alpha
@@ -4614,6 +4644,11 @@ PrefabInstance:
     - target: {fileID: 416362685322596223, guid: 9836dfb6149357f4c99612956b22a2de,
         type: 3}
       propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1625563430678226933, guid: 9836dfb6149357f4c99612956b22a2de,
+        type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2192394087738793521, guid: 9836dfb6149357f4c99612956b22a2de,
@@ -5642,7 +5677,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: de81d233eeefe4d45a9eca6dc9062190, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 71f24c345e097fc46a1607b2ebe57f34, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9383,7 +9418,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4dd24637256a930418cb2545769143fb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2ad99b536069e5945a0065add9ee8f40, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11183,7 +11218,18 @@ MonoBehaviour:
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2004134765}
+        m_MethodName: OnValueChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2004134765
 MonoBehaviour:
   m_ObjectHideFlags: 0

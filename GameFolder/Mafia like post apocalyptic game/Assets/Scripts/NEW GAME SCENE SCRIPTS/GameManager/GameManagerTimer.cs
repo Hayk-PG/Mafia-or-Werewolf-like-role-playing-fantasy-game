@@ -217,7 +217,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
         if (!_Timer.IsGameFinished)
         {
             StartCoroutine(_Timer.Coroutine);
-            MyCanvasGroups.CanvasGroupActivity(_EndTab._UI.CanvasGroup, false);
+            _EndTab?.GetComponent<IReset>().ResetAtTheEndOfTheGameEndCoroutine();
         }
        
         _LostPlayer.LostPlayers = FindObjectOfType<GameManagerTimer>()._LostPlayer.LostPlayers;
@@ -1039,7 +1039,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     {
         object[] datas = (object[])obj.CustomData;
 
-        MyCanvasGroups.CanvasGroupActivity(_EndTab._UI.CanvasGroup, false);
+        _EndTab?.GetComponent<IReset>().ResetAtTheEndOfTheGameEndCoroutine();
 
         if (photonView.IsMine)
         {
