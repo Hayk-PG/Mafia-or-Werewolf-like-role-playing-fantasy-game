@@ -10,10 +10,10 @@ public class SignInTab : SignUpTab
     {
         SignInButtonCanvasGroupActivity();
         SaveCanvasGroupActivity(signInButtonCanvasGroup);
-        OnClickInputFields();
         OnClickSaveButton();
         OnClickSignInButton();
         OnClickBackButton();
+        OnClickCloseErrorTab();
     }
 
     #region OnPlayfabRegisterError

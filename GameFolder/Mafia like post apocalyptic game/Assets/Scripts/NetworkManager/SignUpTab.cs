@@ -21,6 +21,7 @@ public class SignUpTab : MonoBehaviour
     [SerializeField] protected CanvasGroup saveCanvasGroup;
     [SerializeField] protected CanvasGroup errorCanvasGroup;
     [SerializeField] protected CanvasGroup backButtonCanvasGroup;
+    [SerializeField] protected CanvasGroup uploadProfileImageCanvasGroup;
 
     public CanvasGroup BackButtonCanvasGroup
     {
@@ -33,6 +34,7 @@ public class SignUpTab : MonoBehaviour
     [SerializeField] protected Button signInButton;
     [SerializeField] protected Button saveButton;
     [SerializeField] protected Button backButton;
+    [SerializeField] protected Button errorTabCloseButton;
 
     [Header("TEXTS")]
     [SerializeField] protected Text errorText;
@@ -44,12 +46,12 @@ public class SignUpTab : MonoBehaviour
     protected virtual void Update()
     {
         SignUpButtonCanvasGroupActivity();
-        SaveCanvasGroupActivity(signUpButtonCanvasGroup);
-        OnClickInputFields();
+        SaveCanvasGroupActivity(signUpButtonCanvasGroup);        
         OnClickGenderButtons();
         OnClickSaveButton();
         OnClickSignUpButton();
         OnClickBackButton();
+        OnClickCloseErrorTab();
     }
 
     #region SignUpButtonCanvasGroupActivity
@@ -72,20 +74,7 @@ public class SignUpTab : MonoBehaviour
         MyCanvasGroups.CanvasGroupActivity(saveCanvasGroup, buttonCanvasGroup.interactable);
     }
     #endregion
-
-    #region OnClickInputFields
-    protected void OnClickInputFields()
-    {
-        if (errorCanvasGroup.interactable)
-        {
-            if (usernameInputField.isFocused || passwordInputField.isFocused)
-            {
-                MyCanvasGroups.CanvasGroupActivity(errorCanvasGroup, false);
-            }
-        }
-    }
-    #endregion
-
+   
     #region OnClickGenderButtons
     void OnClickGenderButtons()
     {
@@ -179,6 +168,18 @@ public class SignUpTab : MonoBehaviour
 
         saveButton.GetComponent<ButtonLocalSprite>().OnClickSwitchButton(hasSaved);
         PlayerBaseConditions.UiSounds.PlaySoundFX(7);
+    }
+    #endregion
+
+    #region OnClickCloseErrorTab
+    protected void OnClickCloseErrorTab()
+    {
+        errorTabCloseButton.onClick.RemoveAllListeners();
+        errorTabCloseButton.onClick.AddListener(() => 
+        {
+            MyCanvasGroups.CanvasGroupActivity(errorCanvasGroup, false);
+            MyCanvasGroups.CanvasGroupActivity(uploadProfileImageCanvasGroup, false);
+        });
     }
     #endregion
 }

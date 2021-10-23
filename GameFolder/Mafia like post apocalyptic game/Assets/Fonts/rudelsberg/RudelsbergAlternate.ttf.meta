@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: dc678a49c62443647b04acc3e7f956b1
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Rudelsberg
+  fontNames:
+  - Rudelsberg
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: b658ce1099fb1b94ea9d67dc7a27f4a8, type: 3}
+  - {fileID: 12800000, guid: 23be24829b5c51d4aa9a52441197c2a5, type: 3}
+  - {fileID: 12800000, guid: 3af6d28312b844841898c971d61331a9, type: 3}
+  - {fileID: 12800000, guid: c3ce7954bfa015148bedac655a3da753, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

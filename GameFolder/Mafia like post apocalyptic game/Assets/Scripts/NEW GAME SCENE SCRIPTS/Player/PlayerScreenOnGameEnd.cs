@@ -59,7 +59,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             if (ownRoleName != RoleNames.Infected && ownRoleName != RoleNames.Lizard)
             {
                 PlayerBaseConditions.UiSounds.PlaySoundFXinGame(9);
-                _GameManagerVFXHolder.CreateVFX(1);
+                //_GameManagerVFXHolder.CreateVFX(1);
                 _EndTab._UI.Title = "Your team won!";
                 PlayerBaseConditions.UiSounds.PlaySoundFXinGame(10);
             }
@@ -83,7 +83,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             if (ownRoleName == RoleNames.Infected || ownRoleName == RoleNames.Lizard)
             {
                 PlayerBaseConditions.UiSounds.PlaySoundFXinGame(9);
-                _GameManagerVFXHolder.CreateVFX(1);
+                //_GameManagerVFXHolder.CreateVFX(1);
                 _EndTab._UI.Title = "Your team won!";
                 PlayerBaseConditions.UiSounds.PlaySoundFXinGame(10);
             }

@@ -16,6 +16,7 @@ public class NetworkManagerCreatedRoomProperties : MonoBehaviour
 
     [Header("BUTTON")]
     [SerializeField] Button passwordSwitchButton;
+    [SerializeField] Button continueButton;
     [SerializeField] Button confirmRoomPropertiesButton;
 
     [Header("SLIDER")]
@@ -65,7 +66,7 @@ public class NetworkManagerCreatedRoomProperties : MonoBehaviour
     
     void Update()
     {
-        confirmRoomPropertiesButtonCanvasGroup.interactable = isPasswordOn && IsPasswordSet || !isPasswordOn ? true : false;
+        continueButton.interactable = isPasswordOn && IsPasswordSet || !isPasswordOn && !IsPasswordSet ? true : false;
 
         OnClickButton();
         OnClickConfirmRoomPropertiesButton();
@@ -91,13 +92,15 @@ public class NetworkManagerCreatedRoomProperties : MonoBehaviour
         {
             buttonImage.color = new Color32(11, 212, 9, 255);
             buttonChildImage.sprite = switchOn;
-            MyCanvasGroups.CanvasGroupActivity(passwordImputFieldCanvasGroup, true);
+            passwordInputField.interactable = true;
+            //MyCanvasGroups.CanvasGroupActivity(passwordImputFieldCanvasGroup, true);
         }
         else
         {
             buttonImage.color = new Color32(212, 29, 9, 255);
             buttonChildImage.sprite = switchOff;
-            MyCanvasGroups.CanvasGroupActivity(passwordImputFieldCanvasGroup, false);
+            //MyCanvasGroups.CanvasGroupActivity(passwordImputFieldCanvasGroup, false);
+            passwordInputField.interactable = false;
             passwordInputField.text = null;
         }
     }

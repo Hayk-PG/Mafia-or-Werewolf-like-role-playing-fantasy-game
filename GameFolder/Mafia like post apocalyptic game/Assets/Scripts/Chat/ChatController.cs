@@ -65,7 +65,7 @@ public class ChatController : MonoBehaviourPun
             {
                 string messageText = playerName == null ? "Welcome " + PhotonNetwork.NickName + "!" : playerName != null && hasNewPlayerJoined ? playerName + " joined the game!" : playerName != null && !hasNewPlayerJoined ? playerName + " left the game!" : null;
 
-                InstantiateChatText(messageText, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 50), 1);
+                InstantiateChatText(messageText, new Color32(242, 255, 0, 255), new Color32(255, 19, 0, 0), 1);
             }
         }));   
     }
@@ -76,7 +76,7 @@ public class ChatController : MonoBehaviourPun
     {
         Text chatText = Instantiate(_GameObjects.TextPrefab, _GameObjects.ChatContainer);
         chatText.color = textColor;
-        chatText.GetComponentInChildren<Image>().color = backgroundColor;
+        //chatText.GetComponentInChildren<Image>().color = backgroundColor;
         chatText.text = text;
         //PlayerBaseConditions._MyGameControllerComponents.UISoundsInGame.PlayUISoundFX(soundFXIndex == 0 ? ChatMessageSoundFX[0]: ChatMessageSoundFX[1]);
     }

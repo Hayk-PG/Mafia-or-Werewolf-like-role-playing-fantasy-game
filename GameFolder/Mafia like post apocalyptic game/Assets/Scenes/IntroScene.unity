@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -173,6 +173,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6572665317098719653}
     m_Modifications:
+    - target: {fileID: 714020837630327270, guid: 60b67e1ed5e0b884e999202df68fa474,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 714020837630327270, guid: 60b67e1ed5e0b884e999202df68fa474,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 857962315269222490, guid: 60b67e1ed5e0b884e999202df68fa474,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -283,9 +293,45 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadingTab
       objectReference: {fileID: 0}
+    - target: {fileID: 1420518918599374198, guid: 60b67e1ed5e0b884e999202df68fa474,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: cb21a3194b08e8842855d2aa52dfcee8,
+        type: 3}
+    - target: {fileID: 3214660168341900124, guid: 60b67e1ed5e0b884e999202df68fa474,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8171953880891319572, guid: 60b67e1ed5e0b884e999202df68fa474,
+        type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8321414797002393962, guid: 60b67e1ed5e0b884e999202df68fa474,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8321414797002393962, guid: 60b67e1ed5e0b884e999202df68fa474,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8321414797002393962, guid: 60b67e1ed5e0b884e999202df68fa474,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8445826913309252971, guid: 60b67e1ed5e0b884e999202df68fa474,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8445826913309252971, guid: 60b67e1ed5e0b884e999202df68fa474,
+        type: 3}
+      propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
