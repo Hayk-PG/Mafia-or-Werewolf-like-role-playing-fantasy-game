@@ -106,6 +106,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b90efd0cf168e6409333e67f27c8b6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _VFXprefabs:
+    VFX:
+    - {fileID: 4565604410656984862, guid: 57243be7f4d70334991798aaf44b7f29, type: 3}
+    - {fileID: 1168780481894696667, guid: 8fa3f970b6793ac4b818a6f37d234302, type: 3}
+    - {fileID: 6155200744447955734, guid: 34beb2aa5e837c3428586520e028c994, type: 3}
+    - {fileID: 9041819727383059002, guid: b962f75a8126a4b40890bad4ff0bd31c, type: 3}
+    - {fileID: 5928539417688923762, guid: 68a88026c1a4d3b4c99586c06b18f111, type: 3}
+    - {fileID: 4583773761421144563, guid: ab5554d7a22c4c44694c739e385c6fa0, type: 3}
+    - {fileID: 603787883081969815, guid: b618694354818164c806589ca165f749, type: 3}
 --- !u!114 &1427782197283943596
 MonoBehaviour:
   m_ObjectHideFlags: 0

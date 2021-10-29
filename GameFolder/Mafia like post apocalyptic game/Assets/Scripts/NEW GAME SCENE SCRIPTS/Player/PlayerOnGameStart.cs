@@ -15,12 +15,14 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
     }
     PlayerUpdateStats _PlayerUpdateStats { get; set; }
     InformPlayerRole _InformPlayerRole { get; set; }
+    UISoundsInGame _UISoundsInGame { get; set; }
 
 
     void Awake()
     {
         _PlayerUpdateStats = GetComponent<PlayerUpdateStats>();
         _InformPlayerRole = FindObjectOfType<InformPlayerRole>();
+        _UISoundsInGame = PlayerBaseConditions.UiSounds as UISoundsInGame;
     }
 
     void Update()
@@ -83,8 +85,12 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
     IEnumerator InformPlayerRolePopUp()
     {
         yield return new WaitForSeconds(1);
+
         _InformPlayerRole.OnPopUp("Your role is " + PlayerBaseConditions.PlayerRoleName(PhotonNetwork.LocalPlayer.ActorNumber) + "!",
-            Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, roleButton => roleButton._OwnerInfo.OwnerActorNumber == Photon.Pun.PhotonNetwork.LocalPlayer.ActorNumber)._UI.RoleImage);
+            Array.Find(FindObjectOfType<GameManagerSetPlayersRoles>()._RoleButtonControllers.RoleButtons, roleButton => 
+            roleButton._OwnerInfo.OwnerActorNumber == Photon.Pun.PhotonNetwork.LocalPlayer.ActorNumber)._UI.RoleImage);
+
+        _UISoundsInGame.PlaySoundFXinGame(12);
     }
     #endregion
 

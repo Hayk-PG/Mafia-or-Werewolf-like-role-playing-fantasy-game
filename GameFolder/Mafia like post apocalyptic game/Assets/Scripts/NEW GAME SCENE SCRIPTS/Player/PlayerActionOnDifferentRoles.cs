@@ -1,5 +1,4 @@
 ﻿using Photon.Pun;
-using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,12 @@ using UnityEngine;
 
 public class PlayerActionOnDifferentRoles: MonoBehaviourPun
 {
+    [Serializable] struct VFXprefabs
+    {
+        [SerializeField] internal GameObject[] VFX;
+    }
+    [SerializeField] VFXprefabs _VFXprefabs;
+
     GameManagerTimer _GameManagerTimer { get; set; }
 
 
@@ -22,7 +27,7 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
             if (!HasPlayerVoted(PhotonNetwork.LocalPlayer.ActorNumber, true))
             {
                 photonView.RPC("NightRPC", RpcTarget.MasterClient, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber, true);
-                photonView.RPC("NightInLocalViewRPC", PhotonNetwork.CurrentRoom.GetPlayer(_RoleButtonController._OwnerInfo.OwnerActorNumber), PhotonNetwork.LocalPlayer.ActorNumber);
+                photonView.RPC("NightInLocalViewRPC", RpcTarget.All, _RoleButtonController._OwnerInfo.OwnerActorNumber, PhotonNetwork.LocalPlayer.ActorNumber);
 
                 _RoleButtonController.VoteFXActivity(false, true);
                 _RoleButtonController.VoteFXActivityForAllRoleButton(false);
@@ -55,14 +60,60 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
     {
         switch (PlayerBaseConditions.PlayerRoleName(senderActorNumber))
         {
-            case RoleNames.Medic: OnMedic(votedAgainstActorNumber);  Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheDoctor, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
-            case RoleNames.Sheriff: OnSheriff(votedAgainstActorNumber); Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheSheriff, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
-            case RoleNames.Infected: OnInfecteds(votedAgainstActorNumber); Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheInfected, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
-            case RoleNames.Soldier: OnSoldier(votedAgainstActorNumber); Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheSoldier, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
-            case RoleNames.Lizard: OnLizard(votedAgainstActorNumber); Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheLizard, IsInfected(votedAgainstActorNumber) ? -25 : UnityEngine.Random.Range(75, 150)); break;
+            case RoleNames.Medic:
+                OnMedic(votedAgainstActorNumber);
+                _GameManagerTimer.AddOrRemovePoints(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheDoctor, IsInfected(votedAgainstActorNumber) ? -25 : 125);
+                break;
+
+            case RoleNames.Sheriff:
+                OnSheriff(votedAgainstActorNumber);
+                _GameManagerTimer.AddOrRemovePoints(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheSheriff, IsInfected(votedAgainstActorNumber) ? -25 : 105);
+                break;
+
+            case RoleNames.Infected:
+                OnInfecteds(votedAgainstActorNumber);
+                _GameManagerTimer.AddOrRemovePoints(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheInfected, IsInfected(votedAgainstActorNumber) ? -25 : 75);
+                break;
+
+            case RoleNames.Soldier:
+                OnSoldier(votedAgainstActorNumber);
+                _GameManagerTimer.AddOrRemovePoints(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheSoldier, IsInfected(votedAgainstActorNumber) ? -25 : 75);
+                break;
+
+            case RoleNames.Lizard:
+                OnLizard(votedAgainstActorNumber);
+                _GameManagerTimer.AddOrRemovePoints(senderActorNumber, _GameManagerTimer._GameEndData.PointsOfTheLizard, IsInfected(votedAgainstActorNumber) ? -25 : 125);
+                break;
         }
         
         PlayerVoted(votedAgainstActorNumber, senderActorNumber, isNightPhase);
+    }
+
+    [PunRPC]
+    void NightInLocalViewRPC(int votedAgainstActorNumber, int senderActorNumber)
+    {
+        switch (PlayerBaseConditions.PlayerRoleName(senderActorNumber))
+        {
+            case RoleNames.Medic:
+                photonView.RPC("CreateHealerVFX", RpcTarget.All, votedAgainstActorNumber, senderActorNumber);
+                break;
+
+            case RoleNames.Sheriff:
+                photonView.RPC("DiscoverTheRoleVFX", RpcTarget.All, votedAgainstActorNumber, senderActorNumber);
+                break;
+
+            case RoleNames.Infected:
+                photonView.RPC("OrcAttackVFX", RpcTarget.All, votedAgainstActorNumber, senderActorNumber);
+                break;
+
+            case RoleNames.Soldier:
+                photonView.RPC("KnightAttackVFX", RpcTarget.All, votedAgainstActorNumber, senderActorNumber);
+                break;
+
+            case RoleNames.Lizard:
+                photonView.RPC("WitchVFX", RpcTarget.All, votedAgainstActorNumber, senderActorNumber);
+                break;
+        }
     }
 
     [PunRPC]
@@ -71,24 +122,7 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
         SendPlayerVoteResultToMasterClient(votedAgainstActorNumber, senderActorNumber);
         PlayerVoted(votedAgainstActorNumber, senderActorNumber, isNightPhase);
         InformMasterClientAgainstWhomPlayerVoted(votedAgainstActorNumber, senderActorNumber);
-        Points(senderActorNumber, _GameManagerTimer._GameEndData.PointsForEveryone, IsInfected(senderActorNumber) != IsInfected(votedAgainstActorNumber) ? UnityEngine.Random.Range(75, 150) : -50);
-    }
-
-    [PunRPC]
-    void NightInLocalViewRPC(int senderActorNumber)
-    {
-        if (photonView.IsMine && photonView.AmOwner)
-        {
-            Player localPlayer = PhotonNetwork.LocalPlayer;
-            string roleName = PlayerBaseConditions.PlayerRoleName(senderActorNumber);
-
-            PlayerBaseConditions.GetRoleButton(localPlayer.ActorNumber).OnNightVotesFXInLocalView(roleName);
-        }
-    }
-
-    int RoleIndex()
-    {
-        return PlayerBaseConditions.RoleIndex(PhotonNetwork.LocalPlayer.ActorNumber);
+        _GameManagerTimer.AddOrRemovePoints(senderActorNumber, _GameManagerTimer._GameEndData.PointsForEveryone, IsInfected(senderActorNumber) != IsInfected(votedAgainstActorNumber) ? UnityEngine.Random.Range(75, 150) : -50);
     }
 
     void PlayerVoted(int votedAgainstActorNumber, int senderActorNumber, bool isNightPhase)
@@ -228,23 +262,86 @@ public class PlayerActionOnDifferentRoles: MonoBehaviourPun
             FindObjectOfType<GameManagerPlayerVotesController>()._Votes.LizardVoteAgainst.Add(votedAgainstActorNumber, true);
         }
     }
-
-    void Points(int senderActorNumber, Dictionary<string, int> PointsDict, int point)
+  
+    [PunRPC]
+    void CreateHealerVFX(int votedAgainstActorNumber, int senderActorNumber)
     {
-        string dictKey = PlayerBaseConditions.GetRoleButton(senderActorNumber)._OwnerInfo.OwenrUserId;
-        
-        if (PointsDict.ContainsKey(dictKey))
+        if (Photonview(senderActorNumber).IsMine && Photonview(senderActorNumber).AmOwner )
         {
-            PointsDict[dictKey] = PointsDict[dictKey] += point;
+            GameObject healerVFX = Instantiate(_VFXprefabs.VFX[0], new Vector3(RoleButtonTransform(votedAgainstActorNumber).x, RoleButtonTransform(votedAgainstActorNumber).y, 490.7871f), Quaternion.identity);
         }
-        else
+        if (Photonview(votedAgainstActorNumber).IsMine && Photonview(votedAgainstActorNumber).AmOwner)
         {
-            PointsDict.Add(dictKey, point);
+            GameObject healerVFX = Instantiate(_VFXprefabs.VFX[0], new Vector3(RoleButtonTransform(votedAgainstActorNumber).x, RoleButtonTransform(votedAgainstActorNumber).y, 490.7871f), Quaternion.identity);
+        }
+    }
+
+    [PunRPC]
+    void OrcAttackVFX(int votedAgainstActorNumber, int senderActorNumber)
+    {
+        if (Photonview(senderActorNumber).IsMine && Photonview(senderActorNumber).AmOwner)
+        {
+            GameObject orcAttackVfx = Instantiate(_VFXprefabs.VFX[1], new Vector3(RoleButtonTransform(votedAgainstActorNumber).x, RoleButtonTransform(votedAgainstActorNumber).y, 0), Quaternion.identity);
+        }
+        if (Photonview(votedAgainstActorNumber).IsMine && Photonview(votedAgainstActorNumber).AmOwner)
+        {
+            GameObject negativeEffectVfx = Instantiate(_VFXprefabs.VFX[2], Vector3.zero, Quaternion.identity);
+        }
+    }
+
+    [PunRPC]
+    void WitchVFX(int votedAgainstActorNumber, int senderActorNumber)
+    {
+        if (Photonview(senderActorNumber).IsMine && Photonview(senderActorNumber).AmOwner)
+        {
+            GameObject witchVfx = Instantiate(_VFXprefabs.VFX[3], new Vector3(RoleButtonTransform(votedAgainstActorNumber).x, RoleButtonTransform(votedAgainstActorNumber).y, -402.1837f), Quaternion.identity);
+        }
+        if (Photonview(votedAgainstActorNumber).IsMine && Photonview(votedAgainstActorNumber).AmOwner)
+        {
+            GameObject witchVfx = Instantiate(_VFXprefabs.VFX[3], new Vector3(RoleButtonTransform(votedAgainstActorNumber).x, RoleButtonTransform(votedAgainstActorNumber).y, -402.1837f), Quaternion.identity);
+        }
+    }
+
+    [PunRPC]
+    void KnightAttackVFX(int votedAgainstActorNumber, int senderActorNumber)
+    {
+        if (Photonview(senderActorNumber).IsMine && Photonview(senderActorNumber).AmOwner)
+        {
+            GameObject knightAttackVfx = Instantiate(_VFXprefabs.VFX[4], new Vector3(RoleButtonTransform(votedAgainstActorNumber).x, RoleButtonTransform(votedAgainstActorNumber).y, 0f), Quaternion.identity);
+        }
+        if (Photonview(votedAgainstActorNumber).IsMine && Photonview(votedAgainstActorNumber).AmOwner)
+        {
+            GameObject knightAttackVfx = Instantiate(_VFXprefabs.VFX[4], new Vector3(RoleButtonTransform(votedAgainstActorNumber).x, RoleButtonTransform(votedAgainstActorNumber).y, 0f), Quaternion.identity);
+        }      
+    }
+
+    [PunRPC]
+    void DiscoverTheRoleVFX(int votedAgainstActorNumber, int senderActorNumber)
+    {
+        if (Photonview(senderActorNumber).IsMine && Photonview(senderActorNumber).AmOwner)
+        {
+            GameObject discoverTheRoleVfx = Instantiate(_VFXprefabs.VFX[5], new Vector3(RoleButtonTransform(votedAgainstActorNumber).x, RoleButtonTransform(votedAgainstActorNumber).y, 0f), Quaternion.identity);
+
+            RoleButtonController discoveredPlayer = PlayerBaseConditions.GetRoleButton(votedAgainstActorNumber);
+            discoveredPlayer._UI.VisibleToEveryoneImage = discoveredPlayer._UI.RoleImage;
+        }
+        if (Photonview(votedAgainstActorNumber).IsMine && Photonview(votedAgainstActorNumber).AmOwner)
+        {
+            GameObject eyeNegativeEffectVfx = Instantiate(_VFXprefabs.VFX[6], new Vector3(RoleButtonTransform(votedAgainstActorNumber).x, RoleButtonTransform(votedAgainstActorNumber).y, 0f), Quaternion.identity);
         }
     }
 
     bool IsInfected(int votedAgainstActorNumber)
     {
         return PlayerBaseConditions.GetRoleButton(votedAgainstActorNumber)._GameInfo.RoleName == RoleNames.Infected || PlayerBaseConditions.GetRoleButton(votedAgainstActorNumber)._GameInfo.RoleName == RoleNames.Lizard;
+    }
+
+    PhotonView Photonview(int actorNumber)
+    {
+        return PlayerBaseConditions._PlayerTagObject(actorNumber).GetComponent<PhotonView>();
+    }
+    Vector3 RoleButtonTransform(int actorNumber)
+    {
+        return PlayerBaseConditions.GetRoleButton(actorNumber).transform.position;
     }
 }

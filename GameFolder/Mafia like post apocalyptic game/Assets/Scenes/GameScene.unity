@@ -1135,14 +1135,14 @@ MonoBehaviour:
   _ListOfRoles:
     playersRolesNames:
     - Sheriff
-    - Soldier
     - Infected
-    - Medic
+    - Infected
+    - Sheriff
     - Infected
     - Soldier
     - Infected
     - Citizen
-    - Lizard
+    - Medic
     - Sheriff
     - Citizen
     - Infected
@@ -1171,8 +1171,8 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 1d475277864771143888c4e21a398a45, type: 3}
     - {fileID: 21300000, guid: 1d475277864771143888c4e21a398a45, type: 3}
     witcherRoleSprite:
-    - {fileID: 21300000, guid: 28084a8ad69e90649a5d1a271006f003, type: 3}
-    - {fileID: 21300000, guid: 28084a8ad69e90649a5d1a271006f003, type: 3}
+    - {fileID: 21300000, guid: ffd7cf1709a98ca48a1a53aa04f120bb, type: 3}
+    - {fileID: 21300000, guid: 8b968d0f797f8564eb494f47873dd232, type: 3}
     defaultSprites:
     - {fileID: 21300000, guid: b9f707049f7fcac47a17f6d9f19b1547, type: 3}
     - {fileID: 21300000, guid: b9f707049f7fcac47a17f6d9f19b1547, type: 3}
@@ -4671,7 +4671,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 436664d726292a54fa79d2168f4541ac, type: 3}
+    m_Font: {fileID: 12800000, guid: 4365539cd7f31364da4c239a284c78ab, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 1
@@ -5475,7 +5475,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 436664d726292a54fa79d2168f4541ac, type: 3}
+    m_Font: {fileID: 12800000, guid: 4365539cd7f31364da4c239a284c78ab, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 1
@@ -105171,6 +105171,16 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f0bdbd9bce3910a4d8447bd13900e2d1, type: 3}
   - {fileID: 8300000, guid: b4dd4aff4d02f074ab6b71712605335b, type: 3}
   - {fileID: 8300000, guid: 5dca93156ebef87479c50f8ba51273d7, type: 3}
+  - {fileID: 8300000, guid: a6fd3c10db2baaf43af0c350accb1afb, type: 3}
+  AbilitySoundFX:
+  - {fileID: 8300000, guid: edc9cce8c95c2854f9d8b1d8284798a0, type: 3}
+  - {fileID: 8300000, guid: f096ac53c17542c42b9307069926e1ba, type: 3}
+  - {fileID: 8300000, guid: 8299477b4a62ba644aab53c1f98ab966, type: 3}
+  - {fileID: 8300000, guid: 2b16c9101e8057340bc600e876a96583, type: 3}
+  - {fileID: 8300000, guid: 481830819c57ede49ad8e4ad2a97f7f8, type: 3}
+  - {fileID: 8300000, guid: d00e78b0ca5306849883369a767d32af, type: 3}
+  - {fileID: 8300000, guid: e13d50c6ec6dd464bae3538dd5c84a74, type: 3}
+  - {fileID: 8300000, guid: f4909c5c9fb00334095fc55bd17f7a25, type: 3}
 --- !u!114 &9093511863045106182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105193,9 +105203,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1559abf546a2501469c095f59c7b0ad1, type: 3}
+  m_audioClip: {fileID: 8300000, guid: ecc80d7db18da4a41ab13efa28db4fd9, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 1
   Mute: 0

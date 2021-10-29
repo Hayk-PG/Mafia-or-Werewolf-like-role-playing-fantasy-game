@@ -78,6 +78,11 @@ MonoBehaviour:
   - NightRPC
   - NightInLocalViewRPC
   - InitializeTimerCoroutine
+  - CreateHealerVFX
+  - OrcAttackVFX
+  - WitchVFX
+  - KnightAttackVFX
+  - DiscoverTheRoleVFX
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

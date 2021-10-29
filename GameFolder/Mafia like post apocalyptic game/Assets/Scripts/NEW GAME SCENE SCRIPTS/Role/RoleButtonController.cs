@@ -286,18 +286,6 @@ public class RoleButtonController : MonoBehaviourPun,IReset
     }
     #endregion
 
-    #region OnNightVotesFXInLocalView
-    public void OnNightVotesFXInLocalView(string roleName)
-    {
-        switch (roleName)
-        {
-            case RoleNames.Lizard: _GameObjects.WitcherFX.gameObject.SetActive(true); break;
-            case RoleNames.Medic: _GameObjects.MedicFX.gameObject.SetActive(true); break;
-            case RoleNames.Sheriff: _GameObjects.SheriffFX.gameObject.SetActive(true); break;
-        }       
-    }
-    #endregion
-
     #region IReset
     public void ResetWhileGameEndCoroutineIsRunning()
     {
