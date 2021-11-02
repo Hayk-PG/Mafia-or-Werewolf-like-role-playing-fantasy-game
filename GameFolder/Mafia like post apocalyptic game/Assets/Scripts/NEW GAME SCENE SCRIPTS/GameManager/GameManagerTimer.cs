@@ -130,6 +130,20 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
         public Dictionary<string, int> PointsOfTheLizard { get; set; }
         public Dictionary<string, int> PointsForEveryone { get; set; }
     }
+    [Serializable] public struct PointsGameObjects
+    {
+        [SerializeField] PointsPrefab pointsPrefab;
+        [SerializeField] Transform gameUI;
+
+        public PointsPrefab PointsPrefab
+        {
+            get => pointsPrefab;
+        }
+        public Transform GameUI
+        {
+            get => gameUI;
+        }
+    }
     public struct PhasesIcons
     {
         [SerializeField] bool isNightPhaseIconsActive;
@@ -151,6 +165,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     public LostPlayer _LostPlayer;
     public Teams _Teams;
     public GameEndData _GameEndData;
+    public PointsGameObjects _PointsGameObjects;
     public PhasesIcons _PhasesIcons;
 
     TimerTickSound _TimerTickSound { get; set; }
@@ -1178,6 +1193,8 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     {
         int medicsActorNumber = Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._GameInfo.RoleName == RoleNames.Medic)._OwnerInfo.OwnerActorNumber;
         AddOrRemovePoints(medicsActorNumber, _GameEndData.PointsOfTheDoctor, 75);
+
+        photonView.RPC("RewardRPC", PhotonNetwork.CurrentRoom.GetPlayer(medicsActorNumber), medicsActorNumber, 75);
     }
     #endregion
 
@@ -1199,10 +1216,12 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
                         if (playerAgainstWhomBeenVotedRolename != RoleNames.Infected && playerAgainstWhomBeenVotedRolename != RoleNames.Lizard)
                         {
                             AddOrRemovePoints(item.Key, _GameEndData.PointsForEveryone, 50);
+                            photonView.RPC("RewardRPC", PhotonNetwork.CurrentRoom.GetPlayer(item.Key), item.Key, 50);
                         }
                         else
                         {
                             AddOrRemovePoints(item.Key, _GameEndData.PointsForEveryone, -150);
+                            photonView.RPC("RewardRPC", PhotonNetwork.CurrentRoom.GetPlayer(item.Key), item.Key, -150);
                         }
                     }
                     else if (playerWhoHasVotedRolename != RoleNames.Infected && playerWhoHasVotedRolename != RoleNames.Lizard)
@@ -1210,14 +1229,31 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
                         if (playerAgainstWhomBeenVotedRolename == RoleNames.Infected || playerAgainstWhomBeenVotedRolename == RoleNames.Lizard)
                         {
                             AddOrRemovePoints(item.Key, _GameEndData.PointsForEveryone, 50);
+                            photonView.RPC("RewardRPC", PhotonNetwork.CurrentRoom.GetPlayer(item.Key), item.Key, 50);
                         }
                         else
                         {
                             AddOrRemovePoints(item.Key, _GameEndData.PointsForEveryone, -150);
+                            photonView.RPC("RewardRPC", PhotonNetwork.CurrentRoom.GetPlayer(item.Key), item.Key, -150);
                         }
                     }
                 }
             }
+        }
+    }
+    #endregion
+
+    #region RewardRPC
+    [PunRPC]
+    void RewardRPC(int ownActorNumber, int point)
+    {
+        RoleButtonController ownRoleButton = PlayerBaseConditions.GetRoleButton(ownActorNumber);
+
+        if(ownRoleButton._OwnerInfo.OwnerObj.GetComponent<PhotonView>().IsMine && ownRoleButton._OwnerInfo.OwnerObj.GetComponent<PhotonView>().AmOwner)
+        {
+            PointsPrefab points = Instantiate(_PointsGameObjects.PointsPrefab, _PointsGameObjects.GameUI);
+            points.Display(point > 0 ? "+" + point : "-" + point, point > 0 ? Color.green : Color.red);
+            points.transform.SetAsLastSibling();
         }
     }
     #endregion

@@ -8,7 +8,6 @@ public class CardsTabController : MonoBehaviour
     {
         [SerializeField] CanvasGroup deathTabCanvasGroup;
         [SerializeField] Text nameText;
-        [SerializeField] Animator deathCardAnim;
         [SerializeField] ParticleSystem FireEnchant;
         [SerializeField] ParticleSystem GodRaysSharp;
         [SerializeField] ParticleSystem SpikeVolcanicWall;
@@ -22,8 +21,6 @@ public class CardsTabController : MonoBehaviour
         internal void OpenDeathTab()
         {
             MyCanvasGroups.CanvasGroupActivity(deathTabCanvasGroup, true);
-            deathCardAnim.SetTrigger("play");
-            FireEnchant.Play();
             GodRaysSharp.Play();
             SpikeVolcanicWall.Play();
         }

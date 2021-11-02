@@ -18,7 +18,7 @@ public class OnClickResume : MonoBehaviour
         resumeButton.onClick.AddListener(() => 
         {
             Options.instance.OnPressedOptionsButtons();
-            PlayerBaseConditions.UiSounds.PlaySoundFX(0);
+            PlayerBaseConditions.UiSounds.PlaySoundFX(1);
         });
     }
 }

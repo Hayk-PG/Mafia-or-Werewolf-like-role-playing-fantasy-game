@@ -18,9 +18,15 @@ public class PointsPrefab : MonoBehaviour
         Invoke("Destroy", destroyTime);
     }
 
+    public void Display(string text, Color textColor)
+    {
+        this.text.text = text;
+        this.text.color = textColor;
+    }
+
     void Destroy()
     {
-        GameObject explosionVFXCopy = Instantiate(explosionVFX, transform.position, Quaternion.identity);
+        //GameObject explosionVFXCopy = Instantiate(explosionVFX, transform.position, Quaternion.identity);
         PlayerBaseConditions.UiSounds.PlaySoundFXinGame(7);
         Destroy(gameObject);
     }

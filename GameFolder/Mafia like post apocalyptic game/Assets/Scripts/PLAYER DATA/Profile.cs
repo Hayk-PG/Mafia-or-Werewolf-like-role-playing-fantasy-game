@@ -590,6 +590,7 @@ public class Profile : MonoBehaviourPun
             if (button == CloseButton)
             {
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[0], false);
+                PlayerBaseConditions.UiSounds.PlaySoundFX(1);
             }                     
             if (button == LogOutButton)
             {
@@ -633,7 +634,7 @@ public class Profile : MonoBehaviourPun
                 //Android.OnPickGalleryImage(Android.profilePictureUploadMethod = AndroidGoodiesExamples.OtherGoodiesTest.ProfilePictureUploadMethod.Profile);
             }
 
-            PlayerBaseConditions.UiSounds.PlaySoundFX(0);
+            
         });
     }
     #endregion
@@ -752,7 +753,7 @@ public class Profile : MonoBehaviourPun
     }
     #endregion
 
-    #region OnClickFriendMessageButton
+    #region OnClickFriendProfileButtons
     void OnClickFriendProfileButtons(Button button)
     {
         button.onClick.RemoveAllListeners();
@@ -778,7 +779,7 @@ public class Profile : MonoBehaviourPun
             if(button == CloseFriendMessageButton)
             {
                 MyCanvasGroups.CanvasGroupActivity(CanvasGroups[7], false);
-                PlayerBaseConditions.UiSounds.PlaySoundFX(0);
+                PlayerBaseConditions.UiSounds.PlaySoundFX(1);
             }         
         });
     }
@@ -962,7 +963,7 @@ public class Profile : MonoBehaviourPun
             RankNumber = RankNumberValueByPoints(Stats.Points).ToString();
             Points = Stats.Points.ToString("N0") + "/550,000";
             WinsPercent = float.Parse(TimePlayed) < 1 ? 0: Mathf.Abs((Stats.Win / float.Parse(TimePlayed)) * 100);
-            WinImageAmountValue = WinsPercent;
+            WinImageAmountValue = WinsPercent / 100;
             WinsCount = Stats.Win;
             LossesCount = Stats.Lost;
             //SkillValue = Stats.overallSkills;
@@ -1097,7 +1098,7 @@ public class Profile : MonoBehaviourPun
         {
             for (int i = 0; i < _LeaderboardTab.Container.childCount; i++)
             {
-                Destroy(_LeaderboardTab.Container.GetChild(0).gameObject);
+                Destroy(_LeaderboardTab.Container.GetChild(i).gameObject);
             }
         }
 

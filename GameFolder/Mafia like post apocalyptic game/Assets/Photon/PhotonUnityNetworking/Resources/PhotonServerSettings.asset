@@ -83,6 +83,7 @@ MonoBehaviour:
   - WitchVFX
   - KnightAttackVFX
   - DiscoverTheRoleVFX
+  - RewardRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

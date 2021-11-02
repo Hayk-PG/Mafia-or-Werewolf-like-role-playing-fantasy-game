@@ -19,7 +19,6 @@ public class OnClickMainMenu : MonoBehaviour
         mainMenuButton.onClick.RemoveAllListeners();
         mainMenuButton.onClick.AddListener(() => 
         {
-            PlayerBaseConditions.UiSounds.PlaySoundFX(0);
             BackToMainMenu();
         });
     }

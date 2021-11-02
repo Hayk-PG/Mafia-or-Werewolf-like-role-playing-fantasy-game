@@ -1,10 +1,10 @@
 ﻿
 public static class RoleNames
 {
-    public const string Citizen = "Citizen";
-    public const string Medic = "Medic";
-    public const string Sheriff = "Sheriff";
-    public const string Soldier = "Soldier";
-    public const string Infected = "Infected";
-    public const string Lizard = "Lizard";
+    public const string Citizen = "Teegrun";
+    public const string Medic = "Drmbone";
+    public const string Sheriff = "Zaqeel";
+    public const string Soldier = "Aspet";
+    public const string Infected = "Kldros";
+    public const string Lizard = "Terefes";
 }

@@ -16,6 +16,8 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
     PlayerUpdateStats _PlayerUpdateStats { get; set; }
     InformPlayerRole _InformPlayerRole { get; set; }
     UISoundsInGame _UISoundsInGame { get; set; }
+    GameManagerEnvironmentController _GameManagerEnvironmentController { get; set; }
+    PlayerMusicController _PlayerMusicController { get; set; }
 
 
     void Awake()
@@ -23,6 +25,8 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
         _PlayerUpdateStats = GetComponent<PlayerUpdateStats>();
         _InformPlayerRole = FindObjectOfType<InformPlayerRole>();
         _UISoundsInGame = PlayerBaseConditions.UiSounds as UISoundsInGame;
+        _GameManagerEnvironmentController = FindObjectOfType<GameManagerEnvironmentController>();
+        _PlayerMusicController = GetComponent<PlayerMusicController>();
     }
 
     void Update()
@@ -34,7 +38,7 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
                 if (IsPlayerRoleSet && !_PlayerUpdateStats._Conditions.isPlayerRoleSet)
                 {
                     StartCoroutine(InformPlayerRolePopUp());
-                    //UpdatePlayedRolesStats();
+                    _UISoundsInGame.SetDefaultMusic();
                     PlayerCustomPropertiesController.PCPC.SetPhotonPlayerLastRoomName(PhotonNetwork.CurrentRoom.Name);
                 }               
             }
@@ -99,6 +103,7 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
     {
         PlayerBaseConditions.LocalPlayer.CustomProperties.Remove(PlayerKeys.SetPlayersRoleKeys.RoomName);
         MyCanvasGroups.CanvasGroupActivity(_InformPlayerRole._UI.CanvasGroup, false);
+        _GameManagerEnvironmentController.ResetWhileGameEndCoroutineIsRunning();      
     }
 
     public void ResetAtTheEndOfTheGameEndCoroutine()

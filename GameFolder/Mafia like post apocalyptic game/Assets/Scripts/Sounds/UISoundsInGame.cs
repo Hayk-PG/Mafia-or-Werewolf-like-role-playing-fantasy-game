@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class UISoundsInGame : UiSoundsBaseScript
 {
@@ -8,6 +9,7 @@ public class UISoundsInGame : UiSoundsBaseScript
     public override AudioSource[] AudioSRC { get => audioSRC; }
     public override AudioClip[] SoundFX { get => soundFX; }
 
+    [SerializeField] AudioClip[] Musics;
     [SerializeField] AudioClip[] GameSoundFX;
     [SerializeField] AudioClip[] AbilitySoundFX;
 
@@ -30,4 +32,45 @@ public class UISoundsInGame : UiSoundsBaseScript
     {
         AudioSRC[1].PlayOneShot(AbilitySoundFX[index]);
     }
+
+    #region SwitchMusic
+    public void SwitchMusic()
+    {
+        StartCoroutine(SwitchMusicCoroutine()); 
+    }
+
+    IEnumerator SwitchMusicCoroutine()
+    {
+        yield return null;
+
+        while(AudioSRC[0].volume > 0)
+        {
+            AudioSRC[0].volume -= 0.5f * Time.deltaTime;
+            yield return null;
+        }
+
+        AudioSRC[0].volume = 0;
+        AudioSRC[0].enabled = false;
+        AudioSRC[0].clip = Musics[1];
+        AudioSRC[0].enabled = true;
+
+        yield return null;
+
+        while (AudioSRC[0].volume < 0.4)
+        {
+            AudioSRC[0].volume += 0.5f * Time.deltaTime;
+            yield return null;
+        }
+    }
+    #endregion
+
+    #region SetDefaultMusic
+    public void SetDefaultMusic()
+    {
+        AudioSRC[0].volume = 0.4f;
+        AudioSRC[0].enabled = false;
+        AudioSRC[0].clip = Musics[0];
+        AudioSRC[0].enabled = true;
+    }
+    #endregion
 }
