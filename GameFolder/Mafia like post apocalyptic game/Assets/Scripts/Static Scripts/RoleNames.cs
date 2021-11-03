@@ -1,10 +1,10 @@
 ﻿
 public static class RoleNames
 {
-    public static string Citizen {get; set;} = "Teegrun";
-    public static string Medic { get; set; } = "Drmbone";
-    public static string Sheriff { get; set; } = "Zaqeel";
-    public static string Soldier { get; set; } = "Aspet";
-    public static string Infected { get; set; } = "Kldros";
-    public static string Lizard { get; set; } = "Terefes";
+    public const string Citizen = "Teegrun";
+    public const string Medic = "Drmbone";
+    public const string Sheriff = "Zaqeel";
+    public const string Soldier = "Aspet";
+    public const string Infected = "Kldros";
+    public const string Lizard = "Terefes";
 }
