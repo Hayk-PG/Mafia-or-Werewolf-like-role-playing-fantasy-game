@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class UISoundsInGame : UiSoundsBaseScript
+public class UISoundsInGame : UiSoundsBaseScript, IReset
 {
     /// <summary>
     /// 0: Music 1: Audio
@@ -64,8 +64,13 @@ public class UISoundsInGame : UiSoundsBaseScript
     }
     #endregion
 
-    #region SetDefaultMusic
-    public void SetDefaultMusic()
+    #region IReset
+    public void ResetWhileGameEndCoroutineIsRunning()
+    {
+        
+    }
+
+    public void ResetAtTheEndOfTheGameEndCoroutine()
     {
         AudioSRC[0].volume = 0.4f;
         AudioSRC[0].enabled = false;

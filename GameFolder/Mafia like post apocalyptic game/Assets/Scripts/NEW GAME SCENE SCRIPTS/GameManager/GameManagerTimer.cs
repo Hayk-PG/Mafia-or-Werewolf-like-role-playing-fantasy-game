@@ -176,6 +176,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     CardsTabController _CardsTabController { get; set; }
     EndTab _EndTab { get; set; }
     GameStartAnnouncement _GameStartAnnouncement { get; set; }
+    UISoundsInGame _UISoundsInGame { get; set; }
 
     public delegate void PhaseCallback(bool isResetPhase);
     public PhaseCallback IsResetPhaseActive;
@@ -193,6 +194,7 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
         _CardsTabController = FindObjectOfType<CardsTabController>();
         _EndTab = FindObjectOfType<EndTab>();
         _GameStartAnnouncement = GetComponent<GameStartAnnouncement>();
+        _UISoundsInGame = FindObjectOfType<UISoundsInGame>();
     }
 
     void OnEnable()
@@ -1040,16 +1042,19 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
         object[] datas = (object[])obj.CustomData;
 
         _EndTab?.GetComponent<IReset>().ResetAtTheEndOfTheGameEndCoroutine();
+        _UISoundsInGame?.GetComponent<IReset>().ResetAtTheEndOfTheGameEndCoroutine();
 
         if (photonView.IsMine)
         {
-            //_Timer.GameEndSeconds = 0;
-            //_Timer.IsGameFinished = false;
-
             foreach (var iReset in GetComponents<IReset>())
             {
                 iReset?.ResetAtTheEndOfTheGameEndCoroutine();
             }
+        }
+
+        foreach (var iReset in PlayerBaseConditions._LocalPlayerTagObject.GetComponents<IReset>())
+        {
+            iReset?.ResetAtTheEndOfTheGameEndCoroutine();
         }
     }
     #endregion
