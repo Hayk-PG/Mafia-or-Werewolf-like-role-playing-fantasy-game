@@ -85,7 +85,7 @@ public class PlayerCustomPropertiesController : MonoBehaviourPun
     #region SetPhotonPlayerLastRoomName
     public void SetPhotonPlayerLastRoomName(string roomName)
     {
-        PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoomName] = roomName;
+        PlayerBaseConditions.LocalPlayer.CustomProperties[PlayerKeys.RoomKeys.RoomName] = roomName;
     }
     #endregion
 }

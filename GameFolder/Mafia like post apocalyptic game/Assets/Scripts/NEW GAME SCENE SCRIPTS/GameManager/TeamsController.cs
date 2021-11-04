@@ -39,7 +39,7 @@ public class TeamsController : MonoBehaviour,IReset
 
         foreach (var teams in _TeamsCount.Team)
         {
-            if (teams.Value == RoleNames.Infected || teams.Value == RoleNames.Lizard)
+            if (teams.Value == RoleNames.Infected || teams.Value == RoleNames.Lizard || teams.Value == RoleNames.MonsterKing)
                 _TeamsCount.SecondTeamCount++;
             else _TeamsCount.FirstTeamCount++;
         }
@@ -56,7 +56,7 @@ public class TeamsController : MonoBehaviour,IReset
 
             if (roleButton != null && roleButton._GameInfo.IsPlayerAlive)
             {
-                if (roleButton._GameInfo.RoleName == RoleNames.Infected || roleButton._GameInfo.RoleName == RoleNames.Lizard) _TeamsCount.SecondTeamCount++;
+                if (roleButton._GameInfo.RoleName == RoleNames.Infected || roleButton._GameInfo.RoleName == RoleNames.Lizard || roleButton._GameInfo.RoleName == RoleNames.MonsterKing) _TeamsCount.SecondTeamCount++;
                 else _TeamsCount.FirstTeamCount++;
             }
         }

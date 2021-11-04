@@ -7,7 +7,7 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
 {   
     internal bool IsPlayerFirstTimeInThisRoom
     {
-        get => !PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(PlayerKeys.SetPlayersRoleKeys.RoomName) || PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(PlayerKeys.SetPlayersRoleKeys.RoomName) && (string)PhotonNetwork.LocalPlayer.CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoomName] != PhotonNetwork.CurrentRoom.Name;
+        get => !PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(PlayerKeys.RoomKeys.RoomName) || PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(PlayerKeys.RoomKeys.RoomName) && (string)PhotonNetwork.LocalPlayer.CustomProperties[PlayerKeys.RoomKeys.RoomName] != PhotonNetwork.CurrentRoom.Name;
     }
     internal bool IsPlayerRoleSet
     {
@@ -98,7 +98,7 @@ public class PlayerOnGameStart : MonoBehaviourPun,IReset
     #region IReset
     public void ResetWhileGameEndCoroutineIsRunning()
     {
-        PlayerBaseConditions.LocalPlayer.CustomProperties.Remove(PlayerKeys.SetPlayersRoleKeys.RoomName);
+        PlayerBaseConditions.LocalPlayer.CustomProperties.Remove(PlayerKeys.RoomKeys.RoomName);
         MyCanvasGroups.CanvasGroupActivity(_InformPlayerRole._UI.CanvasGroup, false);      
     }
 

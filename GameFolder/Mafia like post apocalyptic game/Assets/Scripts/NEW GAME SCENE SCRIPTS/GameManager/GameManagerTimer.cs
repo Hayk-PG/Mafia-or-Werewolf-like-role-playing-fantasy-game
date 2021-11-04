@@ -897,15 +897,26 @@ public class GameManagerTimer : MonoBehaviourPun,IReset
     {
         if (_Timer.NightsCount > 0 && !_CardsTabController.CardsTabCanvasGroup.interactable)
         {
-            if (_TeamsController._TeamsCount.FirstTeamCount > _TeamsController._TeamsCount.SecondTeamCount + 3 || _TeamsController._TeamsCount.SecondTeamCount < 1)
+            if (_TeamsController._TeamsCount.FirstTeamCount > _TeamsController._TeamsCount.SecondTeamCount + 3 || _TeamsController._TeamsCount.SecondTeamCount < 1 || IsHumanKingDead())
             {
                 GameEndControllerByMasterClient(true);               
             }
-            if (_TeamsController._TeamsCount.FirstTeamCount < _TeamsController._TeamsCount.SecondTeamCount - 2 || _TeamsController._TeamsCount.FirstTeamCount < 1)
+            if (_TeamsController._TeamsCount.FirstTeamCount < _TeamsController._TeamsCount.SecondTeamCount - 2 || _TeamsController._TeamsCount.FirstTeamCount < 1 || IsMonsterKingDead())
             {
                 GameEndControllerByMasterClient(false);
             }
         }
+    }
+
+    bool IsHumanKingDead()
+    {
+        return Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._GameInfo.RoleName == RoleNames.HumanKing) != null &&
+            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._GameInfo.RoleName == RoleNames.HumanKing)._GameInfo.IsPlayerAlive == false;
+    }
+    bool IsMonsterKingDead()
+    {
+        return Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._GameInfo.RoleName == RoleNames.MonsterKing) != null &&
+            Array.Find(_GameManagerSetPlayersRoles._RoleButtonControllers.RoleButtons, roleButton => roleButton._GameInfo.RoleName == RoleNames.MonsterKing)._GameInfo.IsPlayerAlive == false;
     }
     #endregion
 

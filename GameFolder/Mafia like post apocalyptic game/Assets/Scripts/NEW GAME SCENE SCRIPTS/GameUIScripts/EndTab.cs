@@ -71,18 +71,20 @@ public class EndTab : MonoBehaviour,IReset
     #endregion
 
     #region DisplayPublicScores
-    public void DisplayPublicScores(string roleName, string playerName, string score)
+    public void DisplayPublicScores(string roleName, string playerName, int score)
     {
         MyCanvasGroups.CanvasGroupActivity(_UI.ScoresTabCanvasGroup, true);
-        _UI.PublicScores += "<color=#ffa500ff> (" + roleName + ")</color>" + " " + playerName + "   +" + "<color=#00ff00ff>" + score + "</color>" + "\n";
+        string scoreString = score > 0 ? "+" + score : score.ToString();
+        _UI.PublicScores += "<color=#ffa500ff> (" + roleName + ")</color>" + " " + playerName + "<color=#00ff00ff> " + scoreString + "</color>" + "\n";
     }
     #endregion
 
     #region DisplayYourScores
-    public void DisplayYourScores(string roleName, string playerName, string score)
+    public void DisplayYourScores(string roleName, string playerName, int score)
     {
         MyCanvasGroups.CanvasGroupActivity(_UI.ScoresTabCanvasGroup, true);
-        _UI.YourScores += "<color=#ffa500ff> (" + roleName + ")</color>" + " " + playerName + "  <color=#00ff00ff> +" + score + "</color>" + "\n";
+        string scoreString = score > 0 ? "+" + score : score.ToString();
+        _UI.YourScores += "<color=#ffa500ff> (" + roleName + ")</color>" + " " + playerName + "<color=#00ff00ff> " + scoreString + "</color>" + "\n";
     }
     #endregion
 

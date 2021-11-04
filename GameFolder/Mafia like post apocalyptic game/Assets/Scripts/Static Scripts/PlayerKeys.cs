@@ -96,8 +96,7 @@ public static class PlayerKeys
         public const string AvatarButtonIndex = "AvatarButtonIndex";
         public const string RoleNumber = "RoleNumber";
         public const string TakeAvatarButtonOwnership = "TakeAvatarButtonOwnership";
-        public const string RoleName = "RoleName";
-        public const string RoomName = "RoomName";
+        public const string RoleName = "RoleName";      
         public const string SetOwnedAvatarButtonSprite = "SetOwnedAvatarButtonSprite";
     }
     #endregion
@@ -105,5 +104,13 @@ public static class PlayerKeys
     #region Playfab JSon Object keys
     public static string PlayfabObjectDefaultKey = "Data";
     public static string PlayfabJsonDataKey_ProfilePictureOffset = "ProfilePictureOffset";
+    #endregion
+
+    #region Room keys
+    public struct RoomKeys
+    {
+        public const string RoomName = "RoomName";
+        public const string KingMode = "KingMode";
+    }
     #endregion
 }

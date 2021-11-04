@@ -28,7 +28,239 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun,IReset
 
         public List<string> PlayersRolesNames
         {
-            get => playersRolesNames;
+            get
+            {
+                if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("test"))
+                {
+                  return
+                  PhotonNetwork.PlayerList.Length == 1 ? new List<string>(1)
+                  {
+                    //RoleNames.Citizen,
+                    //RoleNames.Citizen,
+                    //RoleNames.Medic,
+                    //RoleNames.Sheriff,
+                    //RoleNames.HumanKing,
+                    //RoleNames.Infected,
+                    //RoleNames.Infected,
+                    //RoleNames.Infected
+                    RoleNames.HumanKing
+                  } :
+                  PhotonNetwork.PlayerList.Length == 9 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected
+                  } :
+                  PhotonNetwork.PlayerList.Length == 10 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected
+                  } :
+                  PhotonNetwork.PlayerList.Length == 11 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected
+                  } :
+                  PhotonNetwork.PlayerList.Length == 12 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.Soldier,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Lizard
+                  } :
+                  PhotonNetwork.PlayerList.Length == 13 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.Soldier,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Lizard
+                  } :
+                  PhotonNetwork.PlayerList.Length == 14 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.Soldier,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
+                  } :
+                  PhotonNetwork.PlayerList.Length == 15 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.Soldier,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
+                  } :
+                  PhotonNetwork.PlayerList.Length == 16 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.Soldier,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
+                  } :
+                  PhotonNetwork.PlayerList.Length == 17 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.Soldier,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
+                  } :
+                  PhotonNetwork.PlayerList.Length == 18 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.Soldier,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
+                  } :
+                  PhotonNetwork.PlayerList.Length == 19 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.Soldier,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
+                  } :
+                  PhotonNetwork.PlayerList.Length == 20 ? new List<string>(8)
+                  {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Medic,
+                    RoleNames.Sheriff,
+                    RoleNames.Soldier,
+                    RoleNames.HumanKing,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Infected,
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
+                  } : playersRolesNames;
+                }
+                else
+                {
+                    return playersRolesNames;
+                }
+            }
         }
     }
     [Serializable] public class ImageOfRoles
@@ -39,6 +271,8 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun,IReset
         [SerializeField] Sprite[] soldierRoleSprite;
         [SerializeField] Sprite[] infectedRoleSprites;
         [SerializeField] Sprite[] witcherRoleSprite;
+        [SerializeField] Sprite[] humanKingSprite;
+        [SerializeField] Sprite[] monsterKingSprite;
         [SerializeField] Sprite[] defaultSprites;
 
         public Sprite[] CitizenRoleSprites
@@ -64,6 +298,14 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun,IReset
         public Sprite[] WitcherRoleSprites
         {
             get => witcherRoleSprite;
+        }
+        public Sprite[] HumanKing
+        {
+            get => humanKingSprite;
+        }
+        public Sprite[] MonsterKing
+        {
+            get => monsterKingSprite;
         }
         public Sprite[] DefaultSprite
         {
@@ -206,8 +448,10 @@ public class GameManagerSetPlayersRoles : MonoBehaviourPun,IReset
             case RoleNames.Medic: roleImage = _ImageOfRoles.DoctorRoleSprites[gender]; break;
             case RoleNames.Sheriff: roleImage = _ImageOfRoles.SheriffRoleSprites[gender]; break;
             case RoleNames.Soldier: roleImage = _ImageOfRoles.SoldierRoleSprite[gender]; break;
+            case RoleNames.HumanKing: roleImage = _ImageOfRoles.HumanKing[gender]; break;
             case RoleNames.Infected: roleImage = _ImageOfRoles.InfectedRoleSprites[gender]; break;
             case RoleNames.Lizard: roleImage = _ImageOfRoles.WitcherRoleSprites[gender]; break;
+            case RoleNames.MonsterKing: roleImage = _ImageOfRoles.MonsterKing[gender]; break;
         }
 
         return roleImage;

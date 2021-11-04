@@ -56,7 +56,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (humansWin)
         {
-            if (ownRoleName != RoleNames.Infected && ownRoleName != RoleNames.Lizard)
+            if (ownRoleName != RoleNames.Infected && ownRoleName != RoleNames.Lizard && ownRoleName != RoleNames.MonsterKing)
             {
                 _GameManagerTimer.AddOrRemovePoints(PhotonNetwork.LocalPlayer.ActorNumber, _GameManagerTimer._GameEndData.PointsForEveryone, 50);
                 PlayerBaseConditions.UiSounds.PlaySoundFXinGame(9);
@@ -65,7 +65,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
         }
         else
         {
-            if (ownRoleName != RoleNames.Infected && ownRoleName != RoleNames.Lizard)
+            if (ownRoleName != RoleNames.Infected && ownRoleName != RoleNames.Lizard && ownRoleName != RoleNames.MonsterKing)
             {
                 _GameManagerTimer.AddOrRemovePoints(PhotonNetwork.LocalPlayer.ActorNumber, _GameManagerTimer._GameEndData.PointsForEveryone, -30);
                 PlayerBaseConditions.UiSounds.PlaySoundFXinGame(8);
@@ -78,9 +78,9 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     #region IfInfectedsWin
     void IfInfectedsWin(string ownRoleName, bool humansWin)
     {
-        if (!_GameManagerTimer._GameEndData.HumansWin)
+        if (!humansWin)
         {
-            if (ownRoleName == RoleNames.Infected || ownRoleName == RoleNames.Lizard)
+            if (ownRoleName == RoleNames.Infected || ownRoleName == RoleNames.Lizard || ownRoleName == RoleNames.MonsterKing)
             {
                 _GameManagerTimer.AddOrRemovePoints(PhotonNetwork.LocalPlayer.ActorNumber, _GameManagerTimer._GameEndData.PointsForEveryone, 50);
                 PlayerBaseConditions.UiSounds.PlaySoundFXinGame(9);
@@ -89,7 +89,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
         }
         else
         {
-            if (ownRoleName == RoleNames.Infected || ownRoleName == RoleNames.Lizard)
+            if (ownRoleName == RoleNames.Infected || ownRoleName == RoleNames.Lizard || ownRoleName == RoleNames.MonsterKing)
             {
                 _GameManagerTimer.AddOrRemovePoints(PhotonNetwork.LocalPlayer.ActorNumber, _GameManagerTimer._GameEndData.PointsForEveryone, -30);
                 PlayerBaseConditions.UiSounds.PlaySoundFXinGame(8);
@@ -104,7 +104,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheDoctor, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheDoctor[playfabId] > minHighestPoint)
         {
-            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheDoctor[playfabId].ToString());
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheDoctor[playfabId]);
         }
     }
     #endregion
@@ -114,7 +114,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheSheriff, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheSheriff[playfabId] > minHighestPoint)
         {
-            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheSheriff[playfabId].ToString());
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheSheriff[playfabId]);
         }
     }
     #endregion
@@ -124,7 +124,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheSoldier, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheSoldier[playfabId] > minHighestPoint)
         {
-            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheSoldier[playfabId].ToString());
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheSoldier[playfabId]);
         }
     }
     #endregion
@@ -134,7 +134,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheInfected, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheInfected[playfabId] > minHighestPoint)
         {
-            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheInfected[playfabId].ToString());
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheInfected[playfabId]);
         }
     }
     #endregion
@@ -144,7 +144,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsOfTheLizard, playfabId) && _GameManagerTimer._GameEndData.PointsOfTheLizard[playfabId] > minHighestPoint)
         {
-            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheLizard[playfabId].ToString());
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsOfTheLizard[playfabId]);
         }
     }
     #endregion
@@ -154,7 +154,7 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
     {
         if (CheckDict(_GameManagerTimer._GameEndData.PointsForEveryone, playfabId) && _GameManagerTimer._GameEndData.PointsForEveryone[playfabId] > minHighestPoint)
         {
-            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsForEveryone[playfabId].ToString());
+            _EndTab.DisplayPublicScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], _GameManagerTimer._GameEndData.PointsForEveryone[playfabId]);
         }
     }
     #endregion
@@ -170,42 +170,42 @@ public class PlayerScreenOnGameEnd : MonoBehaviourPun
             {
                 score += _GameManagerTimer._GameEndData.PointsOfTheDoctor[PhotonNetwork.LocalPlayer.UserId];
 
-                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score.ToString());
+                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score);
             }
 
             if (_GameManagerTimer._GameEndData.PointsOfTheSheriff.ContainsKey(PhotonNetwork.LocalPlayer.UserId))
             {
                 score += _GameManagerTimer._GameEndData.PointsOfTheSheriff[PhotonNetwork.LocalPlayer.UserId];
 
-                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score.ToString());
+                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score);
             }
 
             if (_GameManagerTimer._GameEndData.PointsOfTheSoldier.ContainsKey(PhotonNetwork.LocalPlayer.UserId))
             {
                 score += _GameManagerTimer._GameEndData.PointsOfTheSoldier[PhotonNetwork.LocalPlayer.UserId];
 
-                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score.ToString());
+                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score);
             }
 
             if (_GameManagerTimer._GameEndData.PointsOfTheInfected.ContainsKey(PhotonNetwork.LocalPlayer.UserId))
             {
                 score += _GameManagerTimer._GameEndData.PointsOfTheInfected[PhotonNetwork.LocalPlayer.UserId];
 
-                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score.ToString());
+                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score);
             }
 
             if (_GameManagerTimer._GameEndData.PointsOfTheLizard.ContainsKey(PhotonNetwork.LocalPlayer.UserId))
             {
                 score += _GameManagerTimer._GameEndData.PointsOfTheLizard[PhotonNetwork.LocalPlayer.UserId];
 
-                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score.ToString());
+                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score);
             }
 
             if (_GameManagerTimer._GameEndData.PointsForEveryone.ContainsKey(PhotonNetwork.LocalPlayer.UserId))
             {
                 score += _GameManagerTimer._GameEndData.PointsForEveryone[PhotonNetwork.LocalPlayer.UserId] + 15;
 
-                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score.ToString());
+                _EndTab.DisplayYourScores(_GameManagerTimer._GameEndData.PlayersRolesInLastRound[playfabId], _GameManagerTimer._GameEndData.PlayersCachedNames[playfabId], score);
 
                 UpdateLocalPlayerStats(playfabId, score);
             }

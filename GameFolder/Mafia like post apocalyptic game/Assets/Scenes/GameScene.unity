@@ -1193,6 +1193,12 @@ MonoBehaviour:
     witcherRoleSprite:
     - {fileID: 21300000, guid: ffd7cf1709a98ca48a1a53aa04f120bb, type: 3}
     - {fileID: 21300000, guid: 8b968d0f797f8564eb494f47873dd232, type: 3}
+    humanKingSprite:
+    - {fileID: 21300000, guid: eb6234aa4f88e9642a331c812fe5ea76, type: 3}
+    - {fileID: 21300000, guid: eb6234aa4f88e9642a331c812fe5ea76, type: 3}
+    monsterKingSprite:
+    - {fileID: 21300000, guid: 19fa4e36c2f26454684150a5a9abcef6, type: 3}
+    - {fileID: 21300000, guid: 19fa4e36c2f26454684150a5a9abcef6, type: 3}
     defaultSprites:
     - {fileID: 21300000, guid: b9f707049f7fcac47a17f6d9f19b1547, type: 3}
     - {fileID: 21300000, guid: b9f707049f7fcac47a17f6d9f19b1547, type: 3}
@@ -2837,7 +2843,7 @@ PrefabInstance:
     - target: {fileID: 6740486337951315787, guid: bf3b88fd68097e24f8272a6840855efd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.25302315
+      value: -0.25302124
       objectReference: {fileID: 0}
     - target: {fileID: 6740486338131692448, guid: bf3b88fd68097e24f8272a6840855efd,
         type: 3}
@@ -4838,7 +4844,7 @@ PrefabInstance:
     - target: {fileID: 6740486337951315787, guid: bf3b88fd68097e24f8272a6840855efd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.25298882
+      value: -0.25299072
       objectReference: {fileID: 0}
     - target: {fileID: 6740486338131692448, guid: bf3b88fd68097e24f8272a6840855efd,
         type: 3}
@@ -9360,7 +9366,7 @@ PrefabInstance:
     - target: {fileID: 6740486337951315787, guid: bf3b88fd68097e24f8272a6840855efd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.25301933
+      value: -0.25302124
       objectReference: {fileID: 0}
     - target: {fileID: 6740486338131692448, guid: bf3b88fd68097e24f8272a6840855efd,
         type: 3}
@@ -10477,7 +10483,7 @@ PrefabInstance:
     - target: {fileID: 6740486337951315787, guid: bf3b88fd68097e24f8272a6840855efd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.25302315
+      value: -0.25302124
       objectReference: {fileID: 0}
     - target: {fileID: 6740486338131692448, guid: bf3b88fd68097e24f8272a6840855efd,
         type: 3}

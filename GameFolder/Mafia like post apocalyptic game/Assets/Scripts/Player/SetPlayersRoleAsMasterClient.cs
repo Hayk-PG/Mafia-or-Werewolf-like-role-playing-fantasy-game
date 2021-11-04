@@ -208,7 +208,7 @@ public class SetPlayersRoleAsMasterClient : MonoBehaviourPun
         PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoleNumber] = RoleIndex;
         PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.TakeAvatarButtonOwnership] = true;
         PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoleName] = GameControllerComponents.instance.InstantiatePlayers.PlayersRolesNames[RoleIndex];
-        PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.SetPlayersRoleKeys.RoomName] = PhotonNetwork.CurrentRoom.Name;
+        PhotonNetwork.PlayerList[PlayerIndex].CustomProperties[PlayerKeys.RoomKeys.RoomName] = PhotonNetwork.CurrentRoom.Name;
 
 
     }
