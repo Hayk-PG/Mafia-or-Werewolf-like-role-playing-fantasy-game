@@ -121,7 +121,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _InvFade: 1
+    - _InvFade: 2.04
     - _MainTexOffset: 0.28
     - _MainTexOffsetX: 0.47
     - _MainTexOffsetY: 0
