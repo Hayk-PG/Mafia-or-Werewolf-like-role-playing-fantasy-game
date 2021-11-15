@@ -17,24 +17,24 @@ MonoBehaviour:
     Event: 500
     blitMaterial: {fileID: 2100000, guid: 0d439bd919acb754099435230811f0fe, type: 2}
     Blur: 0
-    BlurAmount: 1
+    BlurAmount: 0
     BlurMask: {fileID: 0}
     Bloom: 0
     BloomColor: {r: 1, g: 1, b: 1, a: 1}
     BloomAmount: 1
-    BloomDiffuse: 1
-    BloomThreshold: 0
+    BloomDiffuse: 0.2
+    BloomThreshold: 0.25
     BloomSoftness: 0
-    LUT: 0
-    LutAmount: 0
-    SourceLut: {fileID: 0}
+    LUT: 1
+    LutAmount: 0.5
+    SourceLut: {fileID: 2800000, guid: d2a7d9fb16afbb4439321a8386649f8f, type: 3}
     ImageFiltering: 0
     Color: {r: 1, g: 1, b: 1, a: 1}
     Contrast: 0
     Brightness: 0
-    Saturation: 0
+    Saturation: 0.14
     Exposure: 0
-    Gamma: 0
+    Gamma: -0.03
     Sharpness: 0
     ChromaticAberration: 0
     Offset: 0.2
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RendererFeatures:
   - {fileID: -754972587007797143}
-  m_RendererFeatureMap: 
+  m_RendererFeatureMap: 68809f061d4a0e9a
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   shaders:
     blitPS: {fileID: 4800000, guid: c17132b1f77d20942aa75f8429c0f8bc, type: 3}

@@ -63,7 +63,6 @@ public class CardMovement : MonoBehaviour
         {
             get => GameObject.Find("GameUI").transform;
         }
-        public Transform CardsHolderTransform { get; set; }
         public float Distance
         {
             get => distance;
@@ -111,24 +110,28 @@ public class CardMovement : MonoBehaviour
 
     void Awake()
     {
-        _Transforms.CardsHolderTransform = transform.parent;
         _CardsHolder = FindObjectOfType<CardsHolder>();
     }
 
     void Update()
     {
         _UI.CardButton.onClick.RemoveAllListeners();
-        _UI.CardButton.onClick.AddListener(() => 
-        {
-            _Conditions.IsMoving = true;
-            _CardsHolder._Conditions.Maximize = true;
+        _UI.CardButton.onClick.AddListener(OnCardClick);
 
-            for (int i = 0; i < _Transforms.CardsHolderTransform.childCount; i++)
-            {
-                _Transforms.CardsHolderTransform.GetChild(i).GetComponent<CardMovement>()._UI.CardButton.interactable = false;
-            }
-        });
+        CardTransformUpdate();
+    }
 
+    void OnCardClick()
+    {        
+        _Conditions.IsMoving = true;
+        _CardsHolder._Conditions.Maximize = true;
+        _CardsHolder.CardIsClicked(true);
+        _CardsHolder.CardsInteractable(false);
+        StartCoroutine(DestroyGameObject());
+    }
+
+    void CardTransformUpdate()
+    {
         if (_Conditions.IsMoving)
         {
             if (transform.parent != _Transforms.GameUiTransform)
@@ -136,7 +139,7 @@ public class CardMovement : MonoBehaviour
                 transform.SetParent(_Transforms.GameUiTransform);
                 transform.SetAsLastSibling();
             }
-            
+
             transform.position = Vector2.Lerp(transform.position, Vector2.zero, 10 * Time.deltaTime);
             _Transforms.RectTransform.sizeDelta = Vector2.Lerp(_Transforms.RectTransform.sizeDelta, new Vector2(317.3334f, 462.6666f), 10 * Time.deltaTime);
             _Transforms.Distance = Vector2.Distance(transform.position, Vector2.zero);
@@ -164,5 +167,13 @@ public class CardMovement : MonoBehaviour
         _UI.CardBorderImageObj.SetActive(true);
         _UI.IconImageObj.SetActive(true);
         _UI.Icon = _Prefabs.IconsPrefabs[0];
+    }
+
+    IEnumerator DestroyGameObject()
+    {
+        yield return new WaitForSeconds(3);
+        _CardsHolder.CardIsClicked(false);
+        _CardsHolder.CardsInteractable(true);
+        Destroy(gameObject);
     }
 }

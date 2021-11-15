@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardsHolder : MonoBehaviour
 {
@@ -28,10 +29,19 @@ public class CardsHolder : MonoBehaviour
             set => isMaximized = value;
         }
     }
+    [Serializable] public class Other
+    {
+        [SerializeField] GameObject backgroundObj;
+
+        public GameObject BackgroundObj
+        {
+            get => backgroundObj;
+        }
+    }
 
     public Transforms _Transforms;
     public Conditions _Conditions;
-
+    public Other _Other;
 
     void Awake()
     {
@@ -46,29 +56,52 @@ public class CardsHolder : MonoBehaviour
         {
             if (!_Conditions.IsMaximized)
             {
-                if (_Transforms.RectTransform.anchorMax.y != 0.234f) _Transforms.RectTransform.anchorMax = new Vector2(0.9710001f, 0.234f);
-
-                _Transforms.RectTransform.offsetMax = Vector2.Lerp(_Transforms.RectTransform.offsetMax, new Vector2(0, 0), 10 * Time.deltaTime);
-
-                if (_Transforms.RectTransform.offsetMax.y >= -0.1f && _Transforms.RectTransform.offsetMax.y <= 0.1f)
-                {
-                    _Transforms.RectTransform.offsetMax = Vector2.zero;
-                    _Conditions.IsMaximized = true;
-                    _Conditions.Maximize = false;
-                }
+                Maximize();
             }
             else
             {
-                _Transforms.RectTransform.offsetMax = Vector2.Lerp(_Transforms.RectTransform.offsetMax, new Vector2(0, -230), 10 * Time.deltaTime);
-
-                if (_Transforms.RectTransform.offsetMax.y >= -231 && _Transforms.RectTransform.offsetMax.y <= -229)
-                {
-                    _Transforms.RectTransform.offsetMax = new Vector2(0, -230);
-                    _Transforms.RectTransform.anchorMax = new Vector2(0.9710001f, 0);
-                    _Conditions.IsMaximized = false;
-                    _Conditions.Maximize = false;
-                }
+                Minimize();
             }
         }
+    }
+
+    void Maximize()
+    {
+        if (_Transforms.RectTransform.anchorMax.y != 0.234f) _Transforms.RectTransform.anchorMax = new Vector2(0.9710001f, 0.234f);
+
+        _Transforms.RectTransform.offsetMax = Vector2.Lerp(_Transforms.RectTransform.offsetMax, new Vector2(0, 0), 25 * Time.deltaTime);
+
+        if (_Transforms.RectTransform.offsetMax.y >= -0.1f && _Transforms.RectTransform.offsetMax.y <= 0.1f)
+        {
+            _Transforms.RectTransform.offsetMax = Vector2.zero;
+            _Conditions.IsMaximized = true;
+            _Conditions.Maximize = false;
+        }
+    }
+
+    void Minimize()
+    {
+        _Transforms.RectTransform.offsetMax = Vector2.Lerp(_Transforms.RectTransform.offsetMax, new Vector2(0, -230), 25 * Time.deltaTime);
+
+        if (_Transforms.RectTransform.offsetMax.y >= -231 && _Transforms.RectTransform.offsetMax.y <= -229)
+        {
+            _Transforms.RectTransform.offsetMax = new Vector2(0, -230);
+            _Transforms.RectTransform.anchorMax = new Vector2(0.9710001f, 0);
+            _Conditions.IsMaximized = false;
+            _Conditions.Maximize = false;
+        }
+    }
+
+    public void CardsInteractable(bool isInteractable)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).GetComponent<Button>().interactable = isInteractable;
+        }
+    }
+
+    public void CardIsClicked(bool isActive)
+    {
+        _Other.BackgroundObj.SetActive(isActive);
     }
 }
