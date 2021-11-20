@@ -16,6 +16,7 @@ public class SinglePlayVoteDatas : MonoBehaviour
         }
     }
     public Dictionary<string, DayVotesInfo> InfectedsDayVotesInfo { get; set; }
+    public Dictionary<SinglePlayRoleButton, Dictionary<int, SinglePlayRoleButton>> DayVotesData { get; set; }
 
     SinglePlayGameController _SinglePlayGameController { get; set; }
 
@@ -23,6 +24,8 @@ public class SinglePlayVoteDatas : MonoBehaviour
     void Awake()
     {
         InfectedsDayVotesInfo = new Dictionary<string, DayVotesInfo>();
+        DayVotesData = new Dictionary<SinglePlayRoleButton, Dictionary<int, SinglePlayRoleButton>>();
+
         _SinglePlayGameController = GetComponent<SinglePlayGameController>();
     }
 
@@ -53,6 +56,26 @@ public class SinglePlayVoteDatas : MonoBehaviour
             {
                 {infectedRole,  votesInfo}
             };
+        }
+    }
+
+    public void AddDayVotesData(SinglePlayRoleButton owner, int daysCount, SinglePlayRoleButton other)
+    {
+        if (DayVotesData.ContainsKey(owner))
+        {
+            if(DayVotesData[owner] != null)
+            {               
+                DayVotesData[owner].Add(daysCount, other);
+            }
+            else
+            {
+                Dictionary<int, SinglePlayRoleButton> data = new Dictionary<int, SinglePlayRoleButton>() { { daysCount, other } };
+                DayVotesData[owner] = data;
+            }
+        }
+        else
+        {
+            DayVotesData.Add(owner, new Dictionary<int, SinglePlayRoleButton>() { { daysCount, other } });
         }
     }
 }

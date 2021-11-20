@@ -36,6 +36,11 @@ public class SinglePlayGlobalConditions : MonoBehaviour
         return _SPGC.PlayerRoleButton().RoleName == RoleNames.Lizard;
     }
 
+    public static bool AmIKing()
+    {
+        return _SPGC.PlayerRoleButton().RoleName == RoleNames.HumanKing || _SPGC.PlayerRoleButton().RoleName == RoleNames.MonsterKing;
+    }
+
     public static bool CanParticipateInNightVote()
     {
         return _SPGC.PlayerRoleButton().IsAlive &&
@@ -106,6 +111,11 @@ public class SinglePlayGlobalConditions : MonoBehaviour
     public static bool IsAiLizard(SinglePlayRoleButton aiRoleButton)
     {
         return aiRoleButton.RoleName == RoleNames.Lizard;
+    }
+
+    public static bool IsAiKing(SinglePlayRoleButton aiRoleButton)
+    {
+        return aiRoleButton.RoleName == RoleNames.HumanKing || aiRoleButton.RoleName == RoleNames.MonsterKing;
     }
     #endregion
 }

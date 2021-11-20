@@ -8,6 +8,7 @@ public class SinglePlayAiController : MonoBehaviour
     SinglePlayRoleButton _SinglePlayRoleButton { get; set; }
     SinglePlayGameController _SinglePlayGameController { get; set; }
     SinglePlayVoteDatas _SinglePlayVoteDatas { get; set; }
+    DayVoteLogic _DayVoteLogic { get; set; }
 
     bool IsRandomSecondSet { get; set; }
     int RandomSecond { get; set; }
@@ -15,8 +16,9 @@ public class SinglePlayAiController : MonoBehaviour
     void Awake()
     {
         _SinglePlayRoleButton = GetComponent<SinglePlayRoleButton>();
+        _DayVoteLogic = GetComponent<DayVoteLogic>();
         _SinglePlayGameController = FindObjectOfType<SinglePlayGameController>();
-        _SinglePlayVoteDatas = FindObjectOfType<SinglePlayVoteDatas>();
+        _SinglePlayVoteDatas = FindObjectOfType<SinglePlayVoteDatas>();       
     }
 
     void OnEnable()
@@ -102,6 +104,7 @@ public class SinglePlayAiController : MonoBehaviour
             if (IsItTimeToVoteForAI())
             {
                 SyncPlayerVotedName_AsAiInfected(VotesInfo.OtherPlayerName).AddVotesCount();
+                _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, SyncPlayerVotedName_AsAiInfected(VotesInfo.OtherPlayerName));
                 _SinglePlayRoleButton.DisplayVotesInfo(true, VotesInfo.OtherPlayerName);
                 _SinglePlayRoleButton.HasVotedCondition(true);
             }
@@ -119,6 +122,7 @@ public class SinglePlayAiController : MonoBehaviour
                     if (RoleButtonByName(name) != _SinglePlayRoleButton && RoleButtonByName(name).IsAlive && !SinglePlayGlobalConditions.IsAiInfected(RoleButtonByName(name)))
                     {
                         RoleButtonByName(name).AddVotesCount();
+                        _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, RoleButtonByName(name));
                         _SinglePlayRoleButton.DisplayVotesInfo(true, name);
                         _SinglePlayRoleButton.HasVotedCondition(true);
                     }
@@ -128,6 +132,7 @@ public class SinglePlayAiController : MonoBehaviour
                     for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
                     {
                         RandomRoleButton().AddVotesCount();
+                        _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, RandomRoleButton());
                         _SinglePlayRoleButton.DisplayVotesInfo(true, RandomRoleButton().Name);
                         _SinglePlayVoteDatas.AddInfectedsDayVotesInfo(_SinglePlayRoleButton.RoleName, new SinglePlayVoteDatas.DayVotesInfo(RandomRoleButton().Name, _SinglePlayGameController._TimerClass.DaysCount));
                         _SinglePlayRoleButton.HasVotedCondition(true);
@@ -151,9 +156,9 @@ public class SinglePlayAiController : MonoBehaviour
                 if (RoleButtonByName(name) != _SinglePlayRoleButton && RoleButtonByName(name).IsAlive && !SinglePlayGlobalConditions.IsAiInfected(RoleButtonByName(name)))
                 {
                     RoleButtonByName(name).AddVotesCount();
+                    _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, RoleButtonByName(name));
                     _SinglePlayRoleButton.DisplayVotesInfo(true, name);
                     _SinglePlayRoleButton.HasVotedCondition(true);
-                    print(name);
                 }
             }
             else
@@ -161,10 +166,10 @@ public class SinglePlayAiController : MonoBehaviour
                 for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
                 {
                     RandomRoleButton().AddVotesCount();
+                    _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, RandomRoleButton());
                     _SinglePlayRoleButton.DisplayVotesInfo(true, RandomRoleButton().Name);
                     _SinglePlayVoteDatas.AddInfectedsDayVotesInfo(_SinglePlayRoleButton.RoleName, new SinglePlayVoteDatas.DayVotesInfo(RandomRoleButton().Name, _SinglePlayGameController._TimerClass.DaysCount));
                     _SinglePlayRoleButton.HasVotedCondition(true);
-                    print(RandomRoleButton().Name);
                     break;
                 }
             }
@@ -185,16 +190,33 @@ public class SinglePlayAiController : MonoBehaviour
 
             if (RandomSecond == _SinglePlayGameController._TimerClass.Timer && IsRandomSecondSet)
             {
-                for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
-                {
-                    if (RandomRoleButton() != this && RandomRoleButton().IsAlive)
-                    {
-                        RandomRoleButton().AddVotesCount();
-                        _SinglePlayRoleButton.DisplayVotesInfo(true, RandomRoleButton().Name);
-                        _SinglePlayRoleButton.HasVotedCondition(true);
-                        break;
-                    }
-                }
+                _DayVoteLogic.Vote(_SinglePlayRoleButton,
+                        Suspect =>
+                        {
+                            if (SinglePlayGlobalConditions.IsAiKing(_SinglePlayRoleButton)) Suspect.VotesCount += 2;
+                            else Suspect.AddVotesCount();
+                            _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, Suspect);
+                            _SinglePlayRoleButton.DisplayVotesInfo(true, Suspect.Name);
+                            _SinglePlayRoleButton.HasVotedCondition(true);
+                        },
+                        SuspectFound =>
+                        {
+                            if (SuspectFound == false)
+                            {
+                                for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
+                                {
+                                    if (RandomRoleButton() != this && RandomRoleButton().IsAlive)
+                                    {
+                                        if (SinglePlayGlobalConditions.IsAiKing(_SinglePlayRoleButton)) RandomRoleButton().VotesCount += 2;
+                                        else RandomRoleButton().AddVotesCount();
+                                        _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, RandomRoleButton());
+                                        _SinglePlayRoleButton.DisplayVotesInfo(true, RandomRoleButton().Name);
+                                        _SinglePlayRoleButton.HasVotedCondition(true);
+                                        break;
+                                    }
+                                }
+                            }
+                        }, null);
             }
         }
     }
@@ -213,56 +235,94 @@ public class SinglePlayAiController : MonoBehaviour
 
             if(RandomSecond == _SinglePlayGameController._TimerClass.Timer && IsRandomSecondSet)
             {
-                if (RevealedRoleButton() != null && RevealedRoleButton() != this && RevealedRoleButton().IsAlive)
-                {
-                    RevealedRoleButton().AddVotesCount();
-                    _SinglePlayRoleButton.DisplayVotesInfo(true, RevealedRoleButton().Name);
-                    _SinglePlayRoleButton.HasVotedCondition(true);
-                }
-                else
-                {
-                    for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
+                _DayVoteLogic.Vote(_SinglePlayRoleButton, null, 
+                    SuspectFound => 
                     {
-                        if (RandomRoleButton() != this && RandomRoleButton().IsAlive)
+                        if(SuspectFound == false)
                         {
-                            RandomRoleButton().AddVotesCount();
-                            _SinglePlayRoleButton.DisplayVotesInfo(true, RandomRoleButton().Name);
-                            _SinglePlayRoleButton.HasVotedCondition(true);
-                            break;
+                            if (IsRevealedPlayerInfected())
+                            {
+                                VoteAgainstRevealedPlayer();
+                            }
+                            else
+                            {
+                                for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
+                                {
+                                    if (RandomRoleButton() != this && RandomRoleButton().IsAlive)
+                                    {
+                                        RandomRoleButton().AddVotesCount();
+                                        _SinglePlayRoleButton.DisplayVotesInfo(true, RandomRoleButton().Name);
+                                        _SinglePlayRoleButton.HasVotedCondition(true);
+                                        break;
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
+                    },
+                    Suspect => 
+                    {
+                        if (IsRevealedPlayerInfected())
+                        {
+                            VoteAgainstRevealedPlayer();
+                        }
+                        else
+                        {
+                            Suspect.AddVotesCount();
+                            _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, Suspect);
+                            _SinglePlayRoleButton.DisplayVotesInfo(true, Suspect.Name);
+                            _SinglePlayRoleButton.HasVotedCondition(true);
+                        }
+                    });
             }
         }
+    }
+
+    bool IsRevealedPlayerInfected()
+    {
+        return RevealedRoleButton() != null && RevealedRoleButton() != this && RevealedRoleButton().IsAlive && RevealedRoleButton().RoleName == RoleNames.Infected;
+    }
+
+    void VoteAgainstRevealedPlayer()
+    {
+        RevealedRoleButton().AddVotesCount();
+        _SinglePlayRoleButton.DisplayVotesInfo(true, RevealedRoleButton().Name);
+        _SinglePlayRoleButton.HasVotedCondition(true);
     }
     #endregion
 
     #region RoleButtonByName
     SinglePlayRoleButton RoleButtonByName(string name)
     {
-        return Array.Find(_SinglePlayGameController._RolesClass.roleButtons, roleButton => roleButton.Name == name);
+        return Array.Find(_SinglePlayGameController._RolesClass.RoleButtons.ToArray(), roleButton => roleButton.Name == name);
     }
     #endregion
 
     #region RandomRoleButton
     SinglePlayRoleButton RandomRoleButton()
     {
-        int randomIndex = UnityEngine.Random.Range(0, _SinglePlayGameController._RolesClass.PlayersCount);
-        return _SinglePlayGameController._RolesClass.roleButtons[randomIndex];
+        List<SinglePlayRoleButton> roleButtons = new List<SinglePlayRoleButton>();
+
+        foreach (var roleButton in _SinglePlayGameController._Players.ActivePlayers)
+        {
+            if (roleButton != _SinglePlayRoleButton) roleButtons.Add(roleButton);
+        }
+
+        int randomIndex = UnityEngine.Random.Range(0, roleButtons.Count);
+        return roleButtons[randomIndex];
     }
     #endregion
 
     #region RevealedRoleButton
     SinglePlayRoleButton RevealedRoleButton()
     {
-        return System.Array.Find(_SinglePlayGameController._RolesClass.roleButtons, revealed => revealed.IsRevealed == true);
+        return System.Array.Find(_SinglePlayGameController._RolesClass.RoleButtons.ToArray(), revealed => revealed.IsRevealed == true);
     }
     #endregion
 
     #region SyncPlayerVotedName_AsAiInfected
     SinglePlayRoleButton SyncPlayerVotedName_AsAiInfected(string otherPlayerName)
     {
-        return System.Array.Find(_SinglePlayGameController._RolesClass.roleButtons, voted => voted.Name == otherPlayerName);
+        return System.Array.Find(_SinglePlayGameController._RolesClass.RoleButtons.ToArray(), voted => voted.Name == otherPlayerName);
     }
     #endregion
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SinglePlayGameController : MonoBehaviour
+public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
 {
     public event Action<bool> OnPhaseReset;
     public event Action OnAiDayVote;
@@ -13,7 +13,7 @@ public class SinglePlayGameController : MonoBehaviour
     {
         [SerializeField] int playersCount;
         [SerializeField] bool kingMode;
-        [SerializeField] internal SinglePlayRoleButton[] roleButtons;
+        [SerializeField] List<SinglePlayRoleButton> roleButtons;
         [SerializeField] List<string> playersRolesNames = new List<string>(20)
         {
             RoleNames.Citizen, RoleNames.Citizen, RoleNames.Infected, RoleNames.Medic, RoleNames.Infected, RoleNames.Soldier, RoleNames.Infected, RoleNames.Citizen,
@@ -23,6 +23,10 @@ public class SinglePlayGameController : MonoBehaviour
         [SerializeField] List<string> malePlayersNames;
         [SerializeField] List<string> femalePlayersNames;
 
+        public List<SinglePlayRoleButton> RoleButtons
+        {
+            get => roleButtons;
+        }      
         public int PlayersCount
         {
             get => playersCount;
@@ -38,15 +42,50 @@ public class SinglePlayGameController : MonoBehaviour
             {
                 if (KingMode)
                 {
-                    return
+                    return                    
+                    PlayersCount == 4 ? new List<string>(8)
+                    {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Infected
+                    } :
+                    PlayersCount == 5 ? new List<string>(8)
+                    {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Infected
+                    } :
+                    PlayersCount == 6 ? new List<string>(8)
+                    {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Infected,
+                    RoleNames.Infected
+                    } :
+                    PlayersCount == 7 ? new List<string>(8)
+                    {
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Infected,
+                    RoleNames.Infected
+                    } :
                     PlayersCount == 8 ? new List<string>(8)
                     {
                     RoleNames.Citizen,
                     RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
                     RoleNames.Medic,
-                    RoleNames.Sheriff,
-                    RoleNames.HumanKing,
-                    RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected
                     } :
@@ -55,10 +94,10 @@ public class SinglePlayGameController : MonoBehaviour
                     RoleNames.Citizen,
                     RoleNames.Citizen,
                     RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
                     RoleNames.Medic,
-                    RoleNames.Sheriff,
-                    RoleNames.HumanKing,
-                    RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected
                     } :
@@ -67,27 +106,27 @@ public class SinglePlayGameController : MonoBehaviour
                     RoleNames.Citizen,
                     RoleNames.Citizen,
                     RoleNames.Citizen,
+                    RoleNames.Citizen,
                     RoleNames.Medic,
                     RoleNames.Sheriff,
-                    RoleNames.HumanKing,
                     RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected,
-                    RoleNames.Infected
+                    RoleNames.Lizard
                     } :
                     PlayersCount == 11 ? new List<string>(11)
                     {
                     RoleNames.Citizen,
                     RoleNames.Citizen,
                     RoleNames.Citizen,
-                    RoleNames.Citizen,
                     RoleNames.Medic,
                     RoleNames.Sheriff,
+                    RoleNames.Soldier,
                     RoleNames.HumanKing,
                     RoleNames.Infected,
                     RoleNames.Infected,
-                    RoleNames.Infected,
-                    RoleNames.Infected
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
                     } :
                     PlayersCount == 12 ? new List<string>(12)
                     {
@@ -101,8 +140,8 @@ public class SinglePlayGameController : MonoBehaviour
                     RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected,
-                    RoleNames.Infected,
-                    RoleNames.Lizard
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
                     } :
                     PlayersCount == 13 ? new List<string>(13)
                     {
@@ -117,8 +156,8 @@ public class SinglePlayGameController : MonoBehaviour
                     RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected,
-                    RoleNames.Infected,
-                    RoleNames.Lizard
+                    RoleNames.Lizard,
+                    RoleNames.MonsterKing
                     } :
                     PlayersCount == 14 ? new List<string>(14)
                     {
@@ -202,11 +241,11 @@ public class SinglePlayGameController : MonoBehaviour
                     RoleNames.Citizen,
                     RoleNames.Citizen,
                     RoleNames.Citizen,
+                    RoleNames.Citizen,
                     RoleNames.Medic,
                     RoleNames.Sheriff,
                     RoleNames.Soldier,
                     RoleNames.HumanKing,
-                    RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected,
@@ -224,11 +263,11 @@ public class SinglePlayGameController : MonoBehaviour
                     RoleNames.Citizen,
                     RoleNames.Citizen,
                     RoleNames.Citizen,
+                    RoleNames.Citizen,
                     RoleNames.Medic,
                     RoleNames.Sheriff,
                     RoleNames.Soldier,
                     RoleNames.HumanKing,
-                    RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected,
@@ -246,12 +285,12 @@ public class SinglePlayGameController : MonoBehaviour
                     RoleNames.Citizen,
                     RoleNames.Citizen,
                     RoleNames.Citizen,
+                    RoleNames.Citizen,
+                    RoleNames.Citizen,
                     RoleNames.Medic,
                     RoleNames.Sheriff,
                     RoleNames.Soldier,
                     RoleNames.HumanKing,
-                    RoleNames.Infected,
-                    RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected,
                     RoleNames.Infected,
@@ -389,7 +428,7 @@ public class SinglePlayGameController : MonoBehaviour
         {
             get => isGameStarted;
             set => isGameStarted = value;
-        }      
+        }
     }
     [Serializable] public class AI
     {
@@ -401,6 +440,11 @@ public class SinglePlayGameController : MonoBehaviour
             set => isAiVoteEventInvoked = value;
         }
     }
+    [Serializable] public class Players
+    {
+        public List<SinglePlayRoleButton> ActivePlayers { get; set; } = new List<SinglePlayRoleButton>();
+        public List<SinglePlayRoleButton> LostPlayers { get; set; } = new List<SinglePlayRoleButton>();
+    }
 
     public RolesClass _RolesClass;
     public RolesImagesClass _RolesImagesClass;
@@ -408,9 +452,17 @@ public class SinglePlayGameController : MonoBehaviour
     public TeamsClass _TeamsClass;
     public GameClass _GameClass;
     public AI _AI;
+    public Players _Players;
+
+    SinglePlayerRoleButtonsContainersController _SPRBCC { get; set; }
 
     [SerializeField] bool test;
 
+
+    void Awake()
+    {
+        _SPRBCC = GetComponent<SinglePlayerRoleButtonsContainersController>();
+    }
 
     void Start()
     {
@@ -438,25 +490,28 @@ public class SinglePlayGameController : MonoBehaviour
         for (int i = 0; i < _RolesClass.PlayersCount; i++)
         {
             //int randomRange = random[UnityEngine.Random.Range(0, random.Count - 1)];
-            int randomRange = test && i == 0 ? 11 : random[UnityEngine.Random.Range(0, random.Count - 1)];
-            string randomName = _RolesClass.MalePlayersNames[UnityEngine.Random.Range(0, _RolesClass.MalePlayersNames.Count - 1)];
-            _RolesClass.roleButtons[i].Name = i == 0 ? "Hayk" : randomName;
-            _RolesClass.roleButtons[i].gameObject.SetActive(true);
-            _RolesClass.roleButtons[i].RoleName = _RolesClass.PlayersRolesNames[randomRange];
-            _RolesClass.roleButtons[i].RoleImage = i == 0 ? RoleSprites(_RolesClass.PlayersRolesNames[randomRange], 0) : _RolesImagesClass.DefaultSprite[0];
-            _RolesClass.roleButtons[i].RoleSprite = RoleSprites(_RolesClass.PlayersRolesNames[randomRange], 0);
-            _RolesClass.roleButtons[i].IsPlayer = i == 0 ? true : false;
-            _RolesClass.roleButtons[i].IsAlive = true;
+            int randomRange = test && i == 0 ? 11 : random[UnityEngine.Random.Range(0, random.Count)];
+            string randomName = _RolesClass.MalePlayersNames[UnityEngine.Random.Range(0, _RolesClass.MalePlayersNames.Count)];
 
-            if(_RolesClass.roleButtons[0].IsPlayer && _RolesClass.roleButtons[0].RoleName == RoleNames.Infected)
+            _Players.ActivePlayers.Add(_RolesClass.RoleButtons[i]);
+
+            _RolesClass.RoleButtons[i].Name = i == 0 ? "Hayk" : randomName;
+            _RolesClass.RoleButtons[i].gameObject.SetActive(true);
+            _RolesClass.RoleButtons[i].RoleName = _RolesClass.PlayersRolesNames[randomRange];
+            _RolesClass.RoleButtons[i].RoleImage = i == 0 ? RoleSprites(_RolesClass.PlayersRolesNames[randomRange], 0) : _RolesImagesClass.DefaultSprite[0];
+            _RolesClass.RoleButtons[i].RoleSprite = RoleSprites(_RolesClass.PlayersRolesNames[randomRange], 0);
+            _RolesClass.RoleButtons[i].IsPlayer = i == 0 ? true : false;
+            _RolesClass.RoleButtons[i].IsAlive = true;
+
+            if (_RolesClass.RoleButtons[0].IsPlayer && _RolesClass.RoleButtons[0].RoleName == RoleNames.Infected)
             {
-                if(_RolesClass.roleButtons[i].RoleName == RoleNames.Infected)
+                if (_RolesClass.RoleButtons[i].RoleName == RoleNames.Infected)
                 {
-                    _RolesClass.roleButtons[i].RoleImage = RoleSprites(RoleNames.Infected, 0);
+                    _RolesClass.RoleButtons[i].RoleImage = RoleSprites(RoleNames.Infected, 0);
                 }
             }
 
-            if(SinglePlayGlobalConditions.IsPlayerInHumansTeam(_RolesClass.roleButtons[i]))
+            if (SinglePlayGlobalConditions.IsPlayerInHumansTeam(_RolesClass.RoleButtons[i]))
             {
                 _TeamsClass.HumansTeamCount++;
             }
@@ -498,7 +553,7 @@ public class SinglePlayGameController : MonoBehaviour
 
         while (_GameClass.IsGameStarted)
         {
-            Phases(IsNightTime => 
+            Phases(IsNightTime =>
             {
                 if (!_TimerClass.Proccesing)
                 {
@@ -524,7 +579,7 @@ public class SinglePlayGameController : MonoBehaviour
 
                         if (SinglePlayGlobalConditions.IsPhaseResetTime())
                         {
-                            StartCoroutine(GetLostPlayer(LostPlayer => 
+                            StartCoroutine(GetLostPlayer(LostPlayer =>
                             {
                                 Timer(true, 60);
                                 OnPhaseReset?.Invoke(true);
@@ -532,6 +587,9 @@ public class SinglePlayGameController : MonoBehaviour
                                 {
                                     LostPlayer.Lost();
                                     UpdateTeams(LostPlayer);
+                                    _Players.ActivePlayers.Remove(LostPlayer);
+                                    _Players.LostPlayers.Add(LostPlayer);
+                                    _SPRBCC.OnPlayerLost(LostPlayer.transform);
                                 }
                                 _TimerClass.Proccesing = false;
                             }));
@@ -558,7 +616,7 @@ public class SinglePlayGameController : MonoBehaviour
             {
                 roleButton.VotesCountTextObjActivity(true);
                 roleButton.VotesIndicatorVfxActivity(0, true);
-            }            
+            }
         });
     }
     #endregion
@@ -569,7 +627,7 @@ public class SinglePlayGameController : MonoBehaviour
         LoopRoleButtons(roleButton =>
         {
             if (SinglePlayGlobalConditions.CanParticipateInDayVote())
-            {               
+            {
                 roleButton.VotesIndicatorVfxActivity(0, true);
             }
 
@@ -595,7 +653,7 @@ public class SinglePlayGameController : MonoBehaviour
         _TimerClass.Timer = seconds;
         _TimerClass.IsNight = isNightTime;
 
-        if(!isNightTime) _TimerClass.NightsCount++;
+        if (!isNightTime) _TimerClass.NightsCount++;
         if (isNightTime) _TimerClass.DaysCount++;
     }
     #endregion
@@ -603,14 +661,14 @@ public class SinglePlayGameController : MonoBehaviour
     #region PlayerRoleButton
     public SinglePlayRoleButton PlayerRoleButton()
     {
-        return Array.Find(_RolesClass.roleButtons, roleButton => roleButton.IsPlayer == true);
+        return Array.Find(_RolesClass.RoleButtons.ToArray(), roleButton => roleButton.IsPlayer == true);
     }
     #endregion
 
     #region LoopRoleButtons
     public void LoopRoleButtons(Action<SinglePlayRoleButton> RoleButton)
     {
-        foreach (var roleButton in _RolesClass.roleButtons)
+        foreach (var roleButton in _RolesClass.RoleButtons)
         {
             RoleButton?.Invoke(roleButton);
         }
@@ -626,9 +684,9 @@ public class SinglePlayGameController : MonoBehaviour
         List<SinglePlayRoleButton> highestVotesCountPlayers = new List<SinglePlayRoleButton>();
         SinglePlayRoleButton lostPlayer = null;
 
-        foreach (var roleButton in _RolesClass.roleButtons)
+        foreach (var roleButton in _RolesClass.RoleButtons)
         {
-            if(roleButton.Name != null)
+            if (roleButton.Name != null)
             {
                 playersVotesCount.Add(roleButton.VotesCount);
             }
@@ -641,7 +699,7 @@ public class SinglePlayGameController : MonoBehaviour
 
         if (playersVotesCount[playersVotesCount.Count - 1] > 0)
         {
-            foreach (var roleButton in _RolesClass.roleButtons)
+            foreach (var roleButton in _RolesClass.RoleButtons)
             {
                 if (roleButton.Name != null && roleButton.VotesCount >= playersVotesCount[playersVotesCount.Count - 1])
                 {
@@ -672,6 +730,14 @@ public class SinglePlayGameController : MonoBehaviour
         {
             _TeamsClass.MonstersTeamCount--;
         }
+    }
+    #endregion
+
+    #region IReset
+    public void Reset()
+    {
+        _Players.ActivePlayers = new List<SinglePlayRoleButton>();
+        _Players.LostPlayers = new List<SinglePlayRoleButton>();
     }
     #endregion
 }

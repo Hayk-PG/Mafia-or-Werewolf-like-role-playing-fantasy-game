@@ -182,7 +182,7 @@ public class SinglePlayRoleButton : MonoBehaviour
 
         VotesIndicatorVfxExplosionActivty(0, true);
         SelectedIconActivty(true);
-        AddVotesCount();    
+        DayVoteAction();
 
         if (SinglePlayGlobalConditions.AmIInfected())
         {
@@ -194,6 +194,14 @@ public class SinglePlayRoleButton : MonoBehaviour
             _SinglePlayGameController._TimerClass.DaysCount
             ));
         }
+    }
+
+    void DayVoteAction()
+    {
+        if (SinglePlayGlobalConditions.AmIKing()) VotesCount += 2;
+        else AddVotesCount();
+
+        _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayGameController.PlayerRoleButton(), _SinglePlayGameController._TimerClass.DaysCount, this);
     }
 
     void PlayerNightVote()
