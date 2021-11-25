@@ -19459,7 +19459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7176f585900f72a46a61ecfd4f3a7726, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionVFX: {fileID: 9098118541239256903, guid: b9364f267ab22f54db412c0507a39d73,
+  explosionVFX: {fileID: 8814711746999935590, guid: d99f75092c256e74597abfeeaab81f35,
     type: 3}
 --- !u!1 &4767436075730184777
 GameObject:

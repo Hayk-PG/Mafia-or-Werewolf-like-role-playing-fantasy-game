@@ -36,10 +36,10 @@ Material:
     - _RimWidth: 2.6
     - _Shininess: 1
     m_Colors:
-    - Albedo: {r: 67.79352, g: 1.4197595, b: 0, a: 1}
+    - Albedo: {r: 0, g: 1, b: 0, a: 0}
     - Color_1A0BCCE7: {r: 0.19158328, g: 7.1843157, b: 0, a: 0}
     - Color_8EE4FC62: {r: 0.01707165, g: 0.16078432, b: 0, a: 0}
-    - FresnelColor: {r: 0.66056633, g: 1.4980391, b: 0.4941176, a: 1}
+    - FresnelColor: {r: 0.66056633, g: 1.4980391, b: 0.4941176, a: 0}
     - _InnerColor: {r: 0.035142735, g: 0.18382353, b: 0.03616811, a: 1}
     - _RimColor: {r: 0.41774848, g: 0.75, b: 0.2867647, a: 1}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}

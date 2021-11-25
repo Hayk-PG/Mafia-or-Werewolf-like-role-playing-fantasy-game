@@ -10,6 +10,7 @@ TagManager:
   - NightTimeVFX
   - VFXCamera
   - ProfilePicFromGallery
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - 
   - VFX
   - CardsTabVFX
-  - 
+  - UIParticles
   - 
   - 
   - 

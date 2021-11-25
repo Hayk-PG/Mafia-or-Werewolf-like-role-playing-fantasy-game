@@ -6,6 +6,6 @@ public class AbilitySoundFX : MonoBehaviour
 
     void Awake()
     {
-        PlayerBaseConditions.UiSounds.PlayAblitySoundFX(soundIndex);
+        //PlayerBaseConditions.UiSounds.PlayAblitySoundFX(soundIndex);
     }
 }

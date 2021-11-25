@@ -26,9 +26,10 @@ public class HolyMissileMovementScript : MonoBehaviour
     {
         if(distance <= 0.1f)
         {
-            Vector3 pos = new Vector3(transform.position.x, transform.position.y, 0);
-            GameObject expl = Instantiate(explosionVFX, pos, Quaternion.identity, transform.parent);
             _SPRBCC._Animators.SwitchLostPlayersScreenButtonAnim.SetTrigger("play");
+            Vector3 pos = new Vector3(_SPRBCC._Transforms.HolyMissileVfxDest.position.x, _SPRBCC._Transforms.HolyMissileVfxDest.position.y, 0);
+            GameObject expl = Instantiate(explosionVFX, pos, Quaternion.identity/*, transform.parent*/);
+            
             Destroy(gameObject);
         }
     }

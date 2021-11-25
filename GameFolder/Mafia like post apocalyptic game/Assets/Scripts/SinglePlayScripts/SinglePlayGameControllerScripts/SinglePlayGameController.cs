@@ -8,6 +8,7 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
 {
     public event Action<bool> OnPhaseReset;
     public event Action OnAiDayVote;
+    public event Action OnAiNightVote;
 
     [Serializable] public class RolesClass
     {
@@ -614,10 +615,13 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
         {
             if (SinglePlayGlobalConditions.CanParticipateInNightVote())
             {
-                roleButton.VotesCountTextObjActivity(true);
-                roleButton.VotesIndicatorVfxActivity(0, true);
+                roleButton.VotesIconActivity(roleButton.IsAlive);
             }
+
+            roleButton.VotesCountTextObjActivity(SinglePlayGlobalConditions.AmIInfected());
         });
+
+        OnAiNightVote?.Invoke();
     }
     #endregion
 
@@ -628,7 +632,7 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
         {
             if (SinglePlayGlobalConditions.CanParticipateInDayVote())
             {
-                roleButton.VotesIndicatorVfxActivity(0, true);
+                roleButton.VotesIconActivity(roleButton.IsAlive);
             }
 
             roleButton.VotesCountTextObjActivity(true);

@@ -11,7 +11,6 @@ public class SinglePlayerRoleButtonsContainersController : MonoBehaviour
         [SerializeField] Transform gameUI;
         [SerializeField] List<Transform> activeRoleButtonsContainers;
         [SerializeField] Transform lostRoleButtonsContainers;
-        [SerializeField] Transform playerRoleButtonContainer;
 
         [SerializeField] Transform holyMissileVfxDest;
 
@@ -26,10 +25,6 @@ public class SinglePlayerRoleButtonsContainersController : MonoBehaviour
         public Transform LostRoleButtonsContainers
         {
             get => lostRoleButtonsContainers;
-        }
-        public Transform PlayerRoleButtonContainer
-        {
-            get => playerRoleButtonContainer;
         }
 
         public Transform HolyMissileVfxDest
@@ -137,7 +132,7 @@ public class SinglePlayerRoleButtonsContainersController : MonoBehaviour
                 int currentContainerIndex = i;
                 int previousContainerIndex = currentContainerIndex > 0 ? currentContainerIndex - 1 : 0;
 
-                if (_Transforms.ActiveRoleButtonsContainers[currentContainerIndex].childCount > 0 && _Transforms.ActiveRoleButtonsContainers[previousContainerIndex].childCount < 5)
+                if (_Transforms.ActiveRoleButtonsContainers[currentContainerIndex].childCount > 0 && _Transforms.ActiveRoleButtonsContainers[previousContainerIndex].childCount < 4)
                 {
                     _Transforms.ActiveRoleButtonsContainers[currentContainerIndex].GetChild(0).transform.SetParent(_Transforms.ActiveRoleButtonsContainers[previousContainerIndex]);                    
                 }
@@ -170,6 +165,7 @@ public class SinglePlayerRoleButtonsContainersController : MonoBehaviour
                 }
 
                 MyCanvasGroups.CanvasGroupActivity(_UI.LostPlayersCanvasGroup, false);
+                VFXCamera.VFXCameraActivity(true);
             }
             if (button == _UI.SeeLostPlayers)
             {
@@ -185,6 +181,7 @@ public class SinglePlayerRoleButtonsContainersController : MonoBehaviour
                 }
 
                 MyCanvasGroups.CanvasGroupActivity(_UI.LostPlayersCanvasGroup, true);
+                VFXCamera.VFXCameraActivity(false);
             }
         });
     }

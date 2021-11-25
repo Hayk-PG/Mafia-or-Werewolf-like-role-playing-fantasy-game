@@ -9,44 +9,44 @@ public class SinglePlayRoleButton : MonoBehaviour
         [SerializeField] internal Text nameText;
         [SerializeField] internal Text votesCountText;
         [SerializeField] internal Text votedPlayerNameText;
+
         [SerializeField] internal Image roleImage;
-        [SerializeField] internal Image votesCountSphereImage;
         [SerializeField] internal Sprite actualRoleSprite;
+
         [SerializeField] internal string roleName;
+
         [SerializeField] internal bool isPlayer;
         [SerializeField] internal bool isAlive;
         [SerializeField] internal bool hasVoted;
+        [SerializeField] internal bool isHealed;
         [SerializeField] internal bool isRevealed;
-    }
-    [Serializable] public class Vfx
-    {
-        [SerializeField] GameObject[] voteVFX;
-        [SerializeField] GameObject[] voteVFXExplosion;
-        [SerializeField] GameObject deathVFX;
+        [SerializeField] internal bool isConjured;
 
-        public GameObject[] VoteVFX
+        internal GameObject VotesCountObj
         {
-            get => voteVFX;
+            get => votesCountText.gameObject;
         }
-        public GameObject[] VoteVFXExplosion
-        {
-            get => voteVFXExplosion;
-        }
-        public GameObject DeathVFX
-        {
-            get => deathVFX;
-        }
-    }   
+    }    
     [Serializable] public class UI
     {
         [SerializeField] Button roleButton;
+
+        [SerializeField] Image voteIcon;        
+
         [SerializeField] GameObject selected;
         [SerializeField] GameObject votesInfoObj;
         [SerializeField] GameObject deathIconsObj;
 
+        [SerializeField] Sprite[] voteIconsPrefab;
+
         public Button RoleButton
         {
             get => roleButton;
+        }
+        
+        public GameObject VoteIconObj
+        {
+            get => voteIcon.gameObject;
         }
         public GameObject Selected
         {
@@ -60,21 +60,35 @@ public class SinglePlayRoleButton : MonoBehaviour
         {
             get => deathIconsObj;
         }
-    }
-    [Serializable] public class Components
-    {
-        [SerializeField] Animator votesCountSphereAnim;
 
-        public Animator VotesCountSphereAnim
+        public Sprite VoteIcon
         {
-            get => votesCountSphereAnim;
+            get => voteIcon.sprite;
+            set => voteIcon.sprite = value;
+        }
+        public Sprite[] VoteIconsPrefab
+        {
+            get => voteIconsPrefab;
+        }
+    }
+    [Serializable] public class VFX
+    {
+        [SerializeField] GameObject deathVFX;
+        [SerializeField] GameObject[] abilityVFX;
+
+        public GameObject DeathVFX
+        {
+            get => deathVFX;
+        }
+        public GameObject[] AbilityVFX
+        {
+            get => abilityVFX;
         }
     }
 
     public Info _Info;
-    public Vfx _Vfx;
     public UI _UI;
-    public Components _Components;
+    public VFX _VFX;
 
     public string Name
     {
@@ -126,6 +140,16 @@ public class SinglePlayRoleButton : MonoBehaviour
         get => _Info.isRevealed;
         set => _Info.isRevealed = value;
     }
+    public bool IsHealed
+    {
+        get => _Info.isHealed;
+        set => _Info.isHealed = value;
+    }
+    public bool IsConjured
+    {
+        get => _Info.isConjured;
+        set => _Info.isConjured = value;
+    }
 
     CardsHolder _CardsHolder { get; set; }
     SinglePlayGameController _SinglePlayGameController { get; set; }
@@ -160,6 +184,7 @@ public class SinglePlayRoleButton : MonoBehaviour
         _UI.RoleButton.onClick.AddListener(delegate { PlayerDayVote(); PlayerNightVote(); });
     }
 
+    #region PlayerDayVote
     void PlayerDayVote()
     {
         if (SinglePlayGlobalConditions.CanParticipateInDayVote() && SinglePlayGlobalConditions.IsVoteTime() && !_SinglePlayGameController._TimerClass.IsNight)
@@ -177,12 +202,11 @@ public class SinglePlayRoleButton : MonoBehaviour
         _SinglePlayGameController.PlayerRoleButton().DisplayVotesInfo(true, Name);
         _SinglePlayGameController.LoopRoleButtons(roleButtons =>
         {
-            roleButtons.VotesIndicatorVfxActivity(0, false);
+            roleButtons.VotesIconActivity(false);
         });
 
-        VotesIndicatorVfxExplosionActivty(0, true);
         SelectedIconActivty(true);
-        DayVoteAction();
+        PlayerDayVoteAction();
 
         if (SinglePlayGlobalConditions.AmIInfected())
         {
@@ -196,35 +220,119 @@ public class SinglePlayRoleButton : MonoBehaviour
         }
     }
 
-    void DayVoteAction()
+    void PlayerDayVoteAction()
     {
         if (SinglePlayGlobalConditions.AmIKing()) VotesCount += 2;
         else AddVotesCount();
 
         _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayGameController.PlayerRoleButton(), _SinglePlayGameController._TimerClass.DaysCount, this);
     }
+    #endregion
 
+    #region PlayerNightVote
     void PlayerNightVote()
     {
-        //_CardsHolder._Conditions.Maximize = true;
+        if (SinglePlayGlobalConditions.CanParticipateInNightVote() && SinglePlayGlobalConditions.IsVoteTime() && _SinglePlayGameController._TimerClass.IsNight)
+        {
+            if (!IsPlayer && IsAlive)
+            {
+                PlayerNightVoted();
+            }
+        }
+        // _CardsHolder._Conditions.Maximize = true;
     }
- 
+
+    void PlayerNightVoted()
+    {
+        _SinglePlayGameController.PlayerRoleButton().HasVotedCondition(true);
+        _SinglePlayGameController.PlayerRoleButton().DisplayVotesInfo(SinglePlayGlobalConditions.AmIInfected(), Name);
+        _SinglePlayGameController.LoopRoleButtons(roleButtons =>
+        {
+            roleButtons.VotesIconActivity(false);
+        });
+
+        SelectedIconActivty(true);
+        PlayerNightVoteAction();
+
+        if (SinglePlayGlobalConditions.AmIInfected())
+        {
+            _SinglePlayVoteDatas.AddInfectedsDayVotesInfo
+            (
+            _SinglePlayGameController.PlayerRoleButton().RoleName,
+            new SinglePlayVoteDatas.DayVotesInfo
+            (Name,
+            _SinglePlayGameController._TimerClass.DaysCount
+            ));
+        }
+    }
+
+    void PlayerNightVoteAction()
+    {
+        if (SinglePlayGlobalConditions.AmIMedic())
+        {
+            IsHealed = true;
+            ObjActivity(_VFX.AbilityVFX[0], true);
+        }
+        if (SinglePlayGlobalConditions.AmISheriff())
+        {
+            IsRevealed = true;
+            ObjActivity(_VFX.AbilityVFX[1], true);
+            RoleImage = RoleSprite;
+        }
+        if (SinglePlayGlobalConditions.AmISoldier())
+        {
+            IsAlive = false;
+            ObjActivity(_VFX.AbilityVFX[2], true);
+        }
+        if (SinglePlayGlobalConditions.AmIInfected())
+        {
+            AddVotesCount();
+            ObjActivity(_VFX.AbilityVFX[3], true);
+        }
+        if (SinglePlayGlobalConditions.AmILizard())
+        {
+            IsConjured = true;
+            ObjActivity(_VFX.AbilityVFX[4], true);
+        }
+    }
+
+    void ResetAbilityVFX()
+    {
+        foreach (var vfx in _VFX.AbilityVFX)
+        {
+            ObjActivity(vfx, false);
+        }
+    }
+    #endregion
+
+    #region Reset
     void _SinglePlayGameController_OnPhaseReset(bool isNightTime)
     {
         HasVotedCondition(false);
-        VotesIndicatorVfxActivity(0, false);
-        VotesIndicatorVfxExplosionActivty(0, false);
+        VotesIconActivity(false);
+        ResetVotesIcon();
         ResetVotes();
         VotesCountTextObjActivity(false);
         SelectedIconActivty(false);
         DisplayVotesInfo(false, "");
+        ResetAffects(isNightTime);
+        ResetAbilityVFX();
     }
+
+    void ResetAffects(bool isNightTime)
+    {
+        if (isNightTime)
+        {
+            IsHealed = false;
+            IsConjured = false;
+        }
+    }
+    #endregion
 
     #region Votes
     public void AddVotesCount()
     {        
         VotesCount++;
-        _Components.VotesCountSphereAnim.SetTrigger("play");
     }
 
     void ResetVotes()
@@ -236,7 +344,7 @@ public class SinglePlayRoleButton : MonoBehaviour
     {
         if (IsAlive)
         {
-            if (_Info.votesCountSphereImage.gameObject.activeInHierarchy != isActive) _Info.votesCountSphereImage.gameObject.SetActive(isActive);
+            if (_Info.VotesCountObj.activeInHierarchy != isActive) _Info.VotesCountObj.SetActive(isActive);
         }
     }
 
@@ -248,7 +356,7 @@ public class SinglePlayRoleButton : MonoBehaviour
 
     public void SelectedIconActivty(bool isActive)
     {
-        if (_UI.Selected.activeInHierarchy != isActive) _UI.Selected.SetActive(isActive);
+        ObjActivity(_UI.Selected, isActive);
     }
 
     public void HasVotedCondition(bool hasVoted)
@@ -259,9 +367,9 @@ public class SinglePlayRoleButton : MonoBehaviour
 
     #region Lost
     public void Lost()
-    {
-        _Vfx.DeathVFX.SetActive(true);
+    {       
         IsAlive = false;
+        ObjActivity(_VFX.DeathVFX, true);
         _UI.DeathIconsObj.SetActive(true);
 
         if (!IsPlayer)
@@ -271,21 +379,42 @@ public class SinglePlayRoleButton : MonoBehaviour
     }
     #endregion
 
-    #region VFX
-    public void VotesIndicatorVfxActivity(int vfxIndex, bool isActive)
-    {
+    #region VotesIcon
+    public void VotesIconActivity(bool activity)
+    {       
         if (!IsPlayer && IsAlive)
         {
-            if (_Vfx.VoteVFX[vfxIndex].activeInHierarchy != isActive) _Vfx.VoteVFX[vfxIndex].SetActive(isActive);
+            ObjActivity(_UI.VoteIconObj, activity);
+
+            if (_SinglePlayGameController._TimerClass.IsNight)
+            {
+                if (_UI.VoteIcon != _UI.VoteIconsPrefab[VoteIconIndex()]) _UI.VoteIcon = _UI.VoteIconsPrefab[VoteIconIndex()];
+            }
+            else
+            {
+                if (_UI.VoteIcon != _UI.VoteIconsPrefab[0]) _UI.VoteIcon = _UI.VoteIconsPrefab[0];
+            }
         }
     }
 
-    public void VotesIndicatorVfxExplosionActivty(int vfxIndex, bool isActive)
+    int VoteIconIndex()
     {
-        if (!IsPlayer)
-        {
-            if (_Vfx.VoteVFXExplosion[vfxIndex].activeInHierarchy != isActive) _Vfx.VoteVFXExplosion[vfxIndex].SetActive(isActive);
-        }
+        return SinglePlayGlobalConditions.AmIMedic() ? 1 :
+               SinglePlayGlobalConditions.AmISheriff() ? 2 :
+               SinglePlayGlobalConditions.AmISoldier() ? 3 :
+               SinglePlayGlobalConditions.AmIInfected() ? 4 :
+               SinglePlayGlobalConditions.AmILizard() ? 5 : 0;
     }
+
+    public void ResetVotesIcon()
+    {
+        ObjActivity(_UI.VoteIconObj, false);
+    }
+
     #endregion
+
+    void ObjActivity(GameObject obj, bool enabled)
+    {
+        if (obj.activeInHierarchy != enabled) obj.SetActive(enabled);
+    }
 }

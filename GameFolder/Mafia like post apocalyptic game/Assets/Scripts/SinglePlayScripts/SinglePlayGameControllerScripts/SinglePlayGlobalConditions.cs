@@ -43,13 +43,10 @@ public class SinglePlayGlobalConditions : MonoBehaviour
 
     public static bool CanParticipateInNightVote()
     {
+        bool isRoleSuitable = AmIMedic() || AmISheriff() || AmISoldier() || AmIInfected() || AmILizard();
+
         return _SPGC.PlayerRoleButton().IsAlive &&
-            !_SPGC.PlayerRoleButton().HasVoted &&
-            AmIMedic() ||
-            AmISheriff() ||
-            AmISoldier() ||
-            AmIInfected() ||
-            AmILizard();
+            !_SPGC.PlayerRoleButton().HasVoted && isRoleSuitable;
     }
 
     public static bool CanParticipateInDayVote()

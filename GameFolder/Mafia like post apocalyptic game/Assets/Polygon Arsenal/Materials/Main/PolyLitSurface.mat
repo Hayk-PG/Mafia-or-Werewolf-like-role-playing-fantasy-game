@@ -68,8 +68,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Emission_: 1.7
-    - RimEmission_: 3
+    - Emission_: 2
+    - RimEmission_: 1.5
     - _ASEOutlineWidth: 0
     - _BumpScale: 1
     - _Cutoff: 0.5
