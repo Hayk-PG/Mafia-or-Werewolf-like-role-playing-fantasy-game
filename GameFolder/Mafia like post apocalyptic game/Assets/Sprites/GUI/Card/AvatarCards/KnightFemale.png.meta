@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: -1149620962837607041
     second: KnightFemale_0
+  - first:
+      213: 9998123784666890
+    second: KnightFemale_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -105,10 +108,10 @@ TextureImporter:
       name: KnightFemale_0
       rect:
         serializedVersion: 2
-        x: 148
-        y: 21
-        width: 344
-        height: 438
+        x: 152
+        y: 20
+        width: 336
+        height: 440
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -116,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f7dc8b343d9bb00f0800000000000000
-      internalID: -1149620962837607041
+      spriteID: a0ffa989d35832000800000000000000
+      internalID: 9998123784666890
       vertices: []
       indices: 
       edges: []

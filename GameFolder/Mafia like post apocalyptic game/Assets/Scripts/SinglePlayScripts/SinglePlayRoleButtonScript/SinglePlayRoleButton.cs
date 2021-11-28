@@ -7,6 +7,7 @@ public class SinglePlayRoleButton : MonoBehaviour
     [Serializable] public class Info
     {
         [SerializeField] internal Text nameText;
+        [SerializeField] internal Text roleNameText;
         [SerializeField] internal Text votesCountText;
         [SerializeField] internal Text votedPlayerNameText;
 
@@ -20,6 +21,7 @@ public class SinglePlayRoleButton : MonoBehaviour
         [SerializeField] internal bool hasVoted;
         [SerializeField] internal bool isHealed;
         [SerializeField] internal bool isRevealed;
+        [SerializeField] internal bool isKilledByKnight;
         [SerializeField] internal bool isConjured;
 
         internal GameObject VotesCountObj
@@ -100,6 +102,11 @@ public class SinglePlayRoleButton : MonoBehaviour
         get => _Info.roleName;
         set => _Info.roleName = value;
     }
+    public string RoleNameText
+    {
+        get => _Info.roleNameText.text;
+        set => _Info.roleNameText.text = value;
+    }
     public string VotedPlayerName
     {
         get => _Info.votedPlayerNameText.text;
@@ -144,6 +151,11 @@ public class SinglePlayRoleButton : MonoBehaviour
     {
         get => _Info.isHealed;
         set => _Info.isHealed = value;
+    }
+    public bool IsKilledByKnight
+    {
+        get => _Info.isKilledByKnight;
+        set => _Info.isKilledByKnight = value;
     }
     public bool IsConjured
     {
@@ -276,12 +288,13 @@ public class SinglePlayRoleButton : MonoBehaviour
         if (SinglePlayGlobalConditions.AmISheriff())
         {
             IsRevealed = true;
+            RoleNameText = RoleName;
             ObjActivity(_VFX.AbilityVFX[1], true);
             RoleImage = RoleSprite;
         }
         if (SinglePlayGlobalConditions.AmISoldier())
         {
-            IsAlive = false;
+            IsKilledByKnight = true;
             ObjActivity(_VFX.AbilityVFX[2], true);
         }
         if (SinglePlayGlobalConditions.AmIInfected())
@@ -369,6 +382,7 @@ public class SinglePlayRoleButton : MonoBehaviour
     public void Lost()
     {       
         IsAlive = false;
+        RoleNameText = RoleName;
         ObjActivity(_VFX.DeathVFX, true);
         _UI.DeathIconsObj.SetActive(true);
 
@@ -413,7 +427,44 @@ public class SinglePlayRoleButton : MonoBehaviour
 
     #endregion
 
-    void ObjActivity(GameObject obj, bool enabled)
+    #region Abilities
+    /// <summary>
+    /// 0: Medic 1: Sheriff 2: Knight 3: Infected 4: Lizard
+    /// </summary>
+    /// <param name="roleIndex"></param>
+    public void AIAbility(int roleIndex)
+    {
+        switch (roleIndex)
+        {
+            case 0:
+                IsHealed = true;
+                if(IsPlayer) ObjActivity(_VFX.AbilityVFX[0], true);
+                break;
+
+            case 1:
+                IsRevealed = true;
+                if (IsPlayer) ObjActivity(_VFX.AbilityVFX[1], true);
+                break;
+
+            case 2:
+                IsKilledByKnight = true;
+                if (IsPlayer) ObjActivity(_VFX.AbilityVFX[2], true);
+                break;
+
+            case 3:
+                AddVotesCount();
+                if (IsPlayer) ObjActivity(_VFX.AbilityVFX[3], true);
+                break;
+
+            case 4:
+                IsConjured = true;
+                if (IsPlayer) ObjActivity(_VFX.AbilityVFX[4], true);
+                break;
+        }
+    }
+    #endregion
+
+    public void ObjActivity(GameObject obj, bool enabled)
     {
         if (obj.activeInHierarchy != enabled) obj.SetActive(enabled);
     }

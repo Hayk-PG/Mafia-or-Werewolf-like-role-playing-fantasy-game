@@ -521,6 +521,10 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
                 _TeamsClass.MonstersTeamCount++;
             }
 
+            _RolesClass.RoleButtons[i].RoleNameText = i == 0 ? _RolesClass.RoleButtons[i].RoleName : _RolesClass.RoleButtons[i].RoleName == RoleNames.Infected &&
+                _RolesClass.RoleButtons[0].RoleName == RoleNames.Infected ? _RolesClass.RoleButtons[i].RoleNameText = _RolesClass.RoleButtons[i].RoleName :
+                _RolesClass.RoleButtons[i].RoleNameText = "Unknown";
+
             random.Remove(randomRange);
             _RolesClass.MalePlayersNames.Remove(randomName);
         }
@@ -566,9 +570,33 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
                         }
 
                         if (SinglePlayGlobalConditions.IsPhaseResetTime())
-                        {
-                            Timer(false, 90);
-                            OnPhaseReset?.Invoke(false);
+                        {      
+                            StartCoroutine(GetLostPlayer(LostPlayer =>
+                            {
+                                Timer(false, 90);
+                                OnPhaseReset?.Invoke(false);
+
+                                if (LostPlayer != null && !LostPlayer.IsHealed)
+                                {
+                                    LostPlayer.Lost();
+                                    UpdateTeams(LostPlayer);
+                                    _Players.ActivePlayers.Remove(LostPlayer);
+                                    _Players.LostPlayers.Add(LostPlayer);
+                                    _SPRBCC.OnPlayerLost(LostPlayer.transform);
+                                }
+                                _TimerClass.Proccesing = false;
+                            }, 
+                            KilledPlayerByKnight => 
+                            {
+                                if (KilledPlayerByKnight != null && !KilledPlayerByKnight.IsHealed)
+                                {
+                                    KilledPlayerByKnight.Lost();
+                                    UpdateTeams(KilledPlayerByKnight);
+                                    _Players.ActivePlayers.Remove(KilledPlayerByKnight);
+                                    _Players.LostPlayers.Add(KilledPlayerByKnight);
+                                    _SPRBCC.OnPlayerLost(KilledPlayerByKnight.transform);
+                                }
+                            }));
                         }
                     }
                     else
@@ -584,6 +612,7 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
                             {
                                 Timer(true, 60);
                                 OnPhaseReset?.Invoke(true);
+
                                 if (LostPlayer != null)
                                 {
                                     LostPlayer.Lost();
@@ -593,7 +622,7 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
                                     _SPRBCC.OnPlayerLost(LostPlayer.transform);
                                 }
                                 _TimerClass.Proccesing = false;
-                            }));
+                            }, null));
                         }
                     }
                 }
@@ -680,9 +709,11 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
     #endregion
 
     #region GetLostPlayerCoroutine
-    IEnumerator GetLostPlayer(Action<SinglePlayRoleButton> LostPlayerIsSet)
+    IEnumerator GetLostPlayer(Action<SinglePlayRoleButton> LostPlayerIsSet, Action<SinglePlayRoleButton> KilledPlayerByKnight)
     {
         _TimerClass.Proccesing = true;
+
+        SinglePlayRoleButton killedPlayerByKnight = null;
 
         List<int> playersVotesCount = new List<int>();
         List<SinglePlayRoleButton> highestVotesCountPlayers = new List<SinglePlayRoleButton>();
@@ -717,9 +748,20 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
             lostPlayer = highestVotesCountPlayers[randomIndex];
         }
 
+        yield return null;
+
+        LoopRoleButtons(RoleButton => 
+        {
+            if(RoleButton.IsAlive && RoleButton.IsKilledByKnight)
+            {
+                killedPlayerByKnight = RoleButton;
+            }
+        });
+
         yield return new WaitForSeconds(1);
 
         LostPlayerIsSet?.Invoke(lostPlayer);
+        KilledPlayerByKnight?.Invoke(killedPlayerByKnight);
     }
     #endregion
 

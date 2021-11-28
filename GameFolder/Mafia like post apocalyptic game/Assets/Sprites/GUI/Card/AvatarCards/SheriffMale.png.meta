@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: -4285594618037716695
     second: Sheriff_0
+  - first:
+      213: -5468428026961443435
+    second: SheriffMale_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -102,13 +105,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sheriff_0
+      name: SheriffMale_0
       rect:
         serializedVersion: 2
-        x: 155
-        y: 21
-        width: 341
-        height: 438
+        x: 152
+        y: 20
+        width: 336
+        height: 440
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -116,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9293984a6628684c0800000000000000
-      internalID: -4285594618037716695
+      spriteID: 5954c25bead3c14b0800000000000000
+      internalID: -5468428026961443435
       vertices: []
       indices: 
       edges: []

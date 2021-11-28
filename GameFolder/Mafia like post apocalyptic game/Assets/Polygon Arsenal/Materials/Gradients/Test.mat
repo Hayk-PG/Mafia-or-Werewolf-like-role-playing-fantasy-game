@@ -53,8 +53,8 @@ Material:
     m_Floats:
     - ClippingMode: 0
     - _AlphaClip: 0
-    - _Blend: 5
-    - _Blend2: 10
+    - _Blend: 2
+    - _Blend2: 3
     - _BlendOp: 0
     - _BumpScale: 1
     - _CameraFadingEnabled: 0

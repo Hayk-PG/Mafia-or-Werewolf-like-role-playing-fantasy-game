@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: -5623629845934126809
     second: MonsterKing_0
+  - first:
+      213: 4163506793333967747
+    second: MonsterKing_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -105,10 +108,10 @@ TextureImporter:
       name: MonsterKing_0
       rect:
         serializedVersion: 2
-        x: 148
-        y: 21
-        width: 348
-        height: 438
+        x: 152
+        y: 20
+        width: 336
+        height: 440
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -116,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 729cfcc437ad4f1b0800000000000000
-      internalID: -5623629845934126809
+      spriteID: 38bc89c8e5fb7c930800000000000000
+      internalID: 4163506793333967747
       vertices: []
       indices: 
       edges: []

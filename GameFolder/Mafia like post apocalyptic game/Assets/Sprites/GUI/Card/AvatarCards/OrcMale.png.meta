@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: -9034703918911937821
     second: OrcMale_0
+  - first:
+      213: 4296758226430514648
+    second: OrcMale_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -105,10 +108,10 @@ TextureImporter:
       name: OrcMale_0
       rect:
         serializedVersion: 2
-        x: 144
-        y: 21
-        width: 341
-        height: 438
+        x: 152
+        y: 20
+        width: 336
+        height: 440
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -116,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3e2ac6657a84e9280800000000000000
-      internalID: -9034703918911937821
+      spriteID: 8d5d02c77d621ab30800000000000000
+      internalID: 4296758226430514648
       vertices: []
       indices: 
       edges: []

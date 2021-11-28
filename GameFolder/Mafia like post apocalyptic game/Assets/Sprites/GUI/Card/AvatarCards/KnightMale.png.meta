@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: 7026816458421480548
     second: KnightMale_0
+  - first:
+      213: -6348926986460947480
+    second: KnightMale_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -105,10 +108,10 @@ TextureImporter:
       name: KnightMale_0
       rect:
         serializedVersion: 2
-        x: 155
-        y: 21
-        width: 341
-        height: 438
+        x: 152
+        y: 20
+        width: 336
+        height: 440
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -116,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 46ca41ad654448160800000000000000
-      internalID: 7026816458421480548
+      spriteID: 8eb9a1b3b8414e7a0800000000000000
+      internalID: -6348926986460947480
       vertices: []
       indices: 
       edges: []

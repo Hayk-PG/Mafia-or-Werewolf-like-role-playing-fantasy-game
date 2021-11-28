@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Test
   m_Shader: {fileID: 4800000, guid: e4ae9a1447f888e4b8754eda64dff814, type: 3}
-  m_ShaderKeywords: CLIPPINGMODE_INSIDE _FADING_ON _SOFTPARTICLES_ON
+  m_ShaderKeywords: CLIPPINGMODE_OUTSIDE USE_CLIPPING_MASK _FADING_ON _SOFTPARTICLES_ON
   m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -53,8 +53,8 @@ Material:
     m_Floats:
     - ClippingMode: 0
     - _AlphaClip: 0
-    - _Blend: 5
-    - _Blend2: 10
+    - _Blend: 1
+    - _Blend2: 6
     - _BlendOp: 0
     - _BumpScale: 1
     - _CameraFadingEnabled: 0

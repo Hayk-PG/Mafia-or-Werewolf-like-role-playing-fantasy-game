@@ -1139,6 +1139,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardBack (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2796954185533498534, guid: ee07df18c1eb9974098daf98ccd3518d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2796954185533498535, guid: ee07df18c1eb9974098daf98ccd3518d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3924,7 +3929,7 @@ MonoBehaviour:
     - {fileID: -989085045499774128, guid: ff36358a9c4facf46a2deb6484fe3e70, type: 3}
     - {fileID: -989085045499774128, guid: ff36358a9c4facf46a2deb6484fe3e70, type: 3}
     sheriffRoleSprites:
-    - {fileID: -4285594618037716695, guid: 83720b25f8d072f40ac02e9b8a6de962, type: 3}
+    - {fileID: -5468428026961443435, guid: 83720b25f8d072f40ac02e9b8a6de962, type: 3}
     - {fileID: -1676754548661467816, guid: 4c17eceb303e1514fa7a5114aec15dc9, type: 3}
     soldierRoleSprite:
     - {fileID: 7026816458421480548, guid: 07055c95773a32047add3a4bbdbdb34d, type: 3}
@@ -5785,6 +5790,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CardBack (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2796954185533498534, guid: ee07df18c1eb9974098daf98ccd3518d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2796954185533498535, guid: ee07df18c1eb9974098daf98ccd3518d,
         type: 3}
@@ -8758,6 +8768,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardBack (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 2796954185533498534, guid: ee07df18c1eb9974098daf98ccd3518d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2796954185533498535, guid: ee07df18c1eb9974098daf98ccd3518d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9455,6 +9470,7 @@ GameObject:
   - component: {fileID: 1937312639}
   - component: {fileID: 1937312638}
   - component: {fileID: 1937312637}
+  - component: {fileID: 1937312641}
   m_Layer: 5
   m_Name: GameUI
   m_TagString: Untagged
@@ -9571,6 +9587,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1937312641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1937312636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 715945285092ca9408f30949640b4c5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maskResolutionScale: 1
+  maskLayer: 10
 --- !u!1 &1945924178
 GameObject:
   m_ObjectHideFlags: 0
@@ -40205,6 +40235,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CardBack
+      objectReference: {fileID: 0}
+    - target: {fileID: 2796954185533498534, guid: ee07df18c1eb9974098daf98ccd3518d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2796954185533498535, guid: ee07df18c1eb9974098daf98ccd3518d,
         type: 3}

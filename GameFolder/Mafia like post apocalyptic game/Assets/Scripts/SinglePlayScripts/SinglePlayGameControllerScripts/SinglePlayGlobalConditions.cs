@@ -85,6 +85,13 @@ public class SinglePlayGlobalConditions : MonoBehaviour
         return aiRoleButton.IsPlayer == false && aiRoleButton.IsAlive == true && !aiRoleButton.HasVoted;
     }
 
+    public static bool CanAiParticipateInNightVote(SinglePlayRoleButton aiRoleButton)
+    {
+        bool isRoleSuitable = IsAiMedeic(aiRoleButton) || IsAiSheriff(aiRoleButton) || IsAiSoldier(aiRoleButton) || IsAiInfected(aiRoleButton) || IsAiLizard(aiRoleButton);
+
+        return aiRoleButton.IsPlayer == false && aiRoleButton.IsAlive == true && !aiRoleButton.HasVoted && isRoleSuitable;
+    }
+
     public static bool IsAiMedeic(SinglePlayRoleButton aiRoleButton)
     {
         return aiRoleButton.RoleName == RoleNames.Medic;

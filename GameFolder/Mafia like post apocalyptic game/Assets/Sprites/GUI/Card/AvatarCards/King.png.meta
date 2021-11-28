@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: -4821530343430527414
     second: King_0
+  - first:
+      213: -3674366859364015311
+    second: King_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -105,10 +108,10 @@ TextureImporter:
       name: King_0
       rect:
         serializedVersion: 2
-        x: 140
-        y: 21
-        width: 352
-        height: 438
+        x: 152
+        y: 20
+        width: 336
+        height: 440
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -116,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a466e0eb2bb761db0800000000000000
-      internalID: -4821530343430527414
+      spriteID: 133e32d1fc6020dc0800000000000000
+      internalID: -3674366859364015311
       vertices: []
       indices: 
       edges: []

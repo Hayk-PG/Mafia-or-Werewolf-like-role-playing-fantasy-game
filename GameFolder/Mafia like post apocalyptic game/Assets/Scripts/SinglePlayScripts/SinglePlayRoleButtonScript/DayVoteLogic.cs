@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class DayVoteLogic : VotingBaseScript
 {    
@@ -37,16 +36,14 @@ public class DayVoteLogic : VotingBaseScript
             }
             else
             {
-                RandomVote?.Invoke(false);
+                RandomVote?.Invoke(true);
             }
         }));
     }
 
-    IEnumerator VoteCoroutine(SinglePlayRoleButton owner, Action Vote)
+    protected virtual IEnumerator VoteCoroutine(SinglePlayRoleButton owner, Action Vote)
     {
-        IncludedPlayers = new List<SinglePlayRoleButton>(); yield return null;
-        PrioritizedPlayers = new List<SinglePlayRoleButton>(); yield return null;
-        MainSuspects = new List<SinglePlayRoleButton>(); yield return null;
+        ResetLists(); yield return null;
 
         LoopLostPlayers(LostPlayer => 
         {
@@ -71,6 +68,13 @@ public class DayVoteLogic : VotingBaseScript
         }); yield return null;
 
         Vote?.Invoke();
+    }
+
+    protected void ResetLists()
+    {
+        IncludedPlayers = new List<SinglePlayRoleButton>(); 
+        PrioritizedPlayers = new List<SinglePlayRoleButton>(); 
+        MainSuspects = new List<SinglePlayRoleButton>();
     }
 
     void InspectInfectedsInLostPlayersList(SinglePlayRoleButton LostPlayer)
