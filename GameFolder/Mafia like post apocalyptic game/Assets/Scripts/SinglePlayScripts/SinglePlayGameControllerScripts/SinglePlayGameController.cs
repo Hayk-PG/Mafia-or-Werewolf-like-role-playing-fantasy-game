@@ -496,7 +496,7 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
 
             _Players.ActivePlayers.Add(_RolesClass.RoleButtons[i]);
 
-            _RolesClass.RoleButtons[i].Name = i == 0 ? "Hayk" : randomName;
+            _RolesClass.RoleButtons[i].Name = i == 0 ? "You" : randomName;
             _RolesClass.RoleButtons[i].gameObject.SetActive(true);
             _RolesClass.RoleButtons[i].RoleName = _RolesClass.PlayersRolesNames[randomRange];
             _RolesClass.RoleButtons[i].RoleImage = i == 0 ? RoleSprites(_RolesClass.PlayersRolesNames[randomRange], 0) : _RolesImagesClass.DefaultSprite[0];

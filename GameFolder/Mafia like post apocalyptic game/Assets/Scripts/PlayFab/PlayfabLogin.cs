@@ -61,7 +61,7 @@ public class PlayfabLogin : MonoBehaviour
                             });
                         #endregion
 
-                        PlayerBaseConditions.NetworkManagerComponents?.NetworkManager.ConnectToPhoton(result.PlayFabId);
+                        PlayerBaseConditions.ConnectToPhoton(result.PlayFabId);
                         PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoggedIn();
                     }
                     else

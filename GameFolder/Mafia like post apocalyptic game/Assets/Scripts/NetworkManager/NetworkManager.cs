@@ -2,10 +2,12 @@
 using Photon.Pun;
 using Photon.Realtime;
 using System;
-using UnityEngine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    public enum ConnectionType {Auto, Manual}
+    public ConnectionType connectionType;
+
     public event Action OnLobbyJoined;
     public event Action OnRoomCreated;    
     public event Action OnRoomJoined;
@@ -16,7 +18,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        ConnectToPlayfab();
+        PlayerBaseConditions.ConnectToPlayfab(ConnectionType.Auto);
     }
 
     public override void OnEnable()
@@ -32,60 +34,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         GetComponent<NetworkManagerComponents>().NetworkManagerCreatedRoomProperties.OnClickConfirmRoomButton -= NetworkManagerCreatedRoomProperties_OnClickConfirmRoomButton;
         GetComponent<NetworkManagerComponents>().NetworkUIButtons.OnClickRoomButton -= NetworkUIButtons_OnClickRoomButton;
     }
-
-    #region ConnectToPlayfab
-    void ConnectToPlayfab()
-    {
-        if (!PlayerBaseConditions.PlayfabManager.PlayfabIsLoggedIn.IsPlayfabLoggedIn())
-        {
-            if (PlayerBaseConditions.PlayerSavedData.AreUsernameAndPasswordSaved())
-            {
-                PlayerBaseConditions.PlayfabManager.PlayfabSignIn.OnPlayfabLogin(PlayerPrefs.GetString(PlayerKeys.UsernameKey), PlayerPrefs.GetString(PlayerKeys.PasswordKey));
-            }
-            else
-            {
-                PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoggedOut();
-            }
-        }
-    }
-    #endregion
-
-    #region ConnectToPhoton
-    public void ConnectToPhoton(string playfabId)
-    {
-        if (!PhotonNetwork.IsConnected)
-        {
-            PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.AuthValues = new AuthenticationValues();
-            PhotonNetwork.AuthValues.UserId = playfabId;
-        }
-        else
-        {
-            PhotonNetwork.JoinLobby();
-        }
-    }
-    #endregion
-
-    #region OnDisconnected
-    public override void OnDisconnected(DisconnectCause cause)
-    {
-        LoadingUI.LI._ConnectingScreen.EnableConnectionLostScreen();
-    }
-    #endregion
-
+         
     #region OnConnectedToMaster
     public override void OnConnectedToMaster()
     {
-        if (PlayerBaseConditions.PlayfabManager.PlayfabIsLoggedIn.IsPlayfabLoggedIn())
-        {
-            PhotonNetwork.JoinLobby();
-        }
-        else
-        {
-            PlayerBaseConditions.NetworkManagerComponents.NetworkUI.OnLoggedOut();
-        }
-
-        LoadingUI.LI._ConnectingScreen.DisableConnectionLostScreen();
+        if (connectionType == ConnectionType.Manual && !PhotonNetwork.InLobby) PlayerBaseConditions.JoinLobby();
+        if (connectionType == ConnectionType.Auto && !PlayerBaseConditions.IsOptionsOpened()) Options.instance.OnPressedOptionButton();
     }
     #endregion
 

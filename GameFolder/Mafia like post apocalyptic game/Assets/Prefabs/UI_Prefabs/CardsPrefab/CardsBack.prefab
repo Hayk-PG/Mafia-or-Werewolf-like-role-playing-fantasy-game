@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1461671841960319689}
   - component: {fileID: 1623422109361931573}
   - component: {fileID: 1622199830069258989}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FireBigRedV2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4821,7 +4821,7 @@ GameObject:
   - component: {fileID: 1465435650018979293}
   - component: {fileID: 1623198000208963183}
   - component: {fileID: 1622290101344364963}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FireGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9629,7 +9629,7 @@ GameObject:
   - component: {fileID: 1465469835029634171}
   - component: {fileID: 1623214035622643119}
   - component: {fileID: 1622518060254637403}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}

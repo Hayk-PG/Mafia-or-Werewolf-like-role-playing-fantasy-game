@@ -1,29 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using Photon.Pun;
-using System.Collections;
-using System;
-
-public class OnClickMainMenu : MonoBehaviour
+﻿
+public class OnClickMainMenu : OptionButtonsBaseScript
 {
-    [SerializeField] Button mainMenuButton;
-
-
-    void Update()
-    {
-        OnClickMainMenuButton();
-    }
-
-    void OnClickMainMenuButton()
-    {
-        mainMenuButton.onClick.RemoveAllListeners();
-        mainMenuButton.onClick.AddListener(() => 
-        {
-            BackToMainMenu();
-        });
-    }
-
-    void BackToMainMenu()
+    protected override void Logic()
     {
         if (_MySceneManager.CurrentScene().name != SceneNames.MenuScene)
         {

@@ -1,21 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-
-public class OnClickOption : MonoBehaviour
+﻿
+public class OnClickOption : OptionButtonsBaseScript
 {
-    [SerializeField] Button optionButton;
-
-    void Update()
+    protected override void Logic()
     {
-        OnClickOptionButton();
-    }
-
-    void OnClickOptionButton()
-    {
-        optionButton.onClick.RemoveAllListeners();
-        optionButton.onClick.AddListener(() => {
-            Options.instance.OnPressedOptionButton();
-            PlayerBaseConditions.UiSounds.PlaySoundFX(0);
-        });
+        Options.instance.OnPressedOptionButton();
     }
 }

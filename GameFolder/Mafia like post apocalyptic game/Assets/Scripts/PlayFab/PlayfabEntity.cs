@@ -44,7 +44,7 @@ public class PlayfabEntity : MonoBehaviour
             succes => 
             {
                 print("SUCCES");
-                PlayerBaseConditions.NetworkManagerComponents.NetworkUI.PlayerBadgeButton.OnPlayerLoggedIn();
+                Options.instance._PlayerBadgeButton.OnPlayerLoggedIn();
             }, 
             error => 
             {

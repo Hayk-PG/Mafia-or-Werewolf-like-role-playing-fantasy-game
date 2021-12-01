@@ -1,26 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class ExitConfirmation : OptionButtonsBaseScript
+public class ExitConfirmation : MonoBehaviour
 {
-    protected override Button[] Buttons => buttons;
+    [SerializeField] Button[] buttons;
 
-
-
-    protected override void Update()
+    void Update()
     {
         OnClickButton();
     }
 
-
-    protected override void OnClickButton()
+    void OnClickButton()
     {
-        for (int i = 0; i < Buttons.Length; i++)
+        for (int i = 0; i < buttons.Length; i++)
         {
             int index = i;
 
-            Buttons[index].onClick.RemoveAllListeners();
-            Buttons[index].onClick.AddListener(() => 
+            buttons[index].onClick.RemoveAllListeners();
+            buttons[index].onClick.AddListener(() => 
             {
                 if (index == 0) OnConfirmExit();
                 if (index == 1) OnDenyExit();

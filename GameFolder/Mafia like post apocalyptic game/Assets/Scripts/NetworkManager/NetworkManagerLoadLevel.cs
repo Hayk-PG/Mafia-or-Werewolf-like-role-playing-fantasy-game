@@ -14,7 +14,7 @@ public class NetworkManagerLoadLevel : MonoBehaviourPun
 
     void NetworkManager_OnRoomJoined()
     {
-        PhotonNetwork.LoadLevel(SceneNames.GameScene);
+        PhotonNetwork.LoadLevel(SceneNames.MultiplayerScene);
     }
 
 

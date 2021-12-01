@@ -33,8 +33,17 @@ public class NetworkManagerUIButtons : MonoBehaviour
             }
         }
     }
-    public Button BadgeButton => badgeButton;
+    public Button BadgeButton
+    {
+        get => badgeButton;
+        set => badgeButton = value;
+    }
 
+
+    void Start()
+    {
+        BadgeButton = FindObjectOfType<PlayerBadgeButton>().GetComponent<Button>();
+    }
 
     void Update()
     {

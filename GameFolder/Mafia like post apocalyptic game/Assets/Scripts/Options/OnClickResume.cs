@@ -1,24 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-
-public class OnClickResume : MonoBehaviour
+﻿
+public class OnClickResume : OptionButtonsBaseScript
 {
-    [SerializeField] Button resumeButton;
-
-    void Update()
+    protected override void Logic()
     {
-        OnClickResumeButton();
-    }
-
-    void OnClickResumeButton()
-    {
-        resumeButton.onClick.RemoveAllListeners();
-        resumeButton.onClick.AddListener(() => 
-        {
-            Options.instance.OnPressedOptionsButtons();
-            PlayerBaseConditions.UiSounds.PlaySoundFX(1);
-        });
+        Options.instance.OnPressedOptionsButtons();        
     }
 }

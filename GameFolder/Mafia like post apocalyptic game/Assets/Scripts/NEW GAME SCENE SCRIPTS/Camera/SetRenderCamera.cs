@@ -1,18 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SetRenderCamera : MonoBehaviour
 {
+    Camera mainCamera;
     Options _Options;
 
     void Awake()
     {
+        mainCamera = GetComponent<Camera>();
         _Options = FindObjectOfType<Options>();
     }
 
     void Start()
     {
-        _Options.GetComponent<Canvas>().worldCamera = Camera.main;
+        _Options.GetComponent<Canvas>().worldCamera = mainCamera;
     }
 }

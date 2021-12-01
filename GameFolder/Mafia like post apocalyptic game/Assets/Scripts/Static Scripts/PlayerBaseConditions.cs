@@ -586,6 +586,45 @@ public class PlayerBaseConditions : MonoBehaviourPun
     }
     #endregion
 
+    #region Connection
+    public static void ConnectToPlayfab(NetworkManager.ConnectionType connectionType)
+    {
+        if (!PlayfabManager.PlayfabIsLoggedIn.IsPlayfabLoggedIn())
+        {
+            if (PlayerSavedData.AreUsernameAndPasswordSaved())
+            {
+                PlayfabManager.PlayfabSignIn.OnPlayfabLogin(PlayerPrefs.GetString(PlayerKeys.UsernameKey), PlayerPrefs.GetString(PlayerKeys.PasswordKey));
+            }
+        }
+    }
+
+    public static void ConnectToPhoton(string playfabId)
+    {
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.AuthValues = new AuthenticationValues();
+            PhotonNetwork.AuthValues.UserId = playfabId;
+        }
+    }
+
+    public static bool IsConnectedToMaster()
+    {
+        return PhotonNetwork.IsConnected;
+    }
+
+    public static void JoinLobby()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+    #endregion
+
+    #region Options
+    public static bool IsOptionsOpened()
+    {
+        return Options.instance._OptionsUI.OptionsTab.interactable;
+    }
+    #endregion
 
     //NEW
 
@@ -632,7 +671,7 @@ public class PlayerBaseConditions : MonoBehaviourPun
             if(_MySceneManager.CurrentScene().name == SceneNames.MenuScene)
                 return FindObjectOfType<UISounds>();
 
-            if (_MySceneManager.CurrentScene().name == SceneNames.GameScene)
+            if (_MySceneManager.CurrentScene().name == SceneNames.MultiplayerScene || _MySceneManager.CurrentScene().name == SceneNames.SinglePlayerScene)
                 return FindObjectOfType<UISoundsInGame>();
 
             else return null;

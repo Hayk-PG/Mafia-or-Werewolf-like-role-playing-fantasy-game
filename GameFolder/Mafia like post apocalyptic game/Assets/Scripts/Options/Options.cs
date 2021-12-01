@@ -1,18 +1,22 @@
 ﻿using Photon.Pun;
 using System;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Options : MonoBehaviourPun
 {
     public static Options instance;
 
-    public OptionsUI _OptionsUI;
-    [SerializeField] ButtonsInteractability _ButtonsInteractability;
+    [Serializable] public class Buttons
+    {
+        [SerializeField] GameObject[] buttonsObj;
 
-    #region OptionsUI
-    [Serializable]
-    public class OptionsUI
+        public GameObject[] ButtonsObj
+        {
+            get => buttonsObj;
+        }
+    }
+    [Serializable] public class OptionsUI
     {
         [Header("CANVAS GROUP")]
         [SerializeField] CanvasGroup optionsTab;
@@ -23,41 +27,11 @@ public class Options : MonoBehaviourPun
         public CanvasGroup OptionsButtonTab => optionsButtonTab;
         public CanvasGroup ExitTab => exitTab;
     }
-    #endregion
 
-    #region ButtonsInteractability
-    [Serializable] [SerializeField] class ButtonsInteractability
-    {
-        [SerializeField] internal Button[] Buttons;
+    public Buttons _Buttons;
+    public OptionsUI _OptionsUI;
 
-
-        #region OnButtonsInteractability
-        internal void OnButtonsInteractability()
-        {
-            if (_MySceneManager.CurrentScene().name == SceneNames.MenuScene)
-            {
-                if (Buttons[0].interactable)
-                {
-                    foreach (var button in Buttons)
-                    {
-                        button.interactable = false;
-                    }
-                }
-            }
-            else
-            {
-                if (!Buttons[0].interactable)
-                {
-                    foreach (var button in Buttons)
-                    {
-                        button.interactable = true;
-                    }
-                }
-            }
-        }
-        #endregion
-    }
-    #endregion
+    public PlayerBadgeButton _PlayerBadgeButton;
 
     void Awake()
     {
@@ -72,16 +46,48 @@ public class Options : MonoBehaviourPun
         }
     }
 
-    void Update()
+    void OnEnable()
     {
-        _ButtonsInteractability.OnButtonsInteractability();
+        SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
     }
+
+    void OnDisable()
+    {
+        SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
+    }
+
+    #region SceneManager_activeSceneChanged
+    void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
+    {
+        if (arg1.name == SceneNames.MenuScene)
+        {
+            OnMenuScene();
+        }
+    }
+    #endregion
+
+    #region OnMenuScene
+    public void OnMenuScene()
+    {
+        MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsTab, true);
+        MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsButtonTab, false);
+        ButtonsActivity(0, true);
+        ButtonsActivity(1, true);
+        ButtonsActivity(2, false);
+        ButtonsActivity(3, false);
+        ButtonsActivity(4, true);
+        ButtonsActivity(5, true);
+    }
+    #endregion
 
     #region OnPressedOptionButton
     public void OnPressedOptionButton()
     {
-        MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsTab, true);
-        MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsButtonTab, false);        
+        OnSceneChanges(IsDone =>
+        {
+            MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsTab, true);
+            MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsButtonTab, false);
+        });
     }
     #endregion
 
@@ -109,5 +115,56 @@ public class Options : MonoBehaviourPun
             MyCanvasGroups.CanvasGroupActivity(_OptionsUI.OptionsTab, true);            
         }
     }
-    #endregion   
+    #endregion
+
+    #region OnSceneChanges
+    void OnSceneChanges(Action<bool> IsDone)
+    {
+        bool isDOne = false;
+
+        if (_MySceneManager.CurrentScene().name == SceneNames.MenuScene)
+        {
+            ButtonsActivity(0, true);
+            ButtonsActivity(1, true);
+            ButtonsActivity(2, false);
+            ButtonsActivity(3, false);
+            ButtonsActivity(4, true);
+            ButtonsActivity(5, true);
+            isDOne = true;
+        }
+        if (_MySceneManager.CurrentScene().name == SceneNames.MultiplayerScene)
+        {
+            ButtonsActivity(0, false);
+            ButtonsActivity(1, false);
+            ButtonsActivity(2, true);
+            ButtonsActivity(3, true);
+            ButtonsActivity(4, true);
+            ButtonsActivity(5, false);
+            isDOne = true;
+        }
+        if (_MySceneManager.CurrentScene().name == SceneNames.SinglePlayerScene)
+        {
+            ButtonsActivity(0, false);
+            ButtonsActivity(1, false);
+            ButtonsActivity(2, true);
+            ButtonsActivity(3, true);
+            ButtonsActivity(4, true);
+            ButtonsActivity(5, false);
+            isDOne = true;
+        }
+
+        IsDone?.Invoke(isDOne);
+    }
+    #endregion
+
+    /// <summary>
+    /// 0: SInglePlayer 1: Multiplayer 2: Resume 3: MainMenu 4: Exit 5: PlayerBadge
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="enabled"></param>
+    public void ButtonsActivity(int index, bool enabled)
+    {
+        if (_Buttons.ButtonsObj[index].activeInHierarchy != enabled) _Buttons.ButtonsObj[index].SetActive(enabled);
+    }
+
 }

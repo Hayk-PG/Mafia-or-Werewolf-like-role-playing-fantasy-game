@@ -29,11 +29,11 @@ public class NetworkCallbacks : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        LoadingUI.LI._ConnectingScreen.EnableConnectionLostScreen();
+        
     }
 
     public override void OnJoinedRoom()
     {
-        LoadingUI.LI._ConnectingScreen.DisableConnectionLostScreen();
+        
     }
 }

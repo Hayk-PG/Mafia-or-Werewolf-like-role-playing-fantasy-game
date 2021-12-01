@@ -17,9 +17,6 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] Sprite normalBackground;
     [SerializeField] Sprite bluredBackground;
 
-    [Header("UI GAMEOBJECTS")]
-    [SerializeField] PlayerBadgeButton playerBadgeButton;
-
     public Image BackgroundImage
     {
         get
@@ -40,7 +37,6 @@ public class NetworkManagerUI : MonoBehaviour
     public CanvasGroup LobbyTab_CG => lobbyTab_CG;
     public CanvasGroup CreateRoomTab_CG => createRoomTab_CG;
     
-    public PlayerBadgeButton PlayerBadgeButton => playerBadgeButton;
     NetworkManagerUIButtons NetworkManagerUIButtons { get; set; }
     NetworkManager NetworkManager { get; set; }
 
@@ -96,7 +92,8 @@ public class NetworkManagerUI : MonoBehaviour
 
     #region OnLoggedOut
     public void OnLoggedOut()
-    {       
+    {
+        Options.instance.OnPressedOptionsButtons();
         MyCanvasGroups.CanvasGroupActivity(PlayfabTab, true);
         MyCanvasGroups.CanvasGroupActivity(SignUpInTab, true);
 
@@ -107,6 +104,7 @@ public class NetworkManagerUI : MonoBehaviour
     #region OnLoginToAnotherAccount
     public void OnLoginToAnotherAccount()
     {
+        Options.instance.OnPressedOptionsButtons();
         MyCanvasGroups.CanvasGroupActivity(PlayfabTab, true);
         MyCanvasGroups.CanvasGroupActivity(SignUpInTab, false);
         MyCanvasGroups.CanvasGroupActivity(SignInTab, true);
@@ -119,6 +117,7 @@ public class NetworkManagerUI : MonoBehaviour
     #region NetworkManager_OnLobbyJoined
     void NetworkManager_OnLobbyJoined()
     {
+        Options.instance.OnPressedOptionsButtons();
         MyCanvasGroups.CanvasGroupActivity(LobbyTab_CG, true);
         MyCanvasGroups.CanvasGroupActivity(CreateRoomButtonTab, true);
 
