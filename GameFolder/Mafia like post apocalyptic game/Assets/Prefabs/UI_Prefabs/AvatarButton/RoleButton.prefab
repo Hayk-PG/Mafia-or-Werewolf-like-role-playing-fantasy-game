@@ -162,6 +162,7 @@ GameObject:
   - component: {fileID: 4702127449180811942}
   - component: {fileID: 4758675231761258044}
   - component: {fileID: 7862937223153471673}
+  - component: {fileID: 6877284236405340027}
   m_Layer: 5
   m_Name: VotePanel
   m_TagString: Untagged
@@ -210,7 +211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.10519756, g: 0.11053754, b: 0.11320752, a: 1}
+  m_Color: {r: 0.65882355, g: 0.09019609, b: 0.2958299, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -226,6 +227,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6877284236405340027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412605139983444373}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.36078432, g: 0.12941177, b: 0.015686275, a: 1}
+  m_EffectDistance: {x: 0.5, y: 0.5}
+  m_UseGraphicAlpha: 1
 --- !u!1 &779524185977438487
 GameObject:
   m_ObjectHideFlags: 0

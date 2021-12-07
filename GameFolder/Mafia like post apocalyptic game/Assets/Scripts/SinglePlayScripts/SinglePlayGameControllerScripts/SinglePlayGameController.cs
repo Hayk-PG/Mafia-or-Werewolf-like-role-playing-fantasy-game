@@ -455,81 +455,79 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
     public AI _AI;
     public Players _Players;
 
+    SinglePlayerGameSettings _SPGS { get; set; }
     SinglePlayerRoleButtonsContainersController _SPRBCC { get; set; }
+    SinglePlayerRolesSetController _SPRSC { get; set; }
+    SinglePlayerPoints _SPP { get; set; }
 
-    [SerializeField] bool test;
+    public bool test;
 
 
     void Awake()
     {
+        _SPGS = GetComponent<SinglePlayerGameSettings>();
         _SPRBCC = GetComponent<SinglePlayerRoleButtonsContainersController>();
+        _SPRSC = GetComponent<SinglePlayerRolesSetController>();
+
+        _SPP = FindObjectOfType<SinglePlayerPoints>();
     }
 
-    void Start()
+    void OnEnable()
     {
-        GameStart();
+        _SPGS.OnStartTheGame += _SPGS_OnStartTheGame;
+    }
+  
+    void OnDisable()
+    {
+        _SPGS.OnStartTheGame -= _SPGS_OnStartTheGame;
     }
 
-    public void GameStart()
+    void _SPGS_OnStartTheGame(SinglePlayerGameSettings.GameData GameData)
     {
-        _TimerClass.TimerCoroutine = TimerCoroutine(_TimerClass.Timer, _TimerClass.IsNight);
-
+        StopTimerCoroutine();
+        GetGameData(GameData);
         SetPlayersRoles();
         StartCoroutine(_TimerClass.TimerCoroutine);
     }
 
+    #region StopTimerCoroutine
+    void StopTimerCoroutine()
+    {
+        if(_TimerClass.TimerCoroutine != null)
+            StopCoroutine(_TimerClass.TimerCoroutine);
+        else
+            _TimerClass.TimerCoroutine = TimerCoroutine(_TimerClass.Timer, _TimerClass.IsNight);
+    }
+    #endregion
+
+    #region GetGameData
+    void GetGameData(SinglePlayerGameSettings.GameData GameData)
+    {
+        _RolesClass.PlayersCount = GameData.PlayersCount;
+    }
+    #endregion
+
     #region SetPlayersRoles
     void SetPlayersRoles()
     {
-        List<int> random = new List<int>();
+        _SPRSC.HideAllRoleButtons(new SinglePlayerRolesSetController.RolesInfo { _RolesClass = _RolesClass});
+        _SPRSC.GettingRandomNumber(out List<int> random);
 
         for (int i = 0; i < _RolesClass.PlayersCount; i++)
         {
-            random.Add(i);
-        }
+            _SPRSC.SettingRandomRange(new SinglePlayerRolesSetController.RolesInfo { Index = i}, random, out int randomRange);
+            _SPRSC.SettingRandomNames(_RolesClass, out string randomName);
+            _SPRSC.SettingRoles(new SinglePlayerRolesSetController.RolesInfo(_RolesClass, _RolesImagesClass, i, randomRange, randomName, RoleSprites(_RolesClass.PlayersRolesNames[randomRange], 0)));
+            _SPRSC.IfPlayerIsInfected(new SinglePlayerRolesSetController.RolesInfo { _RolesClass = _RolesClass, Index = i, RoleSprite = RoleSprites(RoleNames.Infected, 0) });
+            _SPRSC.DefineRoleNames(new SinglePlayerRolesSetController.RolesInfo { _RolesClass = _RolesClass, Index = i });
+            _SPRSC.RemoveRandoms(random, new SinglePlayerRolesSetController.RolesInfo { RandomRange = randomRange});
+            _SPRSC.RemoveMaleNames(new SinglePlayerRolesSetController.RolesInfo { _RolesClass = _RolesClass, RandomName = randomName });
 
-        for (int i = 0; i < _RolesClass.PlayersCount; i++)
-        {
-            //int randomRange = random[UnityEngine.Random.Range(0, random.Count - 1)];
-            int randomRange = test && i == 0 ? 11 : random[UnityEngine.Random.Range(0, random.Count)];
-            string randomName = _RolesClass.MalePlayersNames[UnityEngine.Random.Range(0, _RolesClass.MalePlayersNames.Count)];
-
-            _Players.ActivePlayers.Add(_RolesClass.RoleButtons[i]);
-
-            _RolesClass.RoleButtons[i].Name = i == 0 ? "You" : randomName;
-            _RolesClass.RoleButtons[i].gameObject.SetActive(true);
-            _RolesClass.RoleButtons[i].RoleName = _RolesClass.PlayersRolesNames[randomRange];
-            _RolesClass.RoleButtons[i].RoleImage = i == 0 ? RoleSprites(_RolesClass.PlayersRolesNames[randomRange], 0) : _RolesImagesClass.DefaultSprite[0];
-            _RolesClass.RoleButtons[i].RoleSprite = RoleSprites(_RolesClass.PlayersRolesNames[randomRange], 0);
-            _RolesClass.RoleButtons[i].IsPlayer = i == 0 ? true : false;
-            _RolesClass.RoleButtons[i].IsAlive = true;
-
-            if (_RolesClass.RoleButtons[0].IsPlayer && _RolesClass.RoleButtons[0].RoleName == RoleNames.Infected)
-            {
-                if (_RolesClass.RoleButtons[i].RoleName == RoleNames.Infected)
-                {
-                    _RolesClass.RoleButtons[i].RoleImage = RoleSprites(RoleNames.Infected, 0);
-                }
-            }
-
-            if (SinglePlayGlobalConditions.IsPlayerInHumansTeam(_RolesClass.RoleButtons[i]))
-            {
-                _TeamsClass.HumansTeamCount++;
-            }
-            else
-            {
-                _TeamsClass.MonstersTeamCount++;
-            }
-
-            _RolesClass.RoleButtons[i].RoleNameText = i == 0 ? _RolesClass.RoleButtons[i].RoleName : _RolesClass.RoleButtons[i].RoleName == RoleNames.Infected &&
-                _RolesClass.RoleButtons[0].RoleName == RoleNames.Infected ? _RolesClass.RoleButtons[i].RoleNameText = _RolesClass.RoleButtons[i].RoleName :
-                _RolesClass.RoleButtons[i].RoleNameText = "Unknown";
-
-            random.Remove(randomRange);
-            _RolesClass.MalePlayersNames.Remove(randomName);
+            AddingActivePlayers(_RolesClass.RoleButtons[i]);
+            SetTeams(i);
         }
     }
-
+   
     Sprite RoleSprites(string roleName, int gender)
     {
         Sprite roleSprite = null;
@@ -583,6 +581,7 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
                                     _Players.ActivePlayers.Remove(LostPlayer);
                                     _Players.LostPlayers.Add(LostPlayer);
                                     _SPRBCC.OnPlayerLost(LostPlayer.transform);
+                                    _SPP.PointsForStayingAlive(new SinglePlayerPoints.Data(PlayerRoleButton(), null, 10, 0));
                                 }
                                 _TimerClass.Proccesing = false;
                             }, 
@@ -620,6 +619,7 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
                                     _Players.ActivePlayers.Remove(LostPlayer);
                                     _Players.LostPlayers.Add(LostPlayer);
                                     _SPRBCC.OnPlayerLost(LostPlayer.transform);
+                                    _SPP.PointsForStayingAlive(new SinglePlayerPoints.Data(PlayerRoleButton(), null, 10, 0));
                                 }
                                 _TimerClass.Proccesing = false;
                             }, null));
@@ -708,6 +708,13 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
     }
     #endregion
 
+    #region ActivePlayers
+    void AddingActivePlayers(SinglePlayRoleButton activePlayer)
+    {
+        _Players.ActivePlayers.Add(activePlayer);
+    }
+    #endregion
+
     #region GetLostPlayerCoroutine
     IEnumerator GetLostPlayer(Action<SinglePlayRoleButton> LostPlayerIsSet, Action<SinglePlayRoleButton> KilledPlayerByKnight)
     {
@@ -766,6 +773,18 @@ public class SinglePlayGameController : MonoBehaviour, ISinglePlayReset
     #endregion
 
     #region UpdateTeams
+    void SetTeams(int i)
+    {
+        if (SinglePlayGlobalConditions.IsPlayerInHumansTeam(_RolesClass.RoleButtons[i]))
+        {
+            _TeamsClass.HumansTeamCount++;
+        }
+        else
+        {
+            _TeamsClass.MonstersTeamCount++;
+        }
+    }
+
     void UpdateTeams(SinglePlayRoleButton roleButton)
     {
         if (SinglePlayGlobalConditions.IsPlayerInHumansTeam(roleButton))

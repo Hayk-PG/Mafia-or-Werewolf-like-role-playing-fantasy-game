@@ -166,6 +166,7 @@ public class SinglePlayRoleButton : MonoBehaviour
     CardsHolder _CardsHolder { get; set; }
     SinglePlayGameController _SinglePlayGameController { get; set; }
     SinglePlayVoteDatas _SinglePlayVoteDatas { get; set; }
+    SinglePlayerPoints _SinglePlayerPoints { get; set; }
 
 
     void Awake()
@@ -173,6 +174,7 @@ public class SinglePlayRoleButton : MonoBehaviour
         _CardsHolder = FindObjectOfType<CardsHolder>();
         _SinglePlayGameController = FindObjectOfType<SinglePlayGameController>();
         _SinglePlayVoteDatas = FindObjectOfType<SinglePlayVoteDatas>();
+        _SinglePlayerPoints = FindObjectOfType<SinglePlayerPoints>();
     }
 
     void OnEnable()
@@ -237,6 +239,7 @@ public class SinglePlayRoleButton : MonoBehaviour
         if (SinglePlayGlobalConditions.AmIKing()) VotesCount += 2;
         else AddVotesCount();
 
+        _SinglePlayerPoints.PointsForDayVote(new SinglePlayerPoints.Data(_SinglePlayGameController.PlayerRoleButton(), this, 10, -15));
         _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayGameController.PlayerRoleButton(), _SinglePlayGameController._TimerClass.DaysCount, this);
     }
     #endregion
@@ -284,6 +287,7 @@ public class SinglePlayRoleButton : MonoBehaviour
         {
             IsHealed = true;
             ObjActivity(_VFX.AbilityVFX[0], true);
+            _SinglePlayerPoints.PointsForMedic(new SinglePlayerPoints.Data(null, this, 30, 0));
         }
         if (SinglePlayGlobalConditions.AmISheriff())
         {
@@ -291,21 +295,25 @@ public class SinglePlayRoleButton : MonoBehaviour
             RoleNameText = RoleName;
             ObjActivity(_VFX.AbilityVFX[1], true);
             RoleImage = RoleSprite;
+            _SinglePlayerPoints.PointsForSheriff(new SinglePlayerPoints.Data(null, this, 20, 0));
         }
         if (SinglePlayGlobalConditions.AmISoldier())
         {
             IsKilledByKnight = true;
             ObjActivity(_VFX.AbilityVFX[2], true);
+            _SinglePlayerPoints.PointsForSoldier(new SinglePlayerPoints.Data(null, this, 25, -25));
         }
         if (SinglePlayGlobalConditions.AmIInfected())
         {
             AddVotesCount();
             ObjActivity(_VFX.AbilityVFX[3], true);
+            _SinglePlayerPoints.PointsForInfected(new SinglePlayerPoints.Data(null, this, 25, -25));
         }
         if (SinglePlayGlobalConditions.AmILizard())
         {
             IsConjured = true;
             ObjActivity(_VFX.AbilityVFX[4], true);
+            _SinglePlayerPoints.PointsForLizard(new SinglePlayerPoints.Data(null, this, 30, -5));
         }
     }
 

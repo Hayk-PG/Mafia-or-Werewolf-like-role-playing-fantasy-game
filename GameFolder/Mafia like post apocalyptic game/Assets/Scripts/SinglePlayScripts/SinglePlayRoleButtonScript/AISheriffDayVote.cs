@@ -51,10 +51,12 @@ public class AISheriffDayVote : SinglePlayAiController
         {
             for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
             {
-                if (RandomRoleButton() != this && RandomRoleButton().IsAlive)
+                SinglePlayRoleButton RandomPlayer = RandomRoleButton();
+
+                if (RandomPlayer != this && RandomPlayer.IsAlive)
                 {
-                    RandomRoleButton().AddVotesCount();
-                    _SinglePlayRoleButton.DisplayVotesInfo(true, RandomRoleButton().Name);
+                    RandomPlayer.AddVotesCount();
+                    _SinglePlayRoleButton.DisplayVotesInfo(true, RandomPlayer.Name);
                     _SinglePlayRoleButton.HasVotedCondition(true);
                     break;
                 }

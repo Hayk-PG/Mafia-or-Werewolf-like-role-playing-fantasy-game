@@ -57,12 +57,14 @@ public class AICommonDayVote : SinglePlayAiController
     {
         for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
         {
-            if (RandomRoleButton() != this && RandomRoleButton().IsAlive)
+            SinglePlayRoleButton RandomPlayer = RandomRoleButton();
+
+            if (RandomPlayer != this && RandomPlayer.IsAlive)
             {
-                if (SinglePlayGlobalConditions.IsAiKing(_SinglePlayRoleButton)) RandomRoleButton().VotesCount += 2;
-                else RandomRoleButton().AddVotesCount();
-                _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, RandomRoleButton());
-                _SinglePlayRoleButton.DisplayVotesInfo(true, RandomRoleButton().Name);
+                if (SinglePlayGlobalConditions.IsAiKing(_SinglePlayRoleButton)) RandomPlayer.VotesCount += 2;
+                else RandomPlayer.AddVotesCount();
+                _SinglePlayVoteDatas.AddDayVotesData(_SinglePlayRoleButton, _SinglePlayGameController._TimerClass.DaysCount, RandomPlayer);
+                _SinglePlayRoleButton.DisplayVotesInfo(true, RandomPlayer.Name);
                 _SinglePlayRoleButton.HasVotedCondition(true);
                 break;
             }

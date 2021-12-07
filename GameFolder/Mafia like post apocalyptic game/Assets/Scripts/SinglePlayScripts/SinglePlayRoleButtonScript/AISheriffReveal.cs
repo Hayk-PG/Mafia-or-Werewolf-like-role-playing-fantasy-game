@@ -27,9 +27,11 @@ public class AISheriffReveal : AISheriffDayVote
         {
             for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
             {
-                if (RandomRoleButton() != this && RandomRoleButton().IsAlive)
+                SinglePlayRoleButton RandomPlayer = RandomRoleButton();
+
+                if (RandomPlayer != this && RandomPlayer.IsAlive)
                 {
-                    Reveal(RandomRoleButton());
+                    Reveal(RandomPlayer);
                     break;
                 }
             }

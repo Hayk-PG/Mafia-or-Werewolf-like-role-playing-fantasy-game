@@ -27,10 +27,12 @@ public class AIWitchConjure : AICommonDayVote
     {
         for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
         {
-            if (RandomRoleButton() != this && RandomRoleButton().IsAlive)
+            SinglePlayRoleButton RandomPlayer = RandomRoleButton();
+
+            if (RandomPlayer != this && RandomPlayer.IsAlive)
             {
-                RandomRoleButton().AIAbility(4);
-                print(RandomRoleButton().Name + " got conjured");
+                RandomPlayer.AIAbility(4);
+                print(RandomPlayer.Name + " got conjured");
                 _SinglePlayRoleButton.HasVotedCondition(true);
                 break;
             }

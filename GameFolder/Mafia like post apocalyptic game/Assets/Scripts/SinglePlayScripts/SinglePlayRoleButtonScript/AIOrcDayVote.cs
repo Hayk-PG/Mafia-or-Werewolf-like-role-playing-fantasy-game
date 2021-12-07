@@ -97,9 +97,11 @@ public class AIOrcDayVote : SinglePlayAiController
     {
         for (int i = 0; i < _SinglePlayGameController._RolesClass.PlayersCount; i++)
         {
-            if (RandomRoleButton().RoleName != RoleNames.Infected)
+            SinglePlayRoleButton RandomPlayer = RandomRoleButton();
+
+            if (RandomPlayer.RoleName != RoleNames.Infected)
             {
-                AddsVotesCount(RandomRoleButton(), !isNightVote, !isNightVote || isNightVote && isPlayerInSameTeam, true);
+                AddsVotesCount(RandomPlayer, !isNightVote, !isNightVote || isNightVote && isPlayerInSameTeam, true);
                 break;
             }
         }
